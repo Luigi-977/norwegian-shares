@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Norwegian Shares — Invest in Norway's Future</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0b1a2e;
+      --gold: #c9a84c;
+      --gold-light: #e8c97e;
+      --cream: #f5f0e8;
+      --white: #ffffff;
+      --mid: #1e3352;
+      --text-muted: #7a8fa8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(11, 26, 46, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.03em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      background: var(--gold);
+      color: var(--navy) !important;
+      padding: 0.5rem 1.4rem;
+      border-radius: 2px;
+      font-weight: 600 !important;
+    }
+
+    /* ─── HERO ────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(30,51,82,0.6) 0%, transparent 60%),
+        linear-gradient(160deg, #0b1a2e 0%, #132540 50%, #0b1a2e 100%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 860px; }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.4);
+      padding: 0.35rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--white);
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .hero h1 span { color: var(--gold); }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .hero-actions {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+      padding: 0.85rem 2.2rem;
+      border-radius: 2px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      padding: 0.85rem 2.2rem;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.25);
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    .hero-stats {
+      margin-top: 5rem;
+      display: flex;
+      gap: 4rem;
+      justify-content: center;
+      animation: fadeUp 0.8s 0.6s ease both;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+
+    /* ─── TICKER ──────────────────────── */
+    .ticker-wrap {
+      background: var(--gold);
+      padding: 0.75rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .ticker-track {
+      display: inline-block;
+      animation: ticker 25s linear infinite;
+    }
+
+    .ticker-track span {
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      margin-right: 4rem;
+    }
+
+    .ticker-track .up { color: #1a5c34; }
+    .ticker-track .dn { color: #8b1a1a; }
+
+    /* ─── ABOUT SHARES ────────────────── */
+    .section-shares {
+      padding: 8rem 2rem;
+      background: var(--cream);
+      color: var(--navy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-shares::before {
+      content: 'SHARES';
+      position: absolute;
+      top: -1rem;
+      right: -2rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 12rem;
+      font-weight: 900;
+      color: rgba(11,26,46,0.04);
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--navy);
+    }
+
+    .section-title.light { color: var(--white); }
+
+    .section-body {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #3a4f66;
+    }
+
+    .section-body.light { color: rgba(255,255,255,0.65); }
+
+    .shares-card {
+      background: var(--navy);
+      border-radius: 4px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shares-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: var(--gold);
+    }
+
+    .share-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .share-row:last-child { border-bottom: none; }
+
+    .share-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--white);
+    }
+
+    .share-code {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+
+    .share-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+
+    .share-change.pos { color: #4caf82; font-size: 0.8rem; }
+    .share-change.neg { color: #e05555; font-size: 0.8rem; }
+
+    /* ─── HOW IT WORKS ────────────────── */
+    .section-how {
+      padding: 8rem 2rem;
+      background: var(--mid);
+    }
+
+    .section-how .section-title { color: var(--white); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .step {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 4px;
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+
+    .step:hover { border-color: rgba(201,168,76,0.5); }
+
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(201,168,76,0.15);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .step-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+    }
+
+    /* ─── COMPANY ─────────────────────── */
+    .section-company {
+      padding: 8rem 2rem;
+      background: var(--navy);
+      position: relative;
+    }
+
+    .section-company .section-title { color: var(--white); }
+
+    .company-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 5rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .feature-list li::before {
+      content: '◆';
+      color: var(--gold);
+      font-size: 0.5rem;
+      margin-top: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .company-aside {
+      background: linear-gradient(135deg, var(--mid), #0f2238);
+      border-radius: 4px;
+      padding: 2.5rem;
+      border: 1px solid rgba(201,168,76,0.2);
+      text-align: center;
+    }
+
+    .company-aside .big-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--gold);
+    }
+
+    .company-aside p {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .company-aside hr {
+      border: none;
+      border-top: 1px solid rgba(201,168,76,0.2);
+      margin: 1.5rem 0;
+    }
+
+    /* ─── CTA ─────────────────────────── */
+    .section-cta {
+      padding: 8rem 2rem;
+      background: var(--gold);
+      text-align: center;
+    }
+
+    .section-cta h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.1;
+    }
+
+    .section-cta p {
+      color: rgba(11,26,46,0.65);
+      margin-top: 1rem;
+      font-size: 1.05rem;
+    }
+
+    .btn-dark {
+      display: inline-block;
+      margin-top: 2.5rem;
+      background: var(--navy);
+      color: var(--gold);
+      padding: 1rem 2.8rem;
+      border-radius: 2px;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-dark:hover { background: #0f2238; transform: translateY(-2px); }
+
+    /* ─── FOOTER ──────────────────────── */
+    footer {
+      background: #060f1c;
+      padding: 3rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-top: 1px solid rgba(201,168,76,0.1);
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+
+    .footer-copy {
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ─── ANIMATIONS ──────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── MOBILE ──────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .two-col, .steps, .company-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hero-stats { gap: 2rem; flex-wrap: wrap; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Norwegian Shares</div>
+    <ul class="nav-links">
+      <li><a href="#shares">Shares</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#company">Company</a></li>
+      <li><a href="#" class="nav-cta">Buy Shares</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Norwegian Shares Platform</div>
+      <h1>Own a Piece of <span>Norway's</span> Growth</h1>
+      <p class="hero-sub">
+        Buy and manage shares in a registered Norwegian company. Transparent pricing, secure transactions, and real-time portfolio tracking — all from your phone or desktop.
+      </p>
+      <div class="hero-actions">
+        <a href="#shares" class="btn-primary">View Shares</a>
+        <a href="#how" class="btn-secondary">How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">NOK 2.4M</div>
+          <div class="stat-label">Total Share Value</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1,200+</div>
+          <div class="stat-label">Shareholders</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Verified & Registered</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span>NOR-A &nbsp; NOK 245.00 &nbsp; <span class="up">▲ +2.4%</span></span>
+      <span>NOR-B &nbsp; NOK 180.50 &nbsp; <span class="dn">▼ -0.8%</span></span>
+      <span>NOR-C &nbsp; NOK 310.00 &nbsp; <span class="up">▲ +1.2%</span></span>
+      <span>NOR-D &nbsp; NOK 95.75 &nbsp; <span class="up">▲ +3.1%</span></span>
+      <span>NOR-E &nbsp; NOK 420.00 &nbsp; <span class="dn">▼ -0.3%</span></span>
+      <!-- duplicate for seamless loop -->
+      <span>NOR-A &nbsp; NOK 245.00 &nbsp; <span class="up">▲ +2.4%</span></span>
+      <span>NOR-B &nbsp; NOK 180.50 &nbsp; <span class="dn">▼ -0.8%</span></span>
+      <span>NOR-C &nbsp; NOK 310.00 &nbsp; <span class="up">▲ +1.2%</span></span>
+      <span>NOR-D &nbsp; NOK 95.75 &nbsp; <span class="up">▲ +3.1%</span></span>
+      <span>NOR-E &nbsp; NOK 420.00 &nbsp; <span class="dn">▼ -0.3%</span></span>
+    </div>
+  </div>
+
+  <!-- ABOUT SHARES -->
+  <section class="section-shares" id="shares">
+    <div class="container">
+      <div class="two-col">
+        <div class="reveal">
+          <div class="section-label">What Are Shares?</div>
+          <h2 class="section-title">Norwegian Shares — Your stake in the company</h2>
+          <p class="section-body">
+            A share represents partial ownership of our company. When you buy a share, you become a co-owner. As the company grows, so does the value of your share. Our shares are fully registered under Norwegian law, giving you legal protection and transparency.
+          </p>
+          <p class="section-body" style="margin-top:1rem;">
+            We offer multiple share classes, each with clear pricing and real-time market data so you always know exactly what your investment is worth.
+          </p>
+          <a href="#" class="btn-primary" style="display:inline-block; margin-top:2rem;">Browse All Shares</a>
+        </div>
+        <div class="shares-card reveal">
+          <div style="font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem;">Live Share Prices</div>
+          <div class="share-row">
+            <div>
+              <div class="share-name">Norwegian Growth A</div>
+              <div class="share-code">NOR-A</div>
+            </div>
+            <div style="text-align:right">
+              <div class="share-price">NOK 245.00</div>
+              <div class="share-change pos">▲ +2.4%</div>
+            </div>
+          </div>
+          <div class="share-row">
+            <div>
+              <div class="share-name">Norwegian Growth B</div>
+              <div class="share-code">NOR-B</div>
+            </div>
+            <div style="text-align:right">
+              <div class="share-price">NOK 180.50</div>
+              <div class="share-change neg">▼ -0.8%</div>
+            </div>
+          </div>
+          <div class="share-row">
+            <div>
+              <div class="share-name">Norwegian Growth C</div>
+              <div class="share-code">NOR-C</div>
+            </div>
+            <div style="text-align:right">
+              <div class="share-price">NOK 310.00</div>
+              <div class="share-change pos">▲ +1.2%</div>
+            </div>
+          </div>
+          <div class="share-row">
+            <div>
+              <div class="share-name">Norwegian Growth D</div>
+              <div class="share-code">NOR-D</div>
+            </div>
+            <div style="text-align:right">
+              <div class="share-price">NOK 95.75</div>
+              <div class="share-change pos">▲ +3.1%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section-how" id="how">
+    <div class="container">
+      <div class="reveal" style="text-align:center;">
+        <div class="section-label" style="justify-content:center; display:flex;">How It Works</div>
+        <h2 class="section-title" style="color:var(--white);">Three steps to own shares</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <div class="step-title">Create Your Account</div>
+          <p class="step-desc">Sign up in minutes. Verify your identity and you're ready to invest. We use secure authentication to protect your account.</p>
+        </div>
+        <div class="step reveal" style="transition-delay:0.15s">
+          <div class="step-num">02</div>
+          <div class="step-title">Choose Your Shares</div>
+          <p class="step-desc">Browse available shares, see live prices, and pick the share class that fits your investment goals. No hidden fees.</p>
+        </div>
+        <div class="step reveal" style="transition-delay:0.3s">
+          <div class="step-num">03</div>
+          <div class="step-title">Track Your Portfolio</div>
+          <p class="step-desc">Monitor your holdings in real time from your personal dashboard on any device — mobile, tablet, or desktop.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPANY -->
+  <section class="section-company" id="company">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">About The Company</div>
+        <h2 class="section-title" style="color:var(--white);">A registered Norwegian company — transparent by design</h2>
+      </div>
+      <div class="company-grid">
+        <div class="reveal">
+          <p class="section-body light">
+            Our company is fully registered under Norwegian law. Every share issued on this platform is backed by legal documentation, giving investors confidence and protection. We believe in full transparency — you always know who owns what.
+          </p>
+          <ul class="feature-list">
+            <li>Fully registered and legally compliant under Norwegian law</li>
+            <li>Real-time share prices updated throughout the day</li>
+            <li>Secure, verified transactions — your investment is protected</li>
+            <li>Portfolio dashboard accessible from any device</li>
+            <li>Direct access to company reports and shareholder updates</li>
+          </ul>
+        </div>
+        <div class="company-aside reveal">
+          <div class="big-num">NOK 2.4M</div>
+          <p>Total market capitalisation of issued shares</p>
+          <hr />
+          <div class="big-num">5</div>
+          <p>Share classes available for purchase</p>
+          <hr />
+          <div class="big-num">1,200+</div>
+          <p>Active shareholders and growing</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section-cta">
+    <div class="container reveal" style="text-align:center;">
+      <h2>Ready to buy your first share?</h2>
+      <p>Join over 1,200 shareholders investing in Norway's future.</p>
+      <a href="#" class="btn-dark">Get Started — It's Free</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Norwegian Shares</div>
+    <ul class="footer-links">
+      <li><a href="#">Shares</a></li>
+      <li><a href="#">How It Works</a></li>
+      <li><a href="#">Company</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 Norwegian Shares. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(r => observer.observe(r));
+  </script>
+</body>
+</html>
