@@ -16,7 +16,8 @@ const firebaseConfig = {
   projectId: "norwegian-shares",
   storageBucket: "norwegian-shares.firebasestorage.app",
   messagingSenderId: "43355796470",
-  appId: "1:43355796470:web:afa61eb967b0beecc68dd7"
+  appId: "1:43355796470:web:afa61eb967b0beecc68dd7",
+  measurementId: "G-VJJLJCFKDH"
 };
 
 const app = initializeApp(firebaseConfig);
