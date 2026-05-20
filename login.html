@@ -6,37 +6,29 @@
 
   <title>Norwegian Shares — Sign In</title>
 
+  <!-- GOOGLE FONTS -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- MAIN CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- YOUR CSS FILE -->
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
 
   <!-- NAVIGATION -->
   <nav>
-    <a href="index.html" class="nav-logo">
-      Norwegian Shares
-    </a>
-
-    <a href="index.html" class="nav-back">
-      ← Back to Home
-    </a>
+    <a href="index.html" class="nav-logo">Norwegian Shares</a>
+    <a href="index.html" class="nav-back">← Back to Home</a>
   </nav>
 
   <div class="page-wrap">
 
     <!-- LEFT PANEL -->
     <div class="left-panel">
-
       <div class="left-grid"></div>
 
       <div class="left-content">
-
-        <div class="left-eyebrow">
-          Investor Portal
-        </div>
+        <div class="left-eyebrow">Investor Portal</div>
 
         <h2 class="left-title">
           Your shares.<br />
@@ -74,27 +66,25 @@
           </div>
 
           <div class="mini-share-row">
-            <span class="mini-share-name">NOR-A</span>
+            <span>NOR-A</span>
             <span class="mini-share-price">NOK 245.00</span>
             <span class="pos">▲ +2.4%</span>
           </div>
 
           <div class="mini-share-row">
-            <span class="mini-share-name">NOR-B</span>
+            <span>NOR-B</span>
             <span class="mini-share-price">NOK 180.50</span>
             <span class="neg">▼ -0.8%</span>
           </div>
 
           <div class="mini-share-row">
-            <span class="mini-share-name">NOR-C</span>
+            <span>NOR-C</span>
             <span class="mini-share-price">NOK 310.00</span>
             <span class="pos">▲ +1.2%</span>
           </div>
 
         </div>
-
       </div>
-
     </div>
 
     <!-- RIGHT PANEL -->
@@ -104,25 +94,13 @@
 
         <!-- TABS -->
         <div class="tabs">
-
-          <button
-            class="tab active"
-            id="tabLogin"
-            onclick="switchTab('login')">
-
+          <button class="tab active" id="tabLogin" onclick="switchTab('login')">
             Sign In
-
           </button>
 
-          <button
-            class="tab"
-            id="tabSignup"
-            onclick="switchTab('signup')">
-
+          <button class="tab" id="tabSignup" onclick="switchTab('signup')">
             Create Account
-
           </button>
-
         </div>
 
         <!-- ALERT -->
@@ -131,67 +109,57 @@
         <!-- LOGIN FORM -->
         <div id="loginForm">
 
-          <div class="form-title">
-            Welcome back
-          </div>
+          <div class="form-title">Welcome back</div>
 
           <div class="form-subtitle">
-            Sign in to view your share portfolio
+            Sign in to view your portfolio
           </div>
 
           <div class="form-group">
-
             <label>Email Address</label>
 
             <input
               type="email"
               id="loginEmail"
-              placeholder="you@example.com" />
+              placeholder="you@example.com"
+            />
 
-            <div class="error-msg" id="loginEmailErr">
+            <div class="err-msg" id="loginEmailErr">
               Please enter a valid email
             </div>
-
           </div>
 
           <div class="form-group">
-
             <label>Password</label>
 
             <input
               type="password"
               id="loginPassword"
-              placeholder="Your password" />
+              placeholder="Your password"
+            />
 
-            <div class="error-msg" id="loginPassErr">
+            <div class="err-msg" id="loginPassErr">
               Please enter your password
             </div>
-
           </div>
 
           <div class="forgot">
-            <a href="#">
-              Forgot password?
-            </a>
+            <a href="#">Forgot password?</a>
           </div>
 
           <button
             class="btn-submit"
             id="loginBtn"
-            onclick="handleLogin()">
-
+            onclick="handleLogin()"
+          >
             Sign In to My Account
-
           </button>
 
           <div class="terms">
-
             Don't have an account?
-
             <a href="#" onclick="switchTab('signup')">
               Create one free
             </a>
-
           </div>
 
         </div>
@@ -199,9 +167,7 @@
         <!-- SIGNUP FORM -->
         <div id="signupForm" style="display:none;">
 
-          <div class="form-title">
-            Create account
-          </div>
+          <div class="form-title">Create account</div>
 
           <div class="form-subtitle">
             Start buying shares in minutes
@@ -210,61 +176,58 @@
           <div class="form-row">
 
             <div class="form-group">
-
               <label>First Name</label>
 
               <input
                 type="text"
                 id="firstName"
-                placeholder="John" />
+                placeholder="John"
+              />
 
-              <div class="error-msg" id="firstNameErr">
+              <div class="err-msg" id="firstNameErr">
                 Required
               </div>
-
             </div>
 
             <div class="form-group">
-
               <label>Last Name</label>
 
               <input
                 type="text"
                 id="lastName"
-                placeholder="Doe" />
+                placeholder="Doe"
+              />
 
-              <div class="error-msg" id="lastNameErr">
+              <div class="err-msg" id="lastNameErr">
                 Required
               </div>
-
             </div>
 
           </div>
 
           <div class="form-group">
-
             <label>Email Address</label>
 
             <input
               type="email"
               id="signupEmail"
-              placeholder="you@example.com" />
+              placeholder="you@example.com"
+            />
 
-            <div class="error-msg" id="signupEmailErr">
+            <div class="err-msg" id="signupEmailErr">
               Please enter a valid email
             </div>
-
           </div>
 
           <div class="form-group">
-
             <label>Password</label>
 
             <input
               type="password"
               id="signupPassword"
               placeholder="Min. 8 characters"
-              oninput="checkStrength(this.value)" />
+              oninput="checkStrength(this.value)"
+            />
 
             <div class="strength-bar">
               <div class="strength-segment" id="s1"></div>
@@ -277,98 +240,218 @@
               Enter a password
             </div>
 
-            <div class="error-msg" id="signupPassErr">
+            <div class="err-msg" id="signupPassErr">
               Password must be at least 8 characters
             </div>
-
           </div>
 
           <div class="form-group">
-
             <label>Confirm Password</label>
 
             <input
               type="password"
               id="confirmPassword"
-              placeholder="Repeat your password" />
+              placeholder="Repeat your password"
+            />
 
-            <div class="error-msg" id="confirmPassErr">
+            <div class="err-msg" id="confirmPassErr">
               Passwords do not match
             </div>
-
           </div>
 
           <button
             class="btn-submit"
             id="signupBtn"
-            onclick="handleSignup()">
-
+            onclick="handleSignup()"
+          >
             Create My Account
-
           </button>
-
-          <div class="terms">
-
-            By creating an account you agree to our
-
-            <a href="#">Terms of Service</a>
-
-            and
-
-            <a href="#">Privacy Policy</a>
-
-          </div>
-
-          <div class="divider">
-            Already have an account?
-          </div>
-
-          <div style="text-align:center;">
-
-            <a
-              href="#"
-              onclick="switchTab('login')"
-              style="color:var(--gold);font-size:0.875rem;text-decoration:none;">
-
-              Sign in instead
-
-            </a>
-
-          </div>
 
         </div>
 
       </div>
-
     </div>
-
   </div>
 
-  <!-- TAB SWITCHING -->
-  <script>
+  <!-- FIREBASE AUTH -->
+  <script type="module">
 
-    function switchTab(tab) {
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
-      document.getElementById('loginForm').style.display =
-        tab === 'login' ? 'block' : 'none';
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      updateProfile
+    }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-      document.getElementById('signupForm').style.display =
-        tab === 'signup' ? 'block' : 'none';
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "norwegian-shares.firebaseapp.com",
+      projectId: "norwegian-shares",
+      storageBucket: "norwegian-shares.appspot.com",
+      messagingSenderId: "43355796470",
+      appId: "1:43355796470:web:afa61eb967b0beecc68dd7"
+    };
 
-      document.getElementById('tabLogin')
-        .classList.toggle('active', tab === 'login');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-      document.getElementById('tabSignup')
-        .classList.toggle('active', tab === 'signup');
+    function showAlert(message, type) {
+      const box = document.getElementById("alertBox");
+
+      box.innerHTML = message;
+      box.className = "alert-box show " + type;
     }
 
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    window.switchTab = function(tab) {
+
+      document.getElementById("loginForm").style.display =
+        tab === "login" ? "block" : "none";
+
+      document.getElementById("signupForm").style.display =
+        tab === "signup" ? "block" : "none";
+
+      document.getElementById("tabLogin")
+        .classList.toggle("active", tab === "login");
+
+      document.getElementById("tabSignup")
+        .classList.toggle("active", tab === "signup");
+    };
+
+    window.handleLogin = async function() {
+
+      const email =
+        document.getElementById("loginEmail").value.trim();
+
+      const password =
+        document.getElementById("loginPassword").value;
+
+      if (!validateEmail(email)) {
+        return showAlert("Enter a valid email", "error");
+      }
+
+      if (!password) {
+        return showAlert("Enter your password", "error");
+      }
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        showAlert("Login successful!", "success");
+
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1500);
+
+      } catch (error) {
+
+        showAlert(error.message, "error");
+      }
+    };
+
+    window.handleSignup = async function() {
+
+      const first =
+        document.getElementById("firstName").value.trim();
+
+      const last =
+        document.getElementById("lastName").value.trim();
+
+      const email =
+        document.getElementById("signupEmail").value.trim();
+
+      const password =
+        document.getElementById("signupPassword").value;
+
+      const confirm =
+        document.getElementById("confirmPassword").value;
+
+      if (!first || !last) {
+        return showAlert("Fill all fields", "error");
+      }
+
+      if (!validateEmail(email)) {
+        return showAlert("Invalid email", "error");
+      }
+
+      if (password.length < 8) {
+        return showAlert(
+          "Password must be at least 8 characters",
+          "error"
+        );
+      }
+
+      if (password !== confirm) {
+        return showAlert(
+          "Passwords do not match",
+          "error"
+        );
+      }
+
+      try {
+
+        const userCredential =
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+        await updateProfile(
+          userCredential.user,
+          {
+            displayName: first + " " + last
+          }
+        );
+
+        showAlert(
+          "Account created successfully!",
+          "success"
+        );
+
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1500);
+
+      } catch (error) {
+
+        showAlert(error.message, "error");
+      }
+    };
+
+    window.checkStrength = function(value) {
+
+      let score = 0;
+
+      if (value.length >= 8) score++;
+      if (/[A-Z]/.test(value)) score++;
+      if (/[0-9]/.test(value)) score++;
+      if (/[^A-Za-z0-9]/.test(value)) score++;
+
+      const bars = ["s1", "s2", "s3", "s4"];
+
+      bars.forEach((id, index) => {
+
+        document.getElementById(id).style.background =
+          index < score
+            ? "#c9a84c"
+            : "rgba(255,255,255,0.1)";
+      });
+    };
+
   </script>
-
-  <!-- AUTH -->
-  <script type="module" src="js/auth.js"></script>
-
-  <!-- SECURITY -->
-  <script src="js/security.js"></script>
 
 </body>
 </html>
