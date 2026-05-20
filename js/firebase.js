@@ -14,7 +14,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAdweu2Y8ZSfilJsh5g0PKPwwiE7GXxoSk",
   authDomain: "norwegian-shares.firebaseapp.com",
   projectId: "norwegian-shares",
-  storageBucket: "norwegian-shares.firebasestorage.app",
+  storageBucket: "norwegian-shares.appspot.com",
   messagingSenderId: "43355796470",
   appId: "1:43355796470:web:afa61eb967b0beecc68dd7",
   measurementId: "G-VJJLJCFKDH"
