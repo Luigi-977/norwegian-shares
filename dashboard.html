@@ -1,50 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <title>Marketplace</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <nav>
   <div class="logo">Norwegian Shares</div>
-
-  <button onclick="logoutUser()" class="btn-primary">
-    Logout
-  </button>
 </nav>
 
 <div class="container" style="padding-top:40px;">
 
-  <h1>Investor Dashboard</h1>
+  <h1>Share Marketplace</h1>
 
-  <div class="card" style="margin-top:30px;">
-    <h2>Total Portfolio Value</h2>
-    <h1>NOK 0.00</h1>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:30px;">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:30px;">
 
     <div class="card">
-      <h3>Shares Owned</h3>
-      <p>0</p>
+      <h2>NOR-A</h2>
+      <p>Norwegian Growth A</p>
+      <h3>NOK 245</h3>
+      <button class="btn-primary">Buy Shares</button>
     </div>
 
     <div class="card">
-      <h3>Total Profit</h3>
-      <p>NOK 0.00</p>
+      <h2>NOR-B</h2>
+      <p>Norwegian Growth B</p>
+      <h3>NOK 180</h3>
+      <button class="btn-primary">Buy Shares</button>
     </div>
 
     <div class="card">
-      <h3>Transactions</h3>
-      <p>0</p>
+      <h2>NOR-C</h2>
+      <p>Norwegian Growth C</p>
+      <h3>NOK 310</h3>
+      <button class="btn-primary">Buy Shares</button>
     </div>
 
   </div>
 
 </div>
-
-<script type="module" src="js/auth.js"></script>
 
 </body>
 </html>
