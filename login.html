@@ -584,6 +584,154 @@
     </div>
   </div>
 
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAdweu2Y8ZSfilJsh5g0PKPwwiE7GXxoSk",
+      authDomain: "norwegian-shares.firebaseapp.com",
+      projectId: "norwegian-shares",
+      storageBucket: "norwegian-shares.firebasestorage.app",
+      messagingSenderId: "43355796470",
+      appId: "1:43355796470:web:afa61eb967b0beecc68dd7",
+      measurementId: "G-VJJLJCFKDH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ── HELPERS ────────────────────────
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function showError(id, show) {
+      document.getElementById(id).classList.toggle('show', show);
+    }
+
+    function setInputError(id, hasError) {
+      document.getElementById(id).classList.toggle('error', hasError);
+    }
+
+    function showSuccess(msg) {
+      const box = document.getElementById('successBox');
+      box.textContent = '✓ ' + msg;
+      box.classList.add('show');
+    }
+
+    function showFirebaseError(msg) {
+      const box = document.getElementById('successBox');
+      box.style.background = 'rgba(224,85,85,0.1)';
+      box.style.borderColor = 'rgba(224,85,85,0.3)';
+      box.style.color = '#e05555';
+      box.textContent = '⚠ ' + msg;
+      box.classList.add('show');
+    }
+
+    function resetErrorBox() {
+      const box = document.getElementById('successBox');
+      box.style.background = '';
+      box.style.borderColor = '';
+      box.style.color = '';
+      box.classList.remove('show');
+    }
+
+    // ── LOGIN ──────────────────────────
+    window.handleLogin = function() {
+      resetErrorBox();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      let valid = true;
+
+      if (!isValidEmail(email)) {
+        showError('loginEmailErr', true); setInputError('loginEmail', true); valid = false;
+      } else { showError('loginEmailErr', false); setInputError('loginEmail', false); }
+
+      if (!password) {
+        showError('loginPassErr', true); setInputError('loginPassword', true); valid = false;
+      } else { showError('loginPassErr', false); setInputError('loginPassword', false); }
+
+      if (!valid) return;
+
+      const btn = document.querySelector('#loginForm .btn-submit');
+      btn.textContent = 'Signing in...';
+      btn.classList.add('loading');
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          showSuccess('Signed in successfully! Redirecting...');
+          setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+        })
+        .catch((error) => {
+          btn.textContent = 'Sign In to My Account';
+          btn.classList.remove('loading');
+          if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            showFirebaseError('Incorrect email or password. Please try again.');
+          } else if (error.code === 'auth/too-many-requests') {
+            showFirebaseError('Too many attempts. Please wait a moment and try again.');
+          } else {
+            showFirebaseError('Something went wrong. Please try again.');
+          }
+        });
+    };
+
+    // ── SIGNUP ─────────────────────────
+    window.handleSignup = function() {
+      resetErrorBox();
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+      let valid = true;
+
+      if (!firstName) { showError('firstNameErr', true); setInputError('firstName', true); valid = false; }
+      else { showError('firstNameErr', false); setInputError('firstName', false); }
+
+      if (!lastName) { showError('lastNameErr', true); setInputError('lastName', true); valid = false; }
+      else { showError('lastNameErr', false); setInputError('lastName', false); }
+
+      if (!isValidEmail(email)) { showError('signupEmailErr', true); setInputError('signupEmail', true); valid = false; }
+      else { showError('signupEmailErr', false); setInputError('signupEmail', false); }
+
+      if (password.length < 8) { showError('signupPassErr', true); setInputError('signupPassword', true); valid = false; }
+      else { showError('signupPassErr', false); setInputError('signupPassword', false); }
+
+      if (password !== confirm) { showError('confirmPassErr', true); setInputError('confirmPassword', true); valid = false; }
+      else { showError('confirmPassErr', false); setInputError('confirmPassword', false); }
+
+      if (!valid) return;
+
+      const btn = document.querySelector('#signupForm .btn-submit');
+      btn.textContent = 'Creating your account...';
+      btn.classList.add('loading');
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          return updateProfile(userCredential.user, {
+            displayName: firstName + ' ' + lastName
+          });
+        })
+        .then(() => {
+          showSuccess('Account created! Welcome to Norwegian Shares.');
+          setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+        })
+        .catch((error) => {
+          btn.textContent = 'Create My Account';
+          btn.classList.remove('loading');
+          if (error.code === 'auth/email-already-in-use') {
+            showFirebaseError('An account with this email already exists. Try signing in instead.');
+          } else if (error.code === 'auth/weak-password') {
+            showFirebaseError('Password is too weak. Please use at least 8 characters.');
+          } else {
+            showFirebaseError('Something went wrong. Please try again.');
+          }
+        });
+    };
+  </script>
+
   <script>
     // ── TAB SWITCHING ──────────────────
     function switchTab(tab) {
@@ -611,7 +759,7 @@
     }
 
     // ── PASSWORD STRENGTH ──────────────
-    function checkStrength(val) {
+    window.checkStrength = function(val) {
       const segments = ['s1','s2','s3','s4'];
       const label = document.getElementById('strengthLabel');
       let score = 0;
@@ -631,88 +779,6 @@
       label.style.color = val.length === 0 ? 'rgba(255,255,255,0.4)' : colors[score - 1];
     }
 
-    // ── LOGIN HANDLER ──────────────────
-    function handleLogin() {
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      let valid = true;
-
-      if (!isValidEmail(email)) {
-        showError('loginEmailErr', true);
-        setInputError('loginEmail', true);
-        valid = false;
-      } else {
-        showError('loginEmailErr', false);
-        setInputError('loginEmail', false);
-      }
-
-      if (!password) {
-        showError('loginPassErr', true);
-        setInputError('loginPassword', true);
-        valid = false;
-      } else {
-        showError('loginPassErr', false);
-        setInputError('loginPassword', false);
-      }
-
-      if (!valid) return;
-
-      // ── Firebase login will go here ──
-      const btn = document.querySelector('#loginForm .btn-submit');
-      btn.textContent = 'Signing in...';
-      btn.classList.add('loading');
-
-      setTimeout(() => {
-        btn.textContent = 'Sign In to My Account';
-        btn.classList.remove('loading');
-        const box = document.getElementById('successBox');
-        box.textContent = '✓ Signed in successfully! Redirecting to your dashboard...';
-        box.classList.add('show');
-        // Redirect to dashboard after login
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
-      }, 1500);
-    }
-
-    // ── SIGNUP HANDLER ─────────────────
-    function handleSignup() {
-      const firstName = document.getElementById('firstName').value.trim();
-      const lastName = document.getElementById('lastName').value.trim();
-      const email = document.getElementById('signupEmail').value.trim();
-      const password = document.getElementById('signupPassword').value;
-      const confirm = document.getElementById('confirmPassword').value;
-      let valid = true;
-
-      if (!firstName) { showError('firstNameErr', true); setInputError('firstName', true); valid = false; }
-      else { showError('firstNameErr', false); setInputError('firstName', false); }
-
-      if (!lastName) { showError('lastNameErr', true); setInputError('lastName', true); valid = false; }
-      else { showError('lastNameErr', false); setInputError('lastName', false); }
-
-      if (!isValidEmail(email)) { showError('signupEmailErr', true); setInputError('signupEmail', true); valid = false; }
-      else { showError('signupEmailErr', false); setInputError('signupEmail', false); }
-
-      if (password.length < 8) { showError('signupPassErr', true); setInputError('signupPassword', true); valid = false; }
-      else { showError('signupPassErr', false); setInputError('signupPassword', false); }
-
-      if (password !== confirm) { showError('confirmPassErr', true); setInputError('confirmPassword', true); valid = false; }
-      else { showError('confirmPassErr', false); setInputError('confirmPassword', false); }
-
-      if (!valid) return;
-
-      // ── Firebase signup will go here ──
-      const btn = document.querySelector('#signupForm .btn-submit');
-      btn.textContent = 'Creating your account...';
-      btn.classList.add('loading');
-
-      setTimeout(() => {
-        btn.textContent = 'Create My Account';
-        btn.classList.remove('loading');
-        const box = document.getElementById('successBox');
-        box.textContent = '✓ Account created! Welcome to Norwegian Shares.';
-        box.classList.add('show');
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
-      }, 1500);
-    }
   </script>
 </body>
 </html>
