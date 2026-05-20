@@ -3,117 +3,372 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Norwegian Shares — Sign In</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- MAIN CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
+  <!-- NAVIGATION -->
   <nav>
-    <a href="index.html" class="nav-logo">Norwegian Shares</a>
-    <a href="index.html" class="nav-back">← Back to Home</a>
+    <a href="index.html" class="nav-logo">
+      Norwegian Shares
+    </a>
+
+    <a href="index.html" class="nav-back">
+      ← Back to Home
+    </a>
   </nav>
 
   <div class="page-wrap">
+
     <!-- LEFT PANEL -->
     <div class="left-panel">
+
       <div class="left-grid"></div>
+
       <div class="left-content">
-        <div class="left-eyebrow">Investor Portal</div>
-        <h2 class="left-title">Your shares.<br /><span>Your future.</span></h2>
-        <p class="left-body">Access your portfolio, buy shares, and track your investment in real time. Join over 1,200 shareholders investing in Norway's future.</p>
+
+        <div class="left-eyebrow">
+          Investor Portal
+        </div>
+
+        <h2 class="left-title">
+          Your shares.<br />
+          <span>Your future.</span>
+        </h2>
+
+        <p class="left-body">
+          Access your portfolio, buy shares, and track your investment in real time.
+          Join over 1,200 shareholders investing in Norway's future.
+        </p>
+
         <div class="trust-items">
-          <div class="trust-item"><div class="trust-icon">🔒</div> Secure, encrypted authentication</div>
-          <div class="trust-item"><div class="trust-icon">📋</div> Legally registered company & shares</div>
-          <div class="trust-item"><div class="trust-icon">📱</div> Access from any device, anytime</div>
+
+          <div class="trust-item">
+            <div class="trust-icon">🔒</div>
+            Secure, encrypted authentication
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon">📋</div>
+            Legally registered company & shares
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon">📱</div>
+            Access from any device, anytime
+          </div>
+
         </div>
+
         <div class="share-preview">
-          <div class="share-preview-label">Live Share Prices</div>
-          <div class="mini-share-row"><span class="mini-share-name">NOR-A</span><span class="mini-share-price">NOK 245.00</span><span class="pos">▲ +2.4%</span></div>
-          <div class="mini-share-row"><span class="mini-share-name">NOR-B</span><span class="mini-share-price">NOK 180.50</span><span class="neg">▼ -0.8%</span></div>
-          <div class="mini-share-row"><span class="mini-share-name">NOR-C</span><span class="mini-share-price">NOK 310.00</span><span class="pos">▲ +1.2%</span></div>
+
+          <div class="share-preview-label">
+            Live Share Prices
+          </div>
+
+          <div class="mini-share-row">
+            <span class="mini-share-name">NOR-A</span>
+            <span class="mini-share-price">NOK 245.00</span>
+            <span class="pos">▲ +2.4%</span>
+          </div>
+
+          <div class="mini-share-row">
+            <span class="mini-share-name">NOR-B</span>
+            <span class="mini-share-price">NOK 180.50</span>
+            <span class="neg">▼ -0.8%</span>
+          </div>
+
+          <div class="mini-share-row">
+            <span class="mini-share-name">NOR-C</span>
+            <span class="mini-share-price">NOK 310.00</span>
+            <span class="pos">▲ +1.2%</span>
+          </div>
+
         </div>
+
       </div>
+
     </div>
 
     <!-- RIGHT PANEL -->
     <div class="right-panel">
+
       <div class="form-card">
+
+        <!-- TABS -->
         <div class="tabs">
-          <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
-          <button class="tab" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
+
+          <button
+            class="tab active"
+            id="tabLogin"
+            onclick="switchTab('login')">
+
+            Sign In
+
+          </button>
+
+          <button
+            class="tab"
+            id="tabSignup"
+            onclick="switchTab('signup')">
+
+            Create Account
+
+          </button>
+
         </div>
 
+        <!-- ALERT -->
         <div class="alert-box" id="alertBox"></div>
 
         <!-- LOGIN FORM -->
         <div id="loginForm">
-          <div class="form-title">Welcome back</div>
-          <div class="form-subtitle">Sign in to view your share portfolio</div>
+
+          <div class="form-title">
+            Welcome back
+          </div>
+
+          <div class="form-subtitle">
+            Sign in to view your share portfolio
+          </div>
+
           <div class="form-group">
+
             <label>Email Address</label>
-            <input type="email" id="loginEmail" placeholder="you@example.com" />
-            <div class="error-msg" id="loginEmailErr">Please enter a valid email</div>
+
+            <input
+              type="email"
+              id="loginEmail"
+              placeholder="you@example.com" />
+
+            <div class="error-msg" id="loginEmailErr">
+              Please enter a valid email
+            </div>
+
           </div>
+
           <div class="form-group">
+
             <label>Password</label>
-            <input type="password" id="loginPassword" placeholder="Your password" />
-            <div class="error-msg" id="loginPassErr">Please enter your password</div>
+
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Your password" />
+
+            <div class="error-msg" id="loginPassErr">
+              Please enter your password
+            </div>
+
           </div>
-          <div class="forgot"><a href="#">Forgot password?</a></div>
-          <button class="btn-submit" id="loginBtn" onclick="handleLogin()">Sign In to My Account</button>
-          <div class="terms">Don't have an account? <a href="#" onclick="switchTab('signup')">Create one free</a></div>
+
+          <div class="forgot">
+            <a href="#">
+              Forgot password?
+            </a>
+          </div>
+
+          <button
+            class="btn-submit"
+            id="loginBtn"
+            onclick="handleLogin()">
+
+            Sign In to My Account
+
+          </button>
+
+          <div class="terms">
+
+            Don't have an account?
+
+            <a href="#" onclick="switchTab('signup')">
+              Create one free
+            </a>
+
+          </div>
+
         </div>
 
         <!-- SIGNUP FORM -->
         <div id="signupForm" style="display:none;">
-          <div class="form-title">Create account</div>
-          <div class="form-subtitle">Start buying shares in minutes</div>
+
+          <div class="form-title">
+            Create account
+          </div>
+
+          <div class="form-subtitle">
+            Start buying shares in minutes
+          </div>
+
           <div class="form-row">
+
             <div class="form-group">
+
               <label>First Name</label>
-              <input type="text" id="firstName" placeholder="John" />
-              <div class="error-msg" id="firstNameErr">Required</div>
+
+              <input
+                type="text"
+                id="firstName"
+                placeholder="John" />
+
+              <div class="error-msg" id="firstNameErr">
+                Required
+              </div>
+
             </div>
+
             <div class="form-group">
+
               <label>Last Name</label>
-              <input type="text" id="lastName" placeholder="Doe" />
-              <div class="error-msg" id="lastNameErr">Required</div>
+
+              <input
+                type="text"
+                id="lastName"
+                placeholder="Doe" />
+
+              <div class="error-msg" id="lastNameErr">
+                Required
+              </div>
+
             </div>
+
           </div>
+
           <div class="form-group">
+
             <label>Email Address</label>
-            <input type="email" id="signupEmail" placeholder="you@example.com" />
-            <div class="error-msg" id="signupEmailErr">Please enter a valid email</div>
+
+            <input
+              type="email"
+              id="signupEmail"
+              placeholder="you@example.com" />
+
+            <div class="error-msg" id="signupEmailErr">
+              Please enter a valid email
+            </div>
+
           </div>
+
           <div class="form-group">
+
             <label>Password</label>
-            <input type="password" id="signupPassword" placeholder="Min. 8 characters" oninput="checkStrength(this.value)" />
+
+            <input
+              type="password"
+              id="signupPassword"
+              placeholder="Min. 8 characters"
+              oninput="checkStrength(this.value)" />
+
             <div class="strength-bar">
               <div class="strength-segment" id="s1"></div>
               <div class="strength-segment" id="s2"></div>
               <div class="strength-segment" id="s3"></div>
               <div class="strength-segment" id="s4"></div>
             </div>
-            <div class="strength-label" id="strengthLabel">Enter a password</div>
-            <div class="error-msg" id="signupPassErr">Password must be at least 8 characters</div>
+
+            <div class="strength-label" id="strengthLabel">
+              Enter a password
+            </div>
+
+            <div class="error-msg" id="signupPassErr">
+              Password must be at least 8 characters
+            </div>
+
           </div>
+
           <div class="form-group">
+
             <label>Confirm Password</label>
-            <input type="password" id="confirmPassword" placeholder="Repeat your password" />
-            <div class="error-msg" id="confirmPassErr">Passwords do not match</div>
+
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Repeat your password" />
+
+            <div class="error-msg" id="confirmPassErr">
+              Passwords do not match
+            </div>
+
           </div>
-          <button class="btn-submit" id="signupBtn" onclick="handleSignup()">Create My Account</button>
-          <div class="terms">By creating an account you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></div>
-          <div class="divider">Already have an account?</div>
-          <div style="text-align:center;"><a href="#" onclick="switchTab('login')" style="color:var(--gold);font-size:0.875rem;text-decoration:none;">Sign in instead</a></div>
+
+          <button
+            class="btn-submit"
+            id="signupBtn"
+            onclick="handleSignup()">
+
+            Create My Account
+
+          </button>
+
+          <div class="terms">
+
+            By creating an account you agree to our
+
+            <a href="#">Terms of Service</a>
+
+            and
+
+            <a href="#">Privacy Policy</a>
+
+          </div>
+
+          <div class="divider">
+            Already have an account?
+          </div>
+
+          <div style="text-align:center;">
+
+            <a
+              href="#"
+              onclick="switchTab('login')"
+              style="color:var(--gold);font-size:0.875rem;text-decoration:none;">
+
+              Sign in instead
+
+            </a>
+
+          </div>
+
         </div>
 
       </div>
+
     </div>
+
   </div>
-  
+
+  <!-- TAB SWITCHING -->
+  <script>
+
+    function switchTab(tab) {
+
+      document.getElementById('loginForm').style.display =
+        tab === 'login' ? 'block' : 'none';
+
+      document.getElementById('signupForm').style.display =
+        tab === 'signup' ? 'block' : 'none';
+
+      document.getElementById('tabLogin')
+        .classList.toggle('active', tab === 'login');
+
+      document.getElementById('tabSignup')
+        .classList.toggle('active', tab === 'signup');
+    }
+
+  </script>
+
+  <!-- AUTH -->
   <script type="module" src="js/auth.js"></script>
+
+  <!-- SECURITY -->
   <script src="js/security.js"></script>
+
 </body>
 </html>
