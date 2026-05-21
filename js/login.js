@@ -1,51 +1,33 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { auth } from "./firebase.js";
 
 import {
-  getAuth,
   signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAT-Aou7qeoCkMYR6TXrZ5cPjkCWA4aGSQ",
-  authDomain: "luigiblvck.firebaseapp.com",
-  projectId: "luigiblvck",
-  storageBucket: "luigiblvck.firebasestorage.app",
-  messagingSenderId: "749834936416",
-  appId: "1:749834936416:web:0829759868cfd1082c6305"
-};
+const loginBtn = document.getElementById("login-btn");
 
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-const submit = document.getElementById("submit");
-
-submit.addEventListener("click", async (event) => {
+loginBtn.addEventListener("click", async (event) => {
 
   event.preventDefault();
 
-  const email =
-    document.getElementById("email").value;
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
 
-  const password =
-    document.getElementById("password").value;
+  const message = document.getElementById("login-message");
 
   try {
 
-    await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    await signInWithEmailAndPassword(auth, email, password);
 
-    alert("Login successful");
+    message.innerHTML = "Login successful!";
 
-    window.location.href = "dashboard.html";
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1500);
 
   } catch (error) {
 
-    document.getElementById("message").innerHTML =
-      error.message;
+    message.innerHTML = error.message;
 
   }
 
