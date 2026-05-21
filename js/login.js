@@ -7,12 +7,12 @@ import {
 // FORM
 const loginForm = document.getElementById("loginForm");
 
-// EVENT
+// SUBMIT EVENT
 loginForm.addEventListener("submit", async (event) => {
 
   event.preventDefault();
 
-  // INPUTS
+  // INPUT VALUES
   const email =
     document.getElementById("loginEmail").value.trim();
 
@@ -27,7 +27,7 @@ loginForm.addEventListener("submit", async (event) => {
 
   try {
 
-    // LOGIN
+    // LOGIN USER
     await signInWithEmailAndPassword(
       auth,
       email,
