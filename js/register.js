@@ -1,36 +1,28 @@
 import { auth } from "./firebase.js";
 
 import {
-  createUserWithEmailAndPassword,
-  updateProfile
+  createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
-const registerBtn = document.getElementById("register-btn");
+const form = document.getElementById("register-form");
 
-registerBtn.addEventListener("click", async (event) => {
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async (event) => {
 
   event.preventDefault();
 
-  const name = document.getElementById("register-name").value;
-  const email = document.getElementById("register-email").value;
-  const password = document.getElementById("register-password").value;
+  const email = document.getElementById("email").value;
 
-  const message = document.getElementById("register-message");
+  const password = document.getElementById("password").value;
 
   try {
 
-    const userCredential =
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+    await createUserWithEmailAndPassword(auth, email, password);
 
-    await updateProfile(userCredential.user, {
-      displayName: name
-    });
+    message.className = "success-message";
 
-    message.innerHTML = "Account created successfully!";
+    message.textContent = "Account created successfully";
 
     setTimeout(() => {
       window.location.href = "dashboard.html";
@@ -38,7 +30,9 @@ registerBtn.addEventListener("click", async (event) => {
 
   } catch (error) {
 
-    message.innerHTML = error.message;
+    message.className = "error-message";
+
+    message.textContent = error.message;
 
   }
 
