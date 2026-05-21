@@ -4,455 +4,113 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Norwegian Shares — Sign In</title>
+  <title>Norwegian Shares — Login</title>
 
-  <!-- GOOGLE FONTS -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- YOUR CSS FILE -->
   <link rel="stylesheet" href="css/style.css" />
-  <script type="module" scr="
 </head>
-
 <body>
 
-  <!-- NAVIGATION -->
-  <nav>
-    <a href="index.html" class="nav-logo">Norwegian Shares</a>
-    <a href="index.html" class="nav-back">← Back to Home</a>
-  </nav>
+  <div class="auth-page">
 
-  <div class="page-wrap">
+    <div class="auth-left">
+      <div class="auth-overlay"></div>
 
-    <!-- LEFT PANEL -->
-    <div class="left-panel">
-      <div class="left-grid"></div>
+      <div class="auth-content">
+        <div class="hero-eyebrow">Investor Login</div>
 
-      <div class="left-content">
-        <div class="left-eyebrow">Investor Portal</div>
+        <h1>
+          Welcome back<br>
+          <span>Investor</span>
+        </h1>
 
-        <h2 class="left-title">
-          Your shares.<br />
-          <span>Your future.</span>
-        </h2>
-
-        <p class="left-body">
-          Access your portfolio, buy shares, and track your investment in real time.
-          Join over 1,200 shareholders investing in Norway's future.
+        <p>
+          Access your investment dashboard and manage your Norwegian shares.
         </p>
-
-        <div class="trust-items">
-
-          <div class="trust-item">
-            <div class="trust-icon">🔒</div>
-            Secure, encrypted authentication
-          </div>
-
-          <div class="trust-item">
-            <div class="trust-icon">📋</div>
-            Legally registered company & shares
-          </div>
-
-          <div class="trust-item">
-            <div class="trust-icon">📱</div>
-            Access from any device, anytime
-          </div>
-
-        </div>
-
-        <div class="share-preview">
-
-          <div class="share-preview-label">
-            Live Share Prices
-          </div>
-
-          <div class="mini-share-row">
-            <span>NOR-A</span>
-            <span class="mini-share-price">NOK 245.00</span>
-            <span class="pos">▲ +2.4%</span>
-          </div>
-
-          <div class="mini-share-row">
-            <span>NOR-B</span>
-            <span class="mini-share-price">NOK 180.50</span>
-            <span class="neg">▼ -0.8%</span>
-          </div>
-
-          <div class="mini-share-row">
-            <span>NOR-C</span>
-            <span class="mini-share-price">NOK 310.00</span>
-            <span class="pos">▲ +1.2%</span>
-          </div>
-
-        </div>
       </div>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div class="right-panel">
+    <div class="auth-right">
 
-      <div class="form-card">
+      <form class="auth-form" id="loginForm">
 
-        <!-- TABS -->
-        <div class="tabs">
-          <button class="tab active" id="tabLogin" onclick="switchTab('login')">
-            Sign In
-          </button>
+        <h2>Sign In</h2>
 
-          <button class="tab" id="tabSignup" onclick="switchTab('signup')">
-            Create Account
-          </button>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
         </div>
 
-        <!-- ALERT -->
-        <div class="alert-box" id="alertBox"></div>
-
-        <!-- LOGIN FORM -->
-        <div id="loginForm">
-
-          <div class="form-title">Welcome back</div>
-
-          <div class="form-subtitle">
-            Sign in to view your portfolio
-          </div>
-
-          <div class="form-group">
-            <label>Email Address</label>
-
-            <input
-              type="email"
-              id="loginEmail"
-              placeholder="you@example.com"
-            />
-
-            <div class="err-msg" id="loginEmailErr">
-              Please enter a valid email
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-
-            <input
-              type="password"
-              id="loginPassword"
-              placeholder="Your password"
-            />
-
-            <div class="err-msg" id="loginPassErr">
-              Please enter your password
-            </div>
-          </div>
-
-          <div class="forgot">
-            <a href="#">Forgot password?</a>
-          </div>
-
-          <button
-            class="btn-submit"
-            id="loginBtn"
-            onclick="handleLogin()"
-          >
-            Sign In to My Account
-          </button>
-
-          <div class="terms">
-            Don't have an account?
-            <a href="#" onclick="switchTab('signup')">
-              Create one free
-            </a>
-          </div>
-
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Your password" required>
         </div>
 
-        <!-- SIGNUP FORM -->
-        <div id="signupForm" style="display:none;">
+        <button type="submit" class="btn-submit">
+          Login Account
+        </button>
 
-          <div class="form-title">Create account</div>
-
-          <div class="form-subtitle">
-            Start buying shares in minutes
-          </div>
-
-          <div class="form-row">
-
-            <div class="form-group">
-              <label>First Name</label>
-
-              <input
-                type="text"
-                id="firstName"
-                placeholder="John"
-              />
-
-              <div class="err-msg" id="firstNameErr">
-                Required
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Last Name</label>
-
-              <input
-                type="text"
-                id="lastName"
-                placeholder="Doe"
-              />
-
-              <div class="err-msg" id="lastNameErr">
-                Required
-              </div>
-            </div>
-
-          </div>
-
-          <div class="form-group">
-            <label>Email Address</label>
-
-            <input
-              type="email"
-              id="signupEmail"
-              placeholder="you@example.com"
-            />
-
-            <div class="err-msg" id="signupEmailErr">
-              Please enter a valid email
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-
-            <input
-              type="password"
-              id="signupPassword"
-              placeholder="Min. 8 characters"
-              oninput="checkStrength(this.value)"
-            />
-
-            <div class="strength-bar">
-              <div class="strength-segment" id="s1"></div>
-              <div class="strength-segment" id="s2"></div>
-              <div class="strength-segment" id="s3"></div>
-              <div class="strength-segment" id="s4"></div>
-            </div>
-
-            <div class="strength-label" id="strengthLabel">
-              Enter a password
-            </div>
-
-            <div class="err-msg" id="signupPassErr">
-              Password must be at least 8 characters
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Confirm Password</label>
-
-            <input
-              type="password"
-              id="confirmPassword"
-              placeholder="Repeat your password"
-            />
-
-            <div class="err-msg" id="confirmPassErr">
-              Passwords do not match
-            </div>
-          </div>
-
-          <button
-            class="btn-submit"
-            id="signupBtn"
-            onclick="handleSignup()"
-          >
-            Create My Account
-          </button>
-
+        <div class="auth-switch">
+          Don't have an account?
+          <a href="register.html">Create Account</a>
         </div>
 
-      </div>
+        <div id="message"></div>
+
+      </form>
     </div>
   </div>
 
-  <!-- FIREBASE AUTH -->
-  <script type="module">
+<script type="module">
 
-    import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      updateProfile
-    }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "norwegian-shares.firebaseapp.com",
-      projectId: "norwegian-shares",
-      storageBucket: "norwegian-shares.appspot.com",
-      messagingSenderId: "43355796470",
-      appId: "1:43355796470:web:afa61eb967b0beecc68dd7"
-    };
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-    function showAlert(message, type) {
-      const box = document.getElementById("alertBox");
+const loginForm = document.getElementById('loginForm');
+const message = document.getElementById('message');
 
-      box.innerHTML = message;
-      box.className = "alert-box show " + type;
-    }
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
-    window.switchTab = function(tab) {
+  try {
 
-      document.getElementById("loginForm").style.display =
-        tab === "login" ? "block" : "none";
+    await signInWithEmailAndPassword(auth, email, password);
 
-      document.getElementById("signupForm").style.display =
-        tab === "signup" ? "block" : "none";
+    message.innerHTML = 'Login successful!';
+    message.className = 'success-message';
 
-      document.getElementById("tabLogin")
-        .classList.toggle("active", tab === "login");
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 1500);
 
-      document.getElementById("tabSignup")
-        .classList.toggle("active", tab === "signup");
-    };
+  } catch (error) {
 
-    window.handleLogin = async function() {
+    message.innerHTML = error.message;
+    message.className = 'error-message';
+  }
+});
 
-      const email =
-        document.getElementById("loginEmail").value.trim();
-
-      const password =
-        document.getElementById("loginPassword").value;
-
-      if (!validateEmail(email)) {
-        return showAlert("Enter a valid email", "error");
-      }
-
-      if (!password) {
-        return showAlert("Enter your password", "error");
-      }
-
-      try {
-
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-        showAlert("Login successful!", "success");
-
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1500);
-
-      } catch (error) {
-
-        showAlert(error.message, "error");
-      }
-    };
-
-    window.handleSignup = async function() {
-
-      const first =
-        document.getElementById("firstName").value.trim();
-
-      const last =
-        document.getElementById("lastName").value.trim();
-
-      const email =
-        document.getElementById("signupEmail").value.trim();
-
-      const password =
-        document.getElementById("signupPassword").value;
-
-      const confirm =
-        document.getElementById("confirmPassword").value;
-
-      if (!first || !last) {
-        return showAlert("Fill all fields", "error");
-      }
-
-      if (!validateEmail(email)) {
-        return showAlert("Invalid email", "error");
-      }
-
-      if (password.length < 8) {
-        return showAlert(
-          "Password must be at least 8 characters",
-          "error"
-        );
-      }
-
-      if (password !== confirm) {
-        return showAlert(
-          "Passwords do not match",
-          "error"
-        );
-      }
-
-      try {
-
-        const userCredential =
-          await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
-
-        await updateProfile(
-          userCredential.user,
-          {
-            displayName: first + " " + last
-          }
-        );
-
-        showAlert(
-          "Account created successfully!",
-          "success"
-        );
-
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1500);
-
-      } catch (error) {
-
-        showAlert(error.message, "error");
-      }
-    };
-
-    window.checkStrength = function(value) {
-
-      let score = 0;
-
-      if (value.length >= 8) score++;
-      if (/[A-Z]/.test(value)) score++;
-      if (/[0-9]/.test(value)) score++;
-      if (/[^A-Za-z0-9]/.test(value)) score++;
-
-      const bars = ["s1", "s2", "s3", "s4"];
-
-      bars.forEach((id, index) => {
-
-        document.getElementById(id).style.background =
-          index < score
-            ? "#c9a84c"
-            : "rgba(255,255,255,0.1)";
-      });
-    };
-
-  </script>
+</script>
 
 </body>
 </html>
