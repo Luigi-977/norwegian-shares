@@ -2,329 +2,143 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Norwegian Shares — Invest in Norway's Future</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <title>Norwegian Shares</title>
 
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css"/>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <!-- NAVBAR -->
+  <nav class="navbar">
 
-    <ul class="nav-links">
-      <li><a href="#shares">Shares</a></li>
-      <li><a href="#dashboard">Dashboard</a></li>
-      <li><a href="#how">How It Works</a></li>
-      <li><a href="#company">Company</a></li>
-      <li><a href="login.html">Sign In</a></li>
-      <li><a href="register.html" class="nav-cta">Get Started</a></li>
-    </ul>
+    <div class="logo">
+      Norwegian Shares
+    </div>
+
+    <div class="nav-links">
+      <a href="#shares">Shares</a>
+      <a href="#about">About</a>
+      <a href="login.html">Sign In</a>
+      <a href="register.html" class="nav-btn">
+        Get Started
+      </a>
+    </div>
+
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
+
+    <div class="hero-overlay"></div>
 
     <div class="hero-content">
-      <div class="hero-eyebrow">Norwegian Shares Platform</div>
+
+      <div class="hero-badge">
+        Registered Norwegian Investment Platform
+      </div>
 
       <h1>
         Own a Piece of
-        <span>Norway's</span>
-        Growth
+        <span>Norway's Future</span>
       </h1>
 
-      <p class="hero-sub">
-        Buy and manage shares in a registered Norwegian company.
-        Track your investments in real time using your personal dashboard.
+      <p>
+        Buy and manage shares securely with real-time
+        portfolio tracking and transparent pricing.
       </p>
 
-      <div class="hero-actions">
-        <a href="register.html" class="btn-primary">Start Investing</a>
-        <a href="#dashboard" class="btn-secondary">View Dashboard</a>
+      <div class="hero-buttons">
+
+        <a href="register.html" class="btn-primary">
+          Buy Shares
+        </a>
+
+        <a href="login.html" class="btn-secondary">
+          Sign In
+        </a>
+
       </div>
 
-      <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-number">NOK 2.4M</div>
-          <div class="stat-label">Total Share Value</div>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-number">1,200+</div>
-          <div class="stat-label">Shareholders</div>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-number">98%</div>
-          <div class="stat-label">Growth Rate</div>
-        </div>
-      </div>
     </div>
+
   </section>
 
-  <!-- TICKER -->
-  <div class="ticker-wrap">
-    <div class="ticker-track">
-      <span>NOR-A &nbsp; NOK 245.00 &nbsp; <span class="up">▲ +2.4%</span></span>
-      <span>NOR-B &nbsp; NOK 180.50 &nbsp; <span class="dn">▼ -0.8%</span></span>
-      <span>NOR-C &nbsp; NOK 310.00 &nbsp; <span class="up">▲ +1.2%</span></span>
-      <span>NOR-D &nbsp; NOK 95.75 &nbsp; <span class="up">▲ +3.1%</span></span>
+  <!-- STATS -->
+  <section class="stats-section">
 
-      <span>NOR-A &nbsp; NOK 245.00 &nbsp; <span class="up">▲ +2.4%</span></span>
-      <span>NOR-B &nbsp; NOK 180.50 &nbsp; <span class="dn">▼ -0.8%</span></span>
-      <span>NOR-C &nbsp; NOK 310.00 &nbsp; <span class="up">▲ +1.2%</span></span>
-      <span>NOR-D &nbsp; NOK 95.75 &nbsp; <span class="up">▲ +3.1%</span></span>
+    <div class="stat-card">
+      <h2>NOK 2.4M</h2>
+      <p>Total Share Value</p>
     </div>
-  </div>
+
+    <div class="stat-card">
+      <h2>1,200+</h2>
+      <p>Active Shareholders</p>
+    </div>
+
+    <div class="stat-card">
+      <h2>100%</h2>
+      <p>Verified & Secure</p>
+    </div>
+
+  </section>
 
   <!-- SHARES -->
-  <section class="section-shares" id="shares">
-    <div class="container">
+  <section class="shares-section" id="shares">
 
-      <div class="two-col">
-
-        <div class="reveal">
-          <div class="section-label">Investment Shares</div>
-
-          <h2 class="section-title">
-            Norwegian company shares built for modern investors
-          </h2>
-
-          <p class="section-body">
-            Every share gives you ownership in our registered Norwegian company.
-            Buy shares securely, monitor your portfolio, and access live market updates.
-          </p>
-
-          <p class="section-body" style="margin-top:1rem;">
-            Your dashboard allows you to see your portfolio balance, active investments,
-            and share performance directly from your mobile phone or desktop.
-          </p>
-
-          <a href="register.html" class="btn-primary" style="margin-top:2rem; display:inline-block;">
-            Create Investor Account
-          </a>
-        </div>
-
-        <div class="shares-card reveal">
-          <div class="card-label">Live Share Prices</div>
-
-          <div class="share-row">
-            <div>
-              <div class="share-name">Norwegian Growth A</div>
-              <div class="share-code">NOR-A</div>
-            </div>
-
-            <div style="text-align:right;">
-              <div class="share-price">NOK 245.00</div>
-              <div class="share-change pos">▲ +2.4%</div>
-            </div>
-          </div>
-
-          <div class="share-row">
-            <div>
-              <div class="share-name">Norwegian Growth B</div>
-              <div class="share-code">NOR-B</div>
-            </div>
-
-            <div style="text-align:right;">
-              <div class="share-price">NOK 180.50</div>
-              <div class="share-change neg">▼ -0.8%</div>
-            </div>
-          </div>
-
-          <div class="share-row">
-            <div>
-              <div class="share-name">Norwegian Growth C</div>
-              <div class="share-code">NOR-C</div>
-            </div>
-
-            <div style="text-align:right;">
-              <div class="share-price">NOK 310.00</div>
-              <div class="share-change pos">▲ +1.2%</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+    <div class="section-header">
+      <span>Live Shares</span>
+      <h2>Current Market Prices</h2>
     </div>
-  </section>
 
-  <!-- DASHBOARD PREVIEW -->
-  <section class="section-dashboard" id="dashboard">
-    <div class="container">
+    <div class="shares-grid">
 
-      <div class="dashboard-header reveal">
-        <div class="section-label">Investor Dashboard</div>
-
-        <h2 class="section-title light">
-          Track your portfolio in real time
-        </h2>
+      <div class="share-card">
+        <h3>NOR-A</h3>
+        <p>Norwegian Growth A</p>
+        <div class="price">NOK 245.00</div>
+        <div class="positive">▲ +2.4%</div>
       </div>
 
-      <div class="dashboard-grid">
-
-        <div class="dashboard-card reveal">
-          <div class="dashboard-card-title">Portfolio Balance</div>
-          <div class="dashboard-big">NOK 845,000</div>
-          <div class="dashboard-growth">▲ +12.5% this month</div>
-        </div>
-
-        <div class="dashboard-card reveal">
-          <div class="dashboard-card-title">Active Shares</div>
-          <div class="dashboard-big">425</div>
-          <div class="dashboard-growth">Across 5 share classes</div>
-        </div>
-
-        <div class="dashboard-card reveal">
-          <div class="dashboard-card-title">Annual Return</div>
-          <div class="dashboard-big">18.7%</div>
-          <div class="dashboard-growth">Strong investor performance</div>
-        </div>
-
+      <div class="share-card">
+        <h3>NOR-B</h3>
+        <p>Norwegian Growth B</p>
+        <div class="price">NOK 180.50</div>
+        <div class="negative">▼ -0.8%</div>
       </div>
+
+      <div class="share-card">
+        <h3>NOR-C</h3>
+        <p>Norwegian Growth C</p>
+        <div class="price">NOK 310.00</div>
+        <div class="positive">▲ +1.2%</div>
+      </div>
+
     </div>
-  </section>
 
-  <!-- HOW IT WORKS -->
-  <section class="section-how" id="how">
-    <div class="container">
-
-      <div class="reveal" style="text-align:center;">
-        <div class="section-label">How It Works</div>
-
-        <h2 class="section-title light">
-          Three easy steps to start investing
-        </h2>
-      </div>
-
-      <div class="steps">
-
-        <div class="step reveal">
-          <div class="step-num">01</div>
-          <div class="step-title">Create Account</div>
-          <div class="step-desc">
-            Register your investor account in less than 2 minutes.
-          </div>
-        </div>
-
-        <div class="step reveal">
-          <div class="step-num">02</div>
-          <div class="step-title">Buy Shares</div>
-          <div class="step-desc">
-            Choose from available Norwegian share classes.
-          </div>
-        </div>
-
-        <div class="step reveal">
-          <div class="step-num">03</div>
-          <div class="step-title">Track Growth</div>
-          <div class="step-desc">
-            Use your dashboard to monitor investment performance.
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- COMPANY -->
-  <section class="section-company" id="company">
-    <div class="container">
-
-      <div class="reveal">
-        <div class="section-label">About Company</div>
-
-        <h2 class="section-title light">
-          A trusted Norwegian investment company
-        </h2>
-      </div>
-
-      <div class="company-grid">
-
-        <div class="reveal">
-          <p class="section-body light">
-            We provide legally registered investment shares backed by secure
-            technology and transparent investor reporting.
-          </p>
-
-          <ul class="feature-list">
-            <li>Secure investor authentication</li>
-            <li>Live portfolio dashboard</li>
-            <li>Real-time share tracking</li>
-            <li>Fast onboarding process</li>
-            <li>Mobile and desktop support</li>
-          </ul>
-        </div>
-
-        <div class="company-aside reveal">
-          <div class="big-num">1,200+</div>
-          <p>Active shareholders worldwide</p>
-
-          <hr />
-
-          <div class="big-num">5</div>
-          <p>Investment share classes</p>
-
-          <hr />
-
-          <div class="big-num">24/7</div>
-          <p>Investor dashboard access</p>
-        </div>
-
-      </div>
-    </div>
   </section>
 
   <!-- CTA -->
-  <section class="section-cta">
-    <div class="container reveal">
-      <h2>Start investing today</h2>
+  <section class="cta-section">
 
-      <p>
-        Join over 1,200 shareholders building wealth through Norwegian Shares.
-      </p>
+    <h2>
+      Start investing today
+    </h2>
 
-      <a href="register.html" class="btn-dark">
-        Create Free Account
-      </a>
-    </div>
+    <p>
+      Join investors building Norway's future.
+    </p>
+
+    <a href="register.html" class="btn-primary">
+      Create Free Account
+    </a>
+
   </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-logo">Norwegian Shares</div>
-
-    <ul class="footer-links">
-      <li><a href="#shares">Shares</a></li>
-      <li><a href="#dashboard">Dashboard</a></li>
-      <li><a href="login.html">Login</a></li>
-      <li><a href="register.html">Register</a></li>
-    </ul>
-
-    <div class="footer-copy">
-      © 2026 Norwegian Shares. All rights reserved.
-    </div>
-  </footer>
-
-  <script>
-    const reveals = document.querySelectorAll('.reveal');
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if(entry.isIntersecting){
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    reveals.forEach((item) => observer.observe(item));
-  </script>
 
 </body>
 </html>
