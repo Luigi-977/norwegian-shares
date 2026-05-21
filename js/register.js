@@ -1,51 +1,44 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { auth } from "./firebase.js";
 
 import {
-  getAuth,
-  createUserWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  createUserWithEmailAndPassword,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAT-Aou7qeoCkMYR6TXrZ5cPjkCWA4aGSQ",
-  authDomain: "luigiblvck.firebaseapp.com",
-  projectId: "luigiblvck",
-  storageBucket: "luigiblvck.firebasestorage.app",
-  messagingSenderId: "749834936416",
-  appId: "1:749834936416:web:0829759868cfd1082c6305"
-};
+const registerBtn = document.getElementById("register-btn");
 
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-const submit = document.getElementById("submit");
-
-submit.addEventListener("click", async (event) => {
+registerBtn.addEventListener("click", async (event) => {
 
   event.preventDefault();
 
-  const email =
-    document.getElementById("email").value;
+  const name = document.getElementById("register-name").value;
+  const email = document.getElementById("register-email").value;
+  const password = document.getElementById("register-password").value;
 
-  const password =
-    document.getElementById("password").value;
+  const message = document.getElementById("register-message");
 
   try {
 
-    await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    const userCredential =
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    alert("Account created successfully");
+    await updateProfile(userCredential.user, {
+      displayName: name
+    });
 
-    window.location.href = "dashboard.html";
+    message.innerHTML = "Account created successfully!";
+
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1500);
 
   } catch (error) {
 
-    document.getElementById("message").innerHTML =
-      error.message;
+    message.innerHTML = error.message;
 
   }
 
