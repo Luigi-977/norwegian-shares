@@ -4,22 +4,25 @@ import {
   signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
-const loginBtn = document.getElementById("login-btn");
+const form = document.getElementById("login-form");
 
-loginBtn.addEventListener("click", async (event) => {
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async (event) => {
 
   event.preventDefault();
 
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
+  const email = document.getElementById("email").value;
 
-  const message = document.getElementById("login-message");
+  const password = document.getElementById("password").value;
 
   try {
 
     await signInWithEmailAndPassword(auth, email, password);
 
-    message.innerHTML = "Login successful!";
+    message.className = "success-message";
+
+    message.textContent = "Login successful";
 
     setTimeout(() => {
       window.location.href = "dashboard.html";
@@ -27,7 +30,9 @@ loginBtn.addEventListener("click", async (event) => {
 
   } catch (error) {
 
-    message.innerHTML = error.message;
+    message.className = "error-message";
+
+    message.textContent = error.message;
 
   }
 
