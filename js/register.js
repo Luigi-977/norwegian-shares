@@ -1,69 +1,52 @@
-import { auth } from "./firebase.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
 import {
-  createUserWithEmailAndPassword,
-  updateProfile
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+  getAuth,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// FORM
-const registerForm = document.getElementById("registerForm");
+const firebaseConfig = {
+  apiKey: "AIzaSyAT-Aou7qeoCkMYR6TXrZ5cPjkCWA4aGSQ",
+  authDomain: "luigiblvck.firebaseapp.com",
+  projectId: "luigiblvck",
+  storageBucket: "luigiblvck.firebasestorage.app",
+  messagingSenderId: "749834936416",
+  appId: "1:749834936416:web:0829759868cfd1082c6305"
+};
 
-// EVENT LISTENER
-registerForm.addEventListener("submit", async (event) => {
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const submit = document.getElementById("submit");
+
+submit.addEventListener("click", async (event) => {
 
   event.preventDefault();
 
-  // INPUTS
-  const firstName = document.getElementById("firstName").value.trim();
+  const email =
+    document.getElementById("email").value;
 
-  const lastName = document.getElementById("lastName").value.trim();
-
-  const email = document.getElementById("registerEmail").value.trim();
-
-  const password = document.getElementById("registerPassword").value;
-
-  const confirmPassword =
-    document.getElementById("confirmPassword").value;
-
-  // VALIDATION
-  if (!firstName || !lastName) {
-    alert("Please fill all fields");
-    return;
-  }
-
-  if (password.length < 8) {
-    alert("Password must be at least 8 characters");
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    alert("Passwords do not match");
-    return;
-  }
+  const password =
+    document.getElementById("password").value;
 
   try {
 
-    // CREATE USER
-    const userCredential =
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+    await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
-    // UPDATE PROFILE
-    await updateProfile(userCredential.user, {
-      displayName: `${firstName} ${lastName}`
-    });
+    alert("Account created successfully");
 
-    alert("Account created successfully!");
-
-    // REDIRECT
     window.location.href = "dashboard.html";
 
   } catch (error) {
 
-    alert(error.message);
+    document.getElementById("message").innerHTML =
+      error.message;
+
   }
 
 });
