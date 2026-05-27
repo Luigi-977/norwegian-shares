@@ -1,18 +1,16 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "PASTE_YOUR_REAL_API_KEY",
-  authDomain: "PASTE_YOUR_AUTH_DOMAIN",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_YOUR_MESSAGING_ID",
-  appId: "PASTE_YOUR_APP_ID"
+export const firebaseConfig = {
+  apiKey: "AIzaSyAdweu2Y8ZSfilJsh5g0PKPwwiE7GXxoSk",
+  authDomain: "norwegian-shares.firebaseapp.com",
+  projectId: "norwegian-shares",
+  storageBucket: "norwegian-shares.firebasestorage.app",
+  messagingSenderId: "43355796470",
+  appId: "1:43355796470:web:afa61eb967b0beecc68dd7"
 };
 
 const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-export { auth };
+export const auth = getAuth(app);
+export const db = getFirestore(app);
