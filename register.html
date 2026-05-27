@@ -1,79 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register — Norwegian Shares</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Norwegian Shares — Create Account</title>
   <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .page-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 73px);}
+    .left-panel{background:linear-gradient(160deg,#0f2238 0%,var(--mid) 50%,#0b1a2e 100%);display:flex;flex-direction:column;justify-content:center;padding:5rem 4rem;position:relative;overflow:hidden;}
+    .left-panel::before{content:'SHARES';position:absolute;bottom:-2rem;left:-1rem;font-family:'Playfair Display',serif;font-size:10rem;font-weight:900;color:rgba(201,168,76,0.05);pointer-events:none;}
+    .right-panel{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:4rem 3rem;overflow-y:auto;}
+    .form-card{width:100%;max-width:420px;}
+    @media(max-width:768px){.page-wrap{grid-template-columns:1fr;}.left-panel{display:none;}.right-panel{padding:2.5rem 1.5rem;}}
+  </style>
 </head>
-<body>
-
-<div class="auth-page">
-
-  <div class="auth-left">
-    <div class="auth-overlay"></div>
-
-    <div class="auth-content">
-      <h1>
-        Start Investing with
-        <span>Norwegian Shares</span>
-      </h1>
-
-      <p>
-        Create your investor account and begin building your portfolio today.
-      </p>
+<body style="display:flex;flex-direction:column;">
+<nav>
+  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <a href="index.html" style="color:rgba(255,255,255,0.5);font-size:0.875rem;">← Back to Home</a>
+</nav>
+<div class="page-wrap">
+  <div class="left-panel">
+    <div class="grid-bg"></div>
+    <div style="position:relative;z-index:2;">
+      <div style="display:inline-block;font-size:0.7rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.4);padding:0.3rem 0.9rem;border-radius:2px;margin-bottom:1.5rem;">Join Today</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:900;line-height:1.1;">Start investing<br/>with <span class="gold">Norwegian Shares</span></h2>
+      <p style="margin-top:1.25rem;font-size:0.95rem;line-height:1.8;color:rgba(255,255,255,0.55);max-width:400px;">Create your investor account and begin building your portfolio today.</p>
+      <div style="margin-top:3rem;background:rgba(11,26,46,0.6);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:1.5rem;">
+        <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Live Share Prices</div>
+        <div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.85rem;"><span>NOR-A</span><span style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 245.00</span><span class="pos">▲ +2.4%</span></div>
+        <div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.85rem;"><span>NOR-B</span><span style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 180.50</span><span class="neg">▼ -0.8%</span></div>
+        <div style="display:flex;justify-content:space-between;padding:0.6rem 0;font-size:0.85rem;"><span>HMH 🔥</span><span style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 200.00</span><span class="pos">▲ +5.2%</span></div>
+      </div>
     </div>
   </div>
-
-  <div class="auth-right">
-
-    <form class="auth-form" id="register-form">
-
-      <h2>Create Account</h2>
-
-      <div class="form-group">
-        <label>Email Address</label>
-
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your email"
-          required
-        />
+  <div class="right-panel">
+    <div class="form-card fade-up">
+      <div class="tabs">
+        <button class="tab" onclick="window.location.href='login.html'">Sign In</button>
+        <button class="tab active">Create Account</button>
       </div>
-
+      <div class="alert" id="alertBox"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;margin-bottom:0.4rem;">Create account</div>
+      <div style="font-size:0.875rem;color:rgba(255,255,255,0.45);margin-bottom:1.75rem;">Start buying shares in minutes</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" id="firstName" placeholder="John"/><div class="err-msg" id="firstErr">Required</div></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="lastName" placeholder="Doe"/><div class="err-msg" id="lastErr">Required</div></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="you@example.com"/><div class="err-msg" id="emailErr">Please enter a valid email</div></div>
       <div class="form-group">
         <label>Password</label>
-
-        <input
-          type="password"
-          id="password"
-          placeholder="Create password"
-          required
-        />
+        <input type="password" id="password" placeholder="Min. 8 characters" oninput="checkStrength(this.value)"/>
+        <div class="strength-bar"><div class="strength-segment" id="s1"></div><div class="strength-segment" id="s2"></div><div class="strength-segment" id="s3"></div><div class="strength-segment" id="s4"></div></div>
+        <div class="strength-label" id="strengthLabel">Enter a password</div>
+        <div class="err-msg" id="passErr">Password must be at least 8 characters</div>
       </div>
-
-      <button type="submit" class="btn-submit" id="submit">
-        Create Account
+      <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmPass" placeholder="Repeat your password"/><div class="err-msg" id="confirmErr">Passwords do not match</div></div>
+      <button class="btn btn-gold btn-block" id="registerBtn" onclick="handleRegister()">Create My Account</button>
+      <div class="divider">or</div>
+      <button class="btn-google" onclick="handleGoogle()">
+        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Sign up with Google
       </button>
-
-      <p id="message"></p>
-
-      <div class="auth-switch">
-        Already have an account?
-        <a href="login.html">Login</a>
-      </div>
-
-    </form>
-
+      <div style="font-size:0.76rem;color:rgba(255,255,255,0.35);text-align:center;margin-top:1rem;">By creating an account you agree to our <a href="#" style="color:var(--gold);">Terms of Service</a> and <a href="#" style="color:var(--gold);">Privacy Policy</a></div>
+    </div>
   </div>
-
 </div>
-
-<script type="module" src="js/register.js"></script>
-
+<script type="module">
+  import { auth } from './js/firebase.js';
+  import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  const provider = new GoogleAuthProvider();
+  function showAlert(msg,type){const b=document.getElementById('alertBox');b.textContent=(type==='success'?'✓ ':'⚠ ')+msg;b.className='alert show '+type;}
+  function hideAlert(){document.getElementById('alertBox').className='alert';}
+  function isEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+  function showErr(id,s){document.getElementById(id).classList.toggle('show',s);}
+  function markInput(id,e){document.getElementById(id).classList.toggle('err',e);}
+  function setBtn(loading){const b=document.getElementById('registerBtn');b.textContent=loading?'Creating account...':'Create My Account';b.disabled=loading;}
+  function fbErr(c){const m={'auth/email-already-in-use':'An account with this email already exists.','auth/weak-password':'Password must be at least 6 characters.','auth/too-many-requests':'Too many attempts. Try again later.','auth/unauthorized-domain':'Domain not authorised.'};return m[c]||'Something went wrong ('+c+').';}
+  window.checkStrength=function(val){
+    let s=0;if(val.length>=8)s++;if(/[A-Z]/.test(val))s++;if(/[0-9]/.test(val))s++;if(/[^A-Za-z0-9]/.test(val))s++;
+    const c=['#e05555','#e08855','#c9a84c','#4caf82'],l=['Weak','Fair','Good','Strong'];
+    ['s1','s2','s3','s4'].forEach((id,i)=>{document.getElementById(id).style.background=i<s?c[s-1]:'rgba(255,255,255,0.1)';});
+    const lbl=document.getElementById('strengthLabel');lbl.textContent=val.length===0?'Enter a password':(l[s-1]||'Weak');lbl.style.color=val.length===0?'rgba(255,255,255,0.4)':(c[s-1]||'#e05555');
+  };
+  window.handleRegister=function(){
+    hideAlert();
+    const first=document.getElementById('firstName').value.trim();
+    const last=document.getElementById('lastName').value.trim();
+    const email=document.getElementById('email').value.trim();
+    const pass=document.getElementById('password').value;
+    const confirm=document.getElementById('confirmPass').value;
+    let ok=true;
+    if(!first){showErr('firstErr',true);markInput('firstName',true);ok=false;}else{showErr('firstErr',false);markInput('firstName',false);}
+    if(!last){showErr('lastErr',true);markInput('lastName',true);ok=false;}else{showErr('lastErr',false);markInput('lastName',false);}
+    if(!isEmail(email)){showErr('emailErr',true);markInput('email',true);ok=false;}else{showErr('emailErr',false);markInput('email',false);}
+    if(pass.length<8){showErr('passErr',true);markInput('password',true);ok=false;}else{showErr('passErr',false);markInput('password',false);}
+    if(pass!==confirm){showErr('confirmErr',true);markInput('confirmPass',true);ok=false;}else{showErr('confirmErr',false);markInput('confirmPass',false);}
+    if(!ok)return;
+    setBtn(true);
+    createUserWithEmailAndPassword(auth,email,pass)
+      .then(c=>updateProfile(c.user,{displayName:first+' '+last}))
+      .then(()=>{showAlert('Account created! Welcome to Norwegian Shares.','success');setTimeout(()=>{window.location.href='dashboard.html';},1200);})
+      .catch(e=>{setBtn(false);showAlert(fbErr(e.code),'error');});
+  };
+  window.handleGoogle=function(){
+    hideAlert();
+    signInWithPopup(auth,provider)
+      .then(()=>{showAlert('Signed up with Google! Redirecting...','success');setTimeout(()=>{window.location.href='dashboard.html';},1200);})
+      .catch(e=>{showAlert(fbErr(e.code),'error');});
+  };
+</script>
 </body>
 </html>
