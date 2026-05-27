@@ -1,1 +1,38 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Norwegian Shares — Transactions</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
+<nav>
+  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="transactions.html" class="active">Transactions</a>
+    <a href="settings.html">Settings</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-avatar" id="navAvatar">?</div>
+    <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign Out</button>
+  </div>
+</nav>
+<div class="container">
+  <div style="margin-bottom:2.5rem;"><h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;">Transaction History</h1><p class="muted" style="margin-top:0.4rem;">All your buy and sell activity</p></div>
+  <div class="panel">
+    <div class="panel-header"><div class="panel-title">All Transactions</div></div>
+    <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No transactions yet.<br/>Your buy and sell history will appear here once you start investing.</div><a href="marketplace.html" class="btn btn-gold btn-sm">Start Investing</a></div>
+  </div>
+</div>
+<script type="module">
+  import { auth } from './js/firebase.js';
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  onAuthStateChanged(auth,user=>{document.getElementById('loadingScreen').style.display='none';if(!user){window.location.href='login.html';return;}const n=(user.displayName||user.email).charAt(0).toUpperCase();document.getElementById('navAvatar').textContent=n;});
+  window.handleLogout=function(){signOut(auth).then(()=>{window.location.href='index.html';});};
+</script>
+</body>
+</html>
