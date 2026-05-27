@@ -1,17 +1,9 @@
-// Disable right click
-window.addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-});
+// ── SECURITY ───────────────────────────────────────────────
+// Prevents logged-in users from seeing login/register pages
+import { auth } from './firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// Disable inspect shortcuts
-window.addEventListener('keydown', (e) => {
-
-  if (
-    e.key === 'F12' ||
-    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-    (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-    (e.ctrlKey && e.key === 'U')
-  ) {
-    e.preventDefault();
-  }
+onAuthStateChanged(auth, (user) => {
+  // If already logged in, redirect to dashboard
+  if (user) window.location.href = 'dashboard.html';
 });
