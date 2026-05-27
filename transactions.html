@@ -19,8 +19,18 @@
   <div class="nav-right">
     <div class="nav-avatar" id="navAvatar">?</div>
     <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign Out</button>
+    <button class="hamburger" onclick="toggleMenu()" id="hamburger"><span></span><span></span><span></span></button>
   </div>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="dashboard.html">📊 Dashboard</a>
+  <a href="marketplace.html">🛒 Marketplace</a>
+  <a href="portfolio.html">💼 Portfolio</a>
+  <a href="transactions.html">📋 Transactions</a>
+  <a href="settings.html">⚙️ Settings</a>
+  <a href="#" onclick="handleLogout()" style="color:var(--error);">🚪 Sign Out</a>
+</div>
 <div class="container">
   <div style="margin-bottom:2.5rem;"><h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;">Transaction History</h1><p class="muted" style="margin-top:0.4rem;">All your buy and sell activity</p></div>
   <div class="panel">
@@ -33,6 +43,14 @@
   import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   onAuthStateChanged(auth,user=>{document.getElementById('loadingScreen').style.display='none';if(!user){window.location.href='login.html';return;}const n=(user.displayName||user.email).charAt(0).toUpperCase();document.getElementById('navAvatar').textContent=n;});
   window.handleLogout=function(){signOut(auth).then(()=>{window.location.href='index.html';});};
+</script>
+<script>
+window.toggleMenu = function() {
+  const m = document.getElementById('mobileMenu');
+  const h = document.getElementById('hamburger');
+  m.classList.toggle('open');
+  if(h) h.classList.toggle('open');
+};
 </script>
 </body>
 </html>
