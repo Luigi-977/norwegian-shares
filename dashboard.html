@@ -1,68 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <title>Dashboard</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Norwegian Shares — Dashboard</title>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
+<div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
+<nav>
+  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <div class="nav-links">
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="settings.html">Settings</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-avatar" id="navAvatar">?</div>
+    <span style="font-size:0.875rem;color:rgba(255,255,255,0.6);" id="navName"></span>
+    <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign Out</button>
+  </div>
+</nav>
 
-<section class="section-dashboard">
-
-  <div class="container">
-
-    <div class="dashboard-header">
-      <div class="section-label">
-        Investor Dashboard
-      </div>
-
-      <h2 class="section-title light">
-        Welcome to Norwegian Shares
-      </h2>
-    </div>
-
-    <div class="dashboard-grid">
-
-      <div class="dashboard-card">
-        <div class="dashboard-card-title">
-          Portfolio Balance
-        </div>
-
-        <div class="dashboard-big">
-          NOK 845,000
-        </div>
-      </div>
-
-      <div class="dashboard-card">
-        <div class="dashboard-card-title">
-          Active Shares
-        </div>
-
-        <div class="dashboard-big">
-          425
-        </div>
-      </div>
-
-      <div class="dashboard-card">
-        <div class="dashboard-card-title">
-          Annual Return
-        </div>
-
-        <div class="dashboard-big">
-          18.7%
-        </div>
-      </div>
-
-    </div>
-
+<div class="container">
+  <!-- HEADER -->
+  <div style="margin-bottom:2.5rem;">
+    <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;">Welcome back, <span class="gold" id="firstName">Investor</span> 👋</h1>
+    <p class="muted" style="margin-top:0.4rem;">Here's an overview of your share portfolio</p>
   </div>
 
-</section>
+  <!-- STATS -->
+  <div class="grid-4" style="margin-bottom:2.5rem;">
+    <div class="stat-card"><div class="stat-label">Portfolio Value</div><div class="stat-value">NOK 0.00</div><div class="stat-sub muted">No shares yet</div></div>
+    <div class="stat-card"><div class="stat-label">Total Invested</div><div class="stat-value">NOK 0.00</div><div class="stat-sub muted">Start investing today</div></div>
+    <div class="stat-card"><div class="stat-label">Shares Owned</div><div class="stat-value">0</div><div class="stat-sub muted">Across 0 classes</div></div>
+    <div class="stat-card"><div class="stat-label">Total Return</div><div class="stat-value">0.00%</div><div class="stat-sub muted">—</div></div>
+  </div>
 
+  <!-- IPO ALERT -->
+  <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.35);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span class="badge badge-ipo">🔥 IPO</span>
+      <div style="font-size:0.875rem;"><strong class="gold">HMH Holding</strong> is going public — NOK 190–210/share. Norway's leading oil drilling equipment company. 2025 revenue: NOK 821.8M.</div>
+    </div>
+    <a href="marketplace.html" class="btn btn-gold btn-sm">Buy HMH Shares →</a>
+  </div>
+
+  <!-- CONTENT GRID -->
+  <div class="grid-2" style="align-items:start;">
+    <!-- LEFT -->
+    <div class="gap-col">
+      <!-- PORTFOLIO -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">My Portfolio</div><a href="marketplace.html" class="panel-link">Buy more →</a></div>
+        <div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">You don't own any shares yet.<br/>Visit the marketplace to make your first investment.</div><a href="marketplace.html" class="btn btn-gold btn-sm">Browse Shares</a></div>
+      </div>
+      <!-- RECENT ACTIVITY -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Recent Transactions</div><a href="transactions.html" class="panel-link">View all →</a></div>
+        <div class="empty-state" style="padding:2rem 1rem;"><div class="empty-icon">📋</div><div class="empty-text">No transactions yet.<br/>Your buy and sell history will appear here.</div></div>
+      </div>
+    </div>
+    <!-- RIGHT -->
+    <div class="gap-col">
+      <!-- QUICK ACTIONS -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Quick Actions</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <a href="marketplace.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;transition:border-color 0.2s;display:block;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">📈</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Buy Shares</div></a>
+          <a href="portfolio.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;transition:border-color 0.2s;display:block;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">💼</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">My Portfolio</div></a>
+          <a href="transactions.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;transition:border-color 0.2s;display:block;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">📋</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Transactions</div></a>
+          <a href="settings.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;transition:border-color 0.2s;display:block;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">⚙️</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Settings</div></a>
+        </div>
+      </div>
+      <!-- LIVE MARKET -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Live Market</div><a href="marketplace.html" class="panel-link">View all →</a></div>
+        <table class="data-table">
+          <thead><tr><th>Share</th><th>Price</th><th>Change</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-gold">HMH</span> HMH Holding</td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 200.00</td><td class="pos">▲ +5.2%</td></tr>
+            <tr><td><span class="badge badge-gold">NOR-A</span> Growth A</td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 245.00</td><td class="pos">▲ +2.4%</td></tr>
+            <tr><td><span class="badge badge-gold">NOR-B</span> Growth B</td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 180.50</td><td class="neg">▼ -0.8%</td></tr>
+            <tr><td><span class="badge badge-gold">NOR-C</span> Growth C</td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 310.00</td><td class="pos">▲ +1.2%</td></tr>
+            <tr><td><span class="badge badge-gold">NOR-D</span> Growth D</td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 95.75</td><td class="pos">▲ +3.1%</td></tr>
+          </tbody>
+        </table>
+        <a href="marketplace.html" class="btn btn-gold btn-block" style="margin-top:1.25rem;">Buy Shares Now</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { auth } from './js/firebase.js';
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  onAuthStateChanged(auth,user=>{
+    document.getElementById('loadingScreen').style.display='none';
+    if(!user){window.location.href='login.html';return;}
+    const name=user.displayName||user.email;
+    const first=name.split(' ')[0];
+    document.getElementById('firstName').textContent=first;
+    document.getElementById('navName').textContent=name;
+    document.getElementById('navAvatar').textContent=first.charAt(0).toUpperCase();
+  });
+  window.handleLogout=function(){signOut(auth).then(()=>{window.location.href='index.html';});};
+</script>
 </body>
 </html>
