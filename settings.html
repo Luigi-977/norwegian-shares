@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Norwegian Shares — Settings</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
+<nav>
+  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="settings.html" class="active">Settings</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-avatar" id="navAvatar">?</div>
+    <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign Out</button>
+  </div>
+</nav>
+<div class="container">
+  <div style="margin-bottom:2.5rem;"><h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;">Account Settings</h1><p class="muted" style="margin-top:0.4rem;">Manage your profile and account preferences</p></div>
+  <div class="grid-2" style="align-items:start;">
+    <div class="gap-col">
+      <!-- PROFILE -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Profile Information</div></div>
+        <div class="alert" id="profileAlert"></div>
+        <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;">
+          <div id="avatarBig" style="width:64px;height:64px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;color:var(--navy);">?</div>
+          <div><div id="profileName" style="font-size:1.1rem;font-weight:600;"></div><div id="profileEmail" class="muted" style="font-size:0.875rem;margin-top:0.2rem;"></div></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" id="settingFirstName" placeholder="First name"/></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="settingLastName" placeholder="Last name"/></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="settingEmail" disabled style="opacity:0.5;cursor:not-allowed;"/><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.3rem;">Email cannot be changed here</div></div>
+        <button class="btn btn-gold" onclick="saveProfile()">Save Changes</button>
+      </div>
+      <!-- CHANGE PASSWORD -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Change Password</div></div>
+        <div class="alert" id="passAlert"></div>
+        <div class="form-group"><label>New Password</label><input type="password" id="newPassword" placeholder="Min. 8 characters"/></div>
+        <div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmNewPass" placeholder="Repeat new password"/></div>
+        <button class="btn btn-gold" onclick="changePassword()">Update Password</button>
+      </div>
+    </div>
+    <div class="gap-col">
+      <!-- ACCOUNT INFO -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Account Information</div></div>
+        <table class="data-table">
+          <tr><td class="muted" style="width:40%;">Account Status</td><td><span class="badge badge-green">✓ Active</span></td></tr>
+          <tr><td class="muted">Member Since</td><td id="memberSince">—</td></tr>
+          <tr><td class="muted">Last Sign In</td><td id="lastSignIn">—</td></tr>
+          <tr><td class="muted">Auth Provider</td><td id="authProvider">Email/Password</td></tr>
+        </table>
+      </div>
+      <!-- NOTIFICATIONS -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Notifications</div></div>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <div><div style="font-size:0.875rem;font-weight:500;">Price Alerts</div><div class="muted" style="font-size:0.78rem;margin-top:0.2rem;">Get notified when share prices change significantly</div></div>
+            <div style="width:44px;height:24px;background:var(--gold);border-radius:12px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;top:3px;right:3px;"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <div><div style="font-size:0.875rem;font-weight:500;">Transaction Confirmations</div><div class="muted" style="font-size:0.78rem;margin-top:0.2rem;">Receive email confirmations for all trades</div></div>
+            <div style="width:44px;height:24px;background:var(--gold);border-radius:12px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;top:3px;right:3px;"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;">
+            <div><div style="font-size:0.875rem;font-weight:500;">IPO Announcements</div><div class="muted" style="font-size:0.78rem;margin-top:0.2rem;">Be the first to hear about new share listings</div></div>
+            <div style="width:44px;height:24px;background:rgba(255,255,255,0.1);border-radius:12px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:rgba(255,255,255,0.4);border-radius:50%;position:absolute;top:3px;left:3px;"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- DANGER ZONE -->
+      <div class="panel" style="border-color:rgba(224,85,85,0.2);">
+        <div class="panel-header"><div class="panel-title" style="color:var(--error);">Danger Zone</div></div>
+        <p class="muted" style="font-size:0.875rem;margin-bottom:1.25rem;line-height:1.6;">Permanently delete your account and all associated data. This action cannot be undone.</p>
+        <button class="btn btn-danger btn-sm" onclick="confirmDelete()">Delete My Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import { auth } from './js/firebase.js';
+  import { onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  onAuthStateChanged(auth, user => {
+    document.getElementById('loadingScreen').style.display = 'none';
+    if(!user){window.location.href='login.html';return;}
+    const name = user.displayName||'';
+    const parts = name.split(' ');
+    document.getElementById('profileName').textContent = name || user.email;
+    document.getElementById('profileEmail').textContent = user.email;
+    document.getElementById('settingEmail').value = user.email;
+    document.getElementById('settingFirstName').value = parts[0]||'';
+    document.getElementById('settingLastName').value = parts.slice(1).join(' ')||'';
+    document.getElementById('avatarBig').textContent = (parts[0]||user.email).charAt(0).toUpperCase();
+    document.getElementById('navAvatar').textContent = (parts[0]||user.email).charAt(0).toUpperCase();
+    document.getElementById('memberSince').textContent = new Date(user.metadata.creationTime).toLocaleDateString();
+    document.getElementById('lastSignIn').textContent = new Date(user.metadata.lastSignInTime).toLocaleDateString();
+    document.getElementById('authProvider').textContent = user.providerData[0]?.providerId==='google.com'?'Google':'Email / Password';
 
+    window.saveProfile = function(){
+      const first = document.getElementById('settingFirstName').value.trim();
+      const last = document.getElementById('settingLastName').value.trim();
+      const a = document.getElementById('profileAlert');
+      if(!first){a.textContent='⚠ First name is required.';a.className='alert show error';return;}
+      updateProfile(user,{displayName:first+' '+last}).then(()=>{a.textContent='✓ Profile updated successfully.';a.className='alert show success';document.getElementById('profileName').textContent=first+' '+last;});
+    };
+    window.changePassword = function(){
+      const pass = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmNewPass').value;
+      const a = document.getElementById('passAlert');
+      if(pass.length<8){a.textContent='⚠ Password must be at least 8 characters.';a.className='alert show error';return;}
+      if(pass!==confirm){a.textContent='⚠ Passwords do not match.';a.className='alert show error';return;}
+      updatePassword(user,pass).then(()=>{a.textContent='✓ Password updated successfully.';a.className='alert show success';document.getElementById('newPassword').value='';document.getElementById('confirmNewPass').value='';}).catch(e=>{a.textContent='⚠ '+e.message;a.className='alert show error';});
+    };
+  });
+  window.handleLogout = function(){signOut(auth).then(()=>{window.location.href='index.html';});};
+  window.confirmDelete = function(){if(confirm('Are you sure? This cannot be undone.')){alert('Account deletion coming soon. Please contact support.');}};
+</script>
+</body>
+</html>
