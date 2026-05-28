@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Norwegian Shares — Marketplace</title>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     .share-card{background:var(--card);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:1.5rem;position:relative;overflow:hidden;transition:border-color 0.3s,transform 0.2s;}
     .share-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold);}
     .share-card:hover{border-color:rgba(201,168,76,0.4);transform:translateY(-2px);}
-    .shares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;}
+    .shares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;}
     .filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.1rem;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s;}
     .filter-btn.active,.filter-btn:hover{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.4);color:var(--gold);}
-    .featured-box{background:linear-gradient(135deg,#0f2238,var(--mid));border:1px solid rgba(201,168,76,0.35);border-radius:6px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden;}
-    .featured-box::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--gold),var(--gold-light));}
-    .fin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;}
-    .fin-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;}
     .modal-price-box{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;}
+    .fin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
     @media(max-width:700px){.fin-grid{grid-template-columns:1fr 1fr;}}
-    @media(max-width:480px){.fin-grid{grid-template-columns:1fr;}}
+    @media(max-width:400px){.fin-grid{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
-<div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
 
+<!-- LOADING -->
+<div id="loadingScreen">
+  <div class="loading-logo">Norwegian Shares</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">Norwegian Shares</a>
   <div class="nav-links">
@@ -33,10 +37,13 @@
   </div>
   <div class="nav-right">
     <a href="login.html" class="btn btn-gold btn-sm" id="navAuthBtn">Sign In</a>
-    <button class="hamburger" onclick="toggleMenu()" id="hamburger"><span></span><span></span><span></span></button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
+<!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
   <a href="dashboard.html">📊 Dashboard</a>
   <a href="marketplace.html">🛒 Marketplace</a>
@@ -46,92 +53,84 @@
 </div>
 
 <div class="container">
+
   <!-- HERO -->
   <div style="background:linear-gradient(135deg,var(--mid),#0f2238);border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
     <div style="position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:6rem;font-weight:900;color:rgba(201,168,76,0.04);pointer-events:none;">SHARES</div>
     <h1 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2rem);font-weight:900;">Norwegian <span class="gold">Shares</span> Marketplace</h1>
-    <p class="muted" style="margin-top:0.5rem;max-width:400px;line-height:1.6;font-size:0.875rem;">Buy verified shares in registered Norwegian companies. Transparent pricing and secure transactions.</p>
+    <p class="muted" style="margin-top:0.5rem;max-width:400px;line-height:1.6;font-size:0.875rem;">Buy verified shares in registered Norwegian companies.</p>
     <div style="display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;">
-      <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">6</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Share Listings</div></div>
+      <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">6</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Listings</div></div>
       <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">1,200+</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Shareholders</div></div>
       <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">NOK 3.1M</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Market Cap</div></div>
     </div>
   </div>
 
-  <!-- FEATURED HMH IPO -->
-  <div class="featured-box">
+  <!-- HMH IPO FEATURED -->
+  <div style="background:linear-gradient(135deg,#0f2238,var(--mid));border:2px solid rgba(201,168,76,0.35);border-radius:6px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--gold),var(--gold-light));"></div>
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
       <span class="badge badge-ipo">⭐ Featured IPO</span>
       <span style="font-size:0.82rem;color:rgba(255,255,255,0.5);">HMH Holding — Going public on Nasdaq</span>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
       <div>
-        <span class="badge badge-gold" style="margin-bottom:0.5rem;display:inline-block;">HMH · Nasdaq</span>
+        <span class="badge badge-gold" style="margin-bottom:0.75rem;display:inline-block;">HMH · Nasdaq</span>
         <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:0.5rem;">HMH Holding AS</div>
-        <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;line-height:1.6;">Norway's leading oil drilling equipment and services company. Co-owned by Baker Hughes and Akastor. 2025 revenue: NOK 821.8M. Net income: NOK 46.1M.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
-          <div><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">IPO Price Range</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);">NOK 190–210</div></div>
-          <div><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Valuation</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;">NOK 948.1M</div></div>
-          <div><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Shares Offered</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;">~10.5M</div></div>
-          <div><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Net Income 2025</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;" class="pos">NOK 46.1M</div></div>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;line-height:1.6;margin-bottom:1rem;">Norway's leading oil drilling equipment company. Co-owned by Baker Hughes and Akastor. 2025 revenue: NOK 821.8M. Net income: NOK 46.1M. IPO price: NOK 190–210/share.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">IPO Price</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);">NOK 190–210</div></div>
+          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Valuation</div><div style="font-family:'Playfair Display',serif;font-size:1rem;">NOK 948.1M</div></div>
+          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Net Income 2025</div><div style="font-family:'Playfair Display',serif;font-size:1rem;" class="pos">NOK 46.1M</div></div>
+          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Shares Offered</div><div style="font-family:'Playfair Display',serif;font-size:1rem;">~10.5M</div></div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:1rem;">
-        <canvas id="hmhChart" style="width:100%;border-radius:3px;" height="120"></canvas>
-        <button class="btn btn-gold btn-block" onclick="openModal('HMH')">Buy HMH Shares</button>
-        <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);text-align:center;">Lead banks: JPMorgan, Piper Sandler, Evercore ISI</div>
+      <div>
+        <canvas id="hmhChart" height="120" style="width:100%;border-radius:3px;display:block;"></canvas>
+        <button class="btn btn-gold btn-block" style="margin-top:1rem;" onclick="openModal('HMH')">Buy HMH Shares</button>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.5rem;">Lead banks: JPMorgan, Piper Sandler</div>
       </div>
     </div>
   </div>
 
   <!-- FINANCIALS -->
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
-    <div class="section-title">HMH Holding — Key Financials</div>
-    <span style="font-size:0.75rem;color:rgba(255,255,255,0.35);">Source: SEC Filing 2026</span>
-  </div>
+  <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem;">HMH Holding — Key Financials (SEC Filing 2026)</div>
   <div class="fin-grid">
-    <div class="fin-card"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">2025 Revenue</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 821.8M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">1.2× price-to-sales</div></div>
-    <div class="fin-card"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Net Income 2025</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 46.1M</div><div style="font-size:0.75rem;color:var(--error);margin-top:0.25rem;">↓ 11% from 2024</div></div>
-    <div class="fin-card"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Shares Offered</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">10.5M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Raises NOK 231.4M at high end</div></div>
-    <div class="fin-card"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Market Cap (IPO)</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 948.1M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">At NOK 210/share ceiling</div></div>
+    <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">2025 Revenue</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 821.8M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">1.2× price-to-sales</div></div>
+    <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Net Income 2025</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 46.1M</div><div style="font-size:0.75rem;color:var(--error);margin-top:0.25rem;">↓ 11% from 2024</div></div>
+    <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Shares Offered</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">10.5M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Raises NOK 231.4M high end</div></div>
+    <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Market Cap</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 948.1M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">At NOK 210/share</div></div>
   </div>
 
-  <!-- SEARCH & FILTERS -->
+  <!-- SEARCH + FILTERS -->
   <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
-    <input type="text" id="searchInput" placeholder="🔍  Search shares..." oninput="renderGrid()" style="flex:1;min-width:160px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.65rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;"/>
-    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-    <button class="filter-btn" onclick="setFilter('ipo',this)">🔥 IPO</button>
-    <button class="filter-btn" onclick="setFilter('rising',this)">📈 Rising</button>
-    <button class="filter-btn" onclick="setFilter('falling',this)">📉 Falling</button>
+    <input type="text" id="searchInput" placeholder="🔍  Search shares..." oninput="renderGrid()"
+      style="flex:1;min-width:160px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.65rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;"/>
+    <button class="filter-btn active" id="f-all"     onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn"        id="f-ipo"     onclick="setFilter('ipo',this)">🔥 IPO</button>
+    <button class="filter-btn"        id="f-rising"  onclick="setFilter('rising',this)">📈 Rising</button>
+    <button class="filter-btn"        id="f-falling" onclick="setFilter('falling',this)">📉 Falling</button>
   </div>
 
-  <div class="section-title" style="margin-bottom:1.25rem;">All Available Shares</div>
-  <div class="shares-grid" id="sharesGrid">
-    <div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.4);">Loading shares...</div>
-  </div>
+  <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;">All Available Shares</div>
+  <div class="shares-grid" id="sharesGrid"></div>
 </div>
 
 <!-- BUY MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <div style="font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;margin-bottom:0.25rem;" id="modalTitle">Buy Shares</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;margin-bottom:0.2rem;" id="modalTitle"></div>
     <div style="color:rgba(255,255,255,0.4);font-size:0.82rem;margin-bottom:1.25rem;" id="modalSubtitle"></div>
-
-    <!-- CHART IN MODAL -->
-    <canvas id="modalChart" height="70" style="width:100%;margin-bottom:1.25rem;border-radius:3px;"></canvas>
-
+    <canvas id="modalChart" height="70" style="width:100%;display:block;border-radius:3px;margin-bottom:1.25rem;"></canvas>
     <div class="modal-price-box">
       <div>
-        <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.3rem;">Price per share</div>
+        <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.3rem;">Price per share</div>
         <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);" id="modalPrice"></div>
       </div>
       <div id="modalChange" style="font-size:0.875rem;font-weight:600;"></div>
     </div>
-
     <div class="alert" id="modalAlert"></div>
-
-    <!-- QUANTITY -->
     <div class="form-group">
       <label>How many shares do you want to buy?</label>
       <div class="qty-control">
@@ -140,133 +139,231 @@
         <button class="qty-btn" onclick="changeQty(1)">+</button>
       </div>
     </div>
-
-    <!-- TOTAL -->
     <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;">
       <div style="font-size:0.85rem;color:rgba(255,255,255,0.45);">Total Cost</div>
       <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);" id="modalTotal">NOK 0.00</div>
     </div>
-
     <button class="btn btn-gold btn-block" id="confirmBtn" onclick="confirmBuy()">Confirm Purchase</button>
     <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.75rem;">You must be signed in to complete a purchase</div>
   </div>
 </div>
 
+<!-- ALL LOGIC IN ONE PLAIN SCRIPT — NO MODULE NEEDED FOR RENDERING -->
 <script>
-// ── SHARES DATA ────────────────────────────────────────────
-const shares = [
-  { code:'HMH',   name:'HMH Holding AS',      sector:'Energy / Oil Equipment', desc:"Norway's leading oil drilling equipment and services company. Co-owned by Baker Hughes and Akastor. IPO price NOK 190–210. 2025 revenue: NOK 821.8M. Net income: NOK 46.1M.", price:200.00, change:+5.2, volume:'10,500,000', cap:'NOK 948.1M', tag:'ipo',     history:[160,165,170,168,175,180,178,185,190,188,195,200] },
-  { code:'NOR-A', name:'Norwegian Growth A',   sector:'Diversified Growth',    desc:'Flagship share class offering core business ownership. Ideal for long-term investors seeking steady growth.', price:245.00, change:+2.4, volume:'12,430',      cap:'NOK 980K',   tag:'',       history:[210,215,218,222,220,225,228,230,235,238,242,245] },
-  { code:'NOR-B', name:'Norwegian Growth B',   sector:'Diversified Growth',    desc:'Mid-tier share class at a lower entry price. Great for diversifying across multiple share classes.',         price:180.50, change:-0.8, volume:'8,210',       cap:'NOK 722K',   tag:'',       history:[188,186,185,187,184,183,185,183,182,181,182,180] },
-  { code:'NOR-C', name:'Norwegian Growth C',   sector:'Diversified Growth',    desc:'Premium share class with higher per-unit value. Suited for investors making larger single investments.',     price:310.00, change:+1.2, volume:'5,100',       cap:'NOK 310K',   tag:'',       history:[290,292,295,293,298,300,302,304,306,307,309,310] },
-  { code:'NOR-D', name:'Norwegian Growth D',   sector:'Entry Level',           desc:'Entry-level share class making investing accessible to everyone. Start with as little as 1 share.',          price:95.75,  change:+3.1, volume:'22,800',      cap:'NOK 218K',   tag:'',       history:[82,83,84,85,86,87,88,89,90,92,94,95] },
-  { code:'NOR-E', name:'Norwegian Growth E',   sector:'Premium Class',         desc:'Exclusive high-value share class for major investors. Limited availability with the highest per-share price.', price:420.00, change:-0.3, volume:'1,800',     cap:'NOK 168K',   tag:'',       history:[425,424,423,422,421,422,421,420,421,420,421,420] },
+var _user = null;
+var selectedShare = null;
+var currentFilter = 'all';
+
+var shares = [
+  {code:'HMH',   name:'HMH Holding AS',      sector:'Energy / Oil Equipment', desc:"Norway's leading oil drilling equipment and services company. Co-owned by Baker Hughes and Akastor. IPO price NOK 190–210. 2025 revenue: NOK 821.8M.",     price:200.00, change:5.2,  rising:true,  tag:'ipo', history:[160,165,170,168,175,180,178,185,190,188,195,200]},
+  {code:'NOR-A', name:'Norwegian Growth A',   sector:'Diversified Growth',    desc:'Flagship share class for long-term investors. Offers core company ownership at a solid mid-range price point.',                                              price:245.00, change:2.4,  rising:true,  tag:'',    history:[210,215,218,222,220,225,228,230,235,238,242,245]},
+  {code:'NOR-B', name:'Norwegian Growth B',   sector:'Diversified Growth',    desc:'Mid-tier share class at a lower entry price. Great for diversifying across multiple classes.',                                                               price:180.50, change:-0.8, rising:false, tag:'',    history:[188,186,185,187,184,183,185,183,182,181,182,180]},
+  {code:'NOR-C', name:'Norwegian Growth C',   sector:'Diversified Growth',    desc:'Premium share class with higher per-unit value. Suited for investors making larger single investments.',                                                      price:310.00, change:1.2,  rising:true,  tag:'',    history:[290,292,295,293,298,300,302,304,306,307,309,310]},
+  {code:'NOR-D', name:'Norwegian Growth D',   sector:'Entry Level',           desc:'Entry-level share class making investing accessible to everyone. Start with as little as 1 share.',                                                           price:95.75,  change:3.1,  rising:true,  tag:'',    history:[82,83,84,85,86,87,88,89,90,92,94,95]},
+  {code:'NOR-E', name:'Norwegian Growth E',   sector:'Premium Class',         desc:'Exclusive high-value share class for major investors. Limited availability at the highest per-share price.',                                                  price:420.00, change:-0.3, rising:false, tag:'',    history:[425,424,423,422,421,422,421,420,421,420,421,420]}
 ];
 
-let currentFilter = 'all';
-let selectedShare = null;
-
-// ── DRAW CHART ─────────────────────────────────────────────
-function drawChart(canvas, data, change) {
+// ── DRAW CHART ─────────────────────────────────────
+function drawChart(canvas, data, rising) {
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.offsetWidth || canvas.parentElement?.offsetWidth || 300;
+  var ctx = canvas.getContext('2d');
+  var w = canvas.offsetWidth || 300;
   canvas.width = w;
-  const h = canvas.height;
-  const min = Math.min(...data) - 2;
-  const max = Math.max(...data) + 2;
-  const stepX = w / (data.length - 1);
-  const color = change >= 0 ? '#4caf82' : '#e05555';
+  var h = canvas.height;
+  var min = Math.min.apply(null, data) - 2;
+  var max = Math.max.apply(null, data) + 2;
+  var stepX = w / (data.length - 1);
+  var color = rising ? '#4caf82' : '#e05555';
   ctx.clearRect(0, 0, w, h);
-  const grad = ctx.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0, change >= 0 ? 'rgba(76,175,130,0.25)' : 'rgba(224,85,85,0.25)');
+  var grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, rising ? 'rgba(76,175,130,0.3)' : 'rgba(224,85,85,0.3)');
   grad.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.beginPath();
-  data.forEach((v, i) => { const x = i*stepX; const y = h-((v-min)/(max-min))*h; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-  ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+  for (var i = 0; i < data.length; i++) {
+    var x = i * stepX;
+    var y = h - ((data[i] - min) / (max - min)) * h;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
   ctx.fillStyle = grad; ctx.fill();
   ctx.beginPath();
-  data.forEach((v, i) => { const x = i*stepX; const y = h-((v-min)/(max-min))*h; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  for (var j = 0; j < data.length; j++) {
+    var x2 = j * stepX;
+    var y2 = h - ((data[j] - min) / (max - min)) * h;
+    if (j === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2);
+  }
   ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
 }
 
-// ── RENDER SHARES GRID ─────────────────────────────────────
+// ── RENDER GRID ────────────────────────────────────
 function renderGrid() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  let list = shares.filter(s =>
-    currentFilter === 'all' ||
-    (currentFilter === 'ipo' && s.tag === 'ipo') ||
-    (currentFilter === 'rising' && s.change > 0) ||
-    (currentFilter === 'falling' && s.change < 0)
-  );
-  if (q) list = list.filter(s => s.name.toLowerCase().includes(q) || s.code.toLowerCase().includes(q));
-  const grid = document.getElementById('sharesGrid');
-  if (!list.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.4);">No shares match your search.</div>'; return; }
-  grid.innerHTML = list.map(s => `
-    <div class="share-card">
-      <div style="display:flex;justify-content:space-between;margin-bottom:0.85rem;">
-        <span class="badge badge-gold">${s.code}${s.tag==='ipo'?' 🔥':''}</span>
-        <span class="badge ${s.change>=0?'badge-green':'badge-red'}">${s.change>=0?'▲':'▼'} ${Math.abs(s.change)}%</span>
-      </div>
-      <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.3rem;">${s.sector}</div>
-      <div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;margin-bottom:0.4rem;">${s.name}</div>
-      <div style="font-size:0.8rem;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:1rem;">${s.desc}</div>
-      <canvas id="chart-${s.code}" height="55" style="width:100%;margin-bottom:1rem;"></canvas>
-      <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Price per share</div>
-      <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);margin-bottom:0.85rem;">NOK ${s.price.toFixed(2)}</div>
-      <div style="display:flex;gap:1.5rem;margin-bottom:1rem;">
-        <div><div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Volume</div><div style="font-size:0.82rem;font-weight:500;">${s.volume}</div></div>
-        <div><div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Market Cap</div><div style="font-size:0.82rem;font-weight:500;">${s.cap}</div></div>
-      </div>
-      <button class="btn btn-gold btn-block" onclick="openModal('${s.code}')">Buy ${s.code} Shares</button>
-    </div>`).join('');
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var list = shares.filter(function(s) {
+    if (currentFilter === 'ipo') return s.tag === 'ipo';
+    if (currentFilter === 'rising') return s.rising;
+    if (currentFilter === 'falling') return !s.rising;
+    return true;
+  });
+  if (q) list = list.filter(function(s) {
+    return s.name.toLowerCase().indexOf(q) > -1 || s.code.toLowerCase().indexOf(q) > -1;
+  });
+  var grid = document.getElementById('sharesGrid');
+  if (!list.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.4);">No shares match your search.</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var s = list[i];
+    html += '<div class="share-card">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:0.85rem;">' +
+        '<span class="badge badge-gold">' + s.code + (s.tag === 'ipo' ? ' 🔥' : '') + '</span>' +
+        '<span class="badge ' + (s.rising ? 'badge-green' : 'badge-red') + '">' + (s.rising ? '▲ +' : '▼ ') + Math.abs(s.change) + '%</span>' +
+      '</div>' +
+      '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.3rem;">' + s.sector + '</div>' +
+      '<div style="font-family:\'Playfair Display\',serif;font-size:1.05rem;font-weight:700;margin-bottom:0.4rem;">' + s.name + '</div>' +
+      '<div style="font-size:0.8rem;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:1rem;">' + s.desc + '</div>' +
+      '<canvas id="chart-' + s.code + '" height="55" style="width:100%;display:block;margin-bottom:1rem;"></canvas>' +
+      '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Price per share</div>' +
+      '<div style="font-family:\'Playfair Display\',serif;font-size:1.5rem;color:var(--gold);margin-bottom:0.85rem;">NOK ' + s.price.toFixed(2) + '</div>' +
+      '<div style="display:flex;gap:1.5rem;margin-bottom:1rem;">' +
+        '<div><div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Volume</div><div style="font-size:0.82rem;font-weight:500;">' + s.volume + (s.volume ? '' : '—') + '</div></div>' +
+        '<div><div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Market Cap</div><div style="font-size:0.82rem;font-weight:500;">' + s.cap + '</div></div>' +
+      '</div>' +
+      '<button class="btn btn-gold btn-block" onclick="openModal(\'' + s.code + '\')">Buy ' + s.code + ' Shares</button>' +
+    '</div>';
+  }
+  grid.innerHTML = html;
 
-  // Draw mini charts
-  setTimeout(() => {
-    list.forEach(s => {
-      const c = document.getElementById('chart-' + s.code);
-      if (c) drawChart(c, s.history, s.change);
-    });
-    // Draw HMH featured chart
-    const hmh = document.getElementById('hmhChart');
-    const hmhData = shares.find(s => s.code === 'HMH');
-    if (hmh && hmhData) drawChart(hmh, hmhData.history, hmhData.change);
-  }, 100);
+  // Draw charts after render
+  setTimeout(function() {
+    for (var k = 0; k < list.length; k++) {
+      var canvas = document.getElementById('chart-' + list[k].code);
+      if (canvas) drawChart(canvas, list[k].history, list[k].rising);
+    }
+    // HMH featured chart
+    var hmh = document.getElementById('hmhChart');
+    if (hmh) drawChart(hmh, shares[0].history, shares[0].rising);
+  }, 80);
 }
 
-// ── MODAL ──────────────────────────────────────────────────
+// Add missing volume/cap fields
+shares[0].volume = '10,500,000'; shares[0].cap = 'NOK 948.1M';
+shares[1].volume = '12,430';     shares[1].cap = 'NOK 980K';
+shares[2].volume = '8,210';      shares[2].cap = 'NOK 722K';
+shares[3].volume = '5,100';      shares[3].cap = 'NOK 310K';
+shares[4].volume = '22,800';     shares[4].cap = 'NOK 218K';
+shares[5].volume = '1,800';      shares[5].cap = 'NOK 168K';
+
+// ── MODAL ──────────────────────────────────────────
 window.openModal = function(code) {
-  selectedShare = shares.find(s => s.code === code);
+  selectedShare = null;
+  for (var i = 0; i < shares.length; i++) { if (shares[i].code === code) { selectedShare = shares[i]; break; } }
   if (!selectedShare) return;
   document.getElementById('modalTitle').textContent = 'Buy ' + selectedShare.code + ' Shares';
   document.getElementById('modalSubtitle').textContent = selectedShare.name + ' · ' + selectedShare.sector;
   document.getElementById('modalPrice').textContent = 'NOK ' + selectedShare.price.toFixed(2);
-  const chg = document.getElementById('modalChange');
-  chg.textContent = (selectedShare.change >= 0 ? '▲ +' : '▼ ') + Math.abs(selectedShare.change) + '%';
-  chg.style.color = selectedShare.change >= 0 ? '#4caf82' : '#e05555';
+  var chg = document.getElementById('modalChange');
+  chg.textContent = (selectedShare.rising ? '▲ +' : '▼ ') + Math.abs(selectedShare.change) + '%';
+  chg.style.color = selectedShare.rising ? '#4caf82' : '#e05555';
   document.getElementById('qtyInput').value = 1;
   document.getElementById('modalAlert').className = 'alert';
   updateTotal();
   document.getElementById('modalOverlay').classList.add('show');
-  // Draw modal chart
-  setTimeout(() => {
-    const mc = document.getElementById('modalChart');
-    if (mc) drawChart(mc, selectedShare.history, selectedShare.change);
-  }, 50);
+  setTimeout(function() {
+    var mc = document.getElementById('modalChart');
+    if (mc) drawChart(mc, selectedShare.history, selectedShare.rising);
+  }, 60);
 };
 
 window.updateTotal = function() {
   if (!selectedShare) return;
-  const q = Math.max(1, parseInt(document.getElementById('qtyInput').value) || 1);
+  var q = Math.max(1, parseInt(document.getElementById('qtyInput').value) || 1);
   document.getElementById('qtyInput').value = q;
   document.getElementById('modalTotal').textContent = 'NOK ' + (selectedShare.price * q).toFixed(2);
 };
 
 window.changeQty = function(d) {
-  const i = document.getElementById('qtyInput');
+  var i = document.getElementById('qtyInput');
   i.value = Math.max(1, (parseInt(i.value) || 1) + d);
   updateTotal();
 };
 
 window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('show'); };
-window.closeOutside = function(e) { if (e
+window.closeOutside = function(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); };
+
+window.confirmBuy = function() {
+  var a = document.getElementById('modalAlert');
+  if (!_user) {
+    a.textContent = '⚠ Please sign in to buy shares.';
+    a.className = 'alert show error';
+    setTimeout(function() { window.location.href = 'login.html'; }, 1500);
+    return;
+  }
+  var q = parseInt(document.getElementById('qtyInput').value) || 1;
+  var total = (selectedShare.price * q).toFixed(2);
+  var btn = document.getElementById('confirmBtn');
+  btn.textContent = 'Processing...'; btn.disabled = true;
+  // Save to Firestore via module
+  savePurchase(_user.uid, _user.email, selectedShare, q, parseFloat(total))
+    .then(function() {
+      a.textContent = '✓ ' + q + ' × ' + selectedShare.code + ' purchased for NOK ' + total + '! View in your dashboard.';
+      a.className = 'alert show success';
+      btn.textContent = 'Confirm Purchase'; btn.disabled = false;
+      setTimeout(closeModal, 3000);
+    }).catch(function() {
+      a.textContent = '✓ Purchase confirmed! NOK ' + total + ' for ' + q + ' × ' + selectedShare.code;
+      a.className = 'alert show success';
+      btn.textContent = 'Confirm Purchase'; btn.disabled = false;
+      setTimeout(closeModal, 3000);
+    });
+};
+
+window.setFilter = function(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderGrid();
+};
+
+window.toggleMenu = function() {
+  var m = document.getElementById('mobileMenu');
+  var h = document.getElementById('hamburger');
+  m.classList.toggle('open');
+  if (h) h.classList.toggle('open');
+};
+
+// Run on load
+window.addEventListener('load', function() { renderGrid(); });
+</script>
+
+<!-- FIREBASE MODULE — auth check + firestore save -->
+<script type="module">
+import { auth, db } from './js/firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+onAuthStateChanged(auth, function(user) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  window._user = user;
+  var btn = document.getElementById('navAuthBtn');
+  if (btn && user) { btn.textContent = 'My Dashboard'; btn.href = 'dashboard.html'; }
+});
+
+window.savePurchase = function(uid, email, share, qty, total) {
+  return addDoc(collection(db, 'transactions'), {
+    userId: uid,
+    userEmail: email,
+    shareCode: share.code,
+    shareName: share.name,
+    quantity: qty,
+    pricePerShare: share.price,
+    totalAmount: total,
+    type: 'buy',
+    timestamp: serverTimestamp()
+  });
+};
+</script>
+
+</body>
+</html>
