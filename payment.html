@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Norwegian Shares — Crypto Payment</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <!-- QR Code library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    .crypto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;}
+    .crypto-card{background:var(--card);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:1.5rem;position:relative;overflow:hidden;transition:border-color 0.3s;}
+    .crypto-card:hover{border-color:rgba(201,168,76,0.35);}
+    .crypto-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold);}
+    .crypto-card.selected{border-color:rgba(201,168,76,0.6);background:rgba(201,168,76,0.05);}
+    .qr-box{background:white;padding:12px;border-radius:4px;display:inline-block;margin:1rem 0;}
+    .addr-box{background:rgba(11,26,46,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.75rem 1rem;font-family:monospace;font-size:0.72rem;color:rgba(255,255,255,0.7);word-break:break-all;margin-bottom:0.75rem;cursor:pointer;transition:border-color 0.2s;position:relative;}
+    .addr-box:hover{border-color:rgba(201,168,76,0.4);}
+    .copy-btn{position:absolute;top:50%;right:0.75rem;transform:translateY(-50%);background:rgba(201,168,76,0.15);color:var(--gold);border:none;border-radius:2px;padding:0.2rem 0.5rem;font-size:0.7rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .copy-btn:hover{background:rgba(201,168,76,0.3);}
+    .chart-container{position:relative;width:100%;height:200px;background:rgba(11,26,46,0.5);border:1px solid rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;}
+    .chart-legend{display:flex;gap:1rem;margin-top:0.5rem;flex-wrap:wrap;}
+    .legend-item{display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:rgba(255,255,255,0.5);}
+    .legend-dot{width:8px;height:8px;border-radius:50%;}
+    .tab-row{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+    .time-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.4rem 0.9rem;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;}
+    .time-btn.active,.time-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--gold);color:var(--gold);}
+    .payment-steps{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;}
+    .step-row{display:flex;gap:1rem;align-items:flex-start;}
+    .step-num{width:32px;height:32px;background:var(--gold);color:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;flex-shrink:0;}
+    .step-content{flex:1;}
+    .step-title{font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;}
+    .step-desc{font-size:0.8rem;color:rgba(255,255,255,0.5);line-height:1.5;}
+    .hash-form{background:var(--card);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1.5rem;margin-top:2rem;}
+    .network-badge{display:inline-block;font-size:0.65rem;font-weight:600;letter-spacing:0.08em;padding:0.15rem 0.5rem;border-radius:2px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);margin-left:0.4rem;}
+  </style>
+</head>
+<body>
+
+<div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="payment.html" class="active">Pay with Crypto</a>
+  </div>
+  <div class="nav-right">
+    <a href="login.html" class="btn btn-gold btn-sm" id="navAuthBtn">Sign In</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="dashboard.html">📊 Dashboard</a>
+  <a href="marketplace.html">🛒 Marketplace</a>
+  <a href="payment.html">💰 Pay with Crypto</a>
+  <a href="settings.html">⚙️ Settings</a>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div style="margin-bottom:2.5rem;">
+    <div class="badge badge-gold" style="margin-bottom:0.75rem;display:inline-block;">💰 Crypto Payments</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:900;">Pay with <span class="gold">Cryptocurrency</span></h1>
+    <p class="muted" style="margin-top:0.5rem;max-width:550px;line-height:1.7;">Send your payment directly to our wallet. We accept 15 cryptocurrencies across multiple blockchains. Zero middlemen — your payment goes straight to us.</p>
+  </div>
+
+  <!-- ORDER SUMMARY (populated from marketplace) -->
+  <div id="orderSummaryBox" style="display:none;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.3);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:2rem;">
+    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:0.75rem;">Your Order</div>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div><div class="muted" style="font-size:0.78rem;">Share</div><div style="font-weight:600;" id="oShare">—</div></div>
+      <div><div class="muted" style="font-size:0.78rem;">Quantity</div><div style="font-weight:600;" id="oQty">—</div></div>
+      <div><div class="muted" style="font-size:0.78rem;">Total (NOK)</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);" id="oTotal">—</div></div>
+    </div>
+  </div>
+
+  <!-- SHARE PRICE CHART -->
+  <div style="margin-bottom:2.5rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;">Live Share Price Chart</div>
+      <div class="tab-row" style="margin:0;">
+        <button class="time-btn active" onclick="setChart('NOR-A',this)">NOR-A</button>
+        <button class="time-btn" onclick="setChart('NOR-B',this)">NOR-B</button>
+        <button class="time-btn" onclick="setChart('NOR-C',this)">NOR-C</button>
+        <button class="time-btn" onclick="setChart('NOR-D',this)">NOR-D</button>
+        <button class="time-btn" onclick="setChart('HMH',this)">HMH 🔥</button>
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="mainChart" style="width:100%;height:100%;"></canvas>
+      <div style="position:absolute;top:0.75rem;left:1rem;">
+        <div id="chartLabel" style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;">NOR-A — Norwegian Growth A</div>
+        <div id="chartPrice" style="font-size:0.875rem;color:var(--gold);margin-top:0.1rem;">NOK 245.00</div>
+      </div>
+      <div style="position:absolute;top:0.75rem;right:1rem;" id="chartChange">
+        <span class="badge badge-green">▲ +2.4%</span>
+      </div>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4caf82;"></div>Rising</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e05555;"></div>Falling</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(201,168,76,0.5);"></div>Current Price</div>
+    </div>
+  </div>
+
+  <!-- HOW TO PAY -->
+  <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;">How to Pay</div>
+  <div class="payment-steps">
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Choose your share on the Marketplace</div>
+        <div class="step-desc">Go to the marketplace, select the share you want, choose quantity and click Buy.</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Select a cryptocurrency below</div>
+        <div class="step-desc">Choose whichever coin you want to pay with. Click the card to see the full wallet address and QR code.</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Send the exact amount in crypto</div>
+        <div class="step-desc">Open your wallet app, scan the QR code or copy the address, and send the equivalent value in crypto. Always double-check the address before sending.</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Submit your transaction hash below</div>
+        <div class="step-desc">After sending, paste your transaction ID/hash in the form below so we can verify and confirm your share purchase.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRYPTO WALLETS -->
+  <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;">Select Payment Method</div>
+  <div class="crypto-grid" id="cryptoGrid"></div>
+
+  <!-- SELECTED WALLET DETAIL -->
+  <div id="walletDetail" style="display:none;background:var(--card);border:2px solid rgba(201,168,76,0.3);border-radius:6px;padding:2rem;margin-top:2rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:0.3rem;">Selected Payment Method</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;" id="detailCoin"></div>
+        <div id="detailNetwork" style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:0.2rem;"></div>
+      </div>
+      <button onclick="closeDetail()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:0.4rem 1rem;border-radius:2px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;">Close ✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div class="qr-box" id="qrCodeBox"></div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Scan with your wallet</div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Wallet Address</div>
+        <div class="addr-box" id="detailAddress" onclick="copyAddress()">
+          <span id="addrText"></span>
+          <button class="copy-btn" onclick="copyAddress()">📋 Copy</button>
+        </div>
+        <div id="copyConfirm" style="font-size:0.78rem;color:var(--success);display:none;margin-bottom:0.75rem;">✓ Address copied to clipboard!</div>
+        <div style="background:rgba(224,85,85,0.08);border:1px solid rgba(224,85,85,0.2);border-radius:3px;padding:0.85rem 1rem;font-size:0.78rem;color:rgba(255,255,255,0.6);line-height:1.6;">
+          ⚠️ <strong style="color:#e08855;">Important:</strong> Only send <span id="warningCoin" style="color:var(--gold);font-weight:600;"></span> on the <span id="warningNetwork" style="color:var(--gold);font-weight:600;"></span> network. Sending the wrong coin or using the wrong network will result in permanent loss of funds.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSACTION CONFIRMATION FORM -->
+  <div class="hash-form" style="margin-top:2rem;">
+    <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:0.5rem;">Submit Payment Confirmation</div>
+    <p class="muted" style="font-size:0.82rem;line-height:1.6;margin-bottom:1.5rem;">After sending your crypto payment, paste your transaction hash below so we can verify it on the blockchain and confirm your share purchase.</p>
+    <div class="alert" id="hashAlert"></div>
+    <div class="form-group">
+      <label>Your Name / Account Email</label>
+      <input type="text" id="hashName" placeholder="Your registered email or full name"/>
+    </div>
+    <div class="form-group">
+      <label>Share You Purchased</label>
+      <select id="hashShare" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.8rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;width:100%;">
+        <option value="">Select share...</option>
+        <option value="HMH">HMH — HMH Holding AS (NOK 200.00)</option>
+        <option value="NOR-A">NOR-A — Norwegian Growth A (NOK 245.00)</option>
+        <option value="NOR-B">NOR-B — Norwegian Growth B (NOK 180.50)</option>
+        <option value="NOR-C">NOR-C — Norwegian Growth C (NOK 310.00)</option>
+        <option value="NOR-D">NOR-D — Norwegian Growth D (NOK 95.75)</option>
+        <option value="NOR-E">NOR-E — Norwegian Growth E (NOK 420.00)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Number of Shares Purchased</label>
+      <input type="number" id="hashQty" placeholder="e.g. 5" min="1"/>
+    </div>
+    <div class="form-group">
+      <label>Cryptocurrency Used</label>
+      <select id="hashCoin" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.8rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;width:100%;">
+        <option value="">Select coin used...</option>
+        <option value="ETH">Ethereum (ETH)</option>
+        <option value="BTC">Bitcoin (BTC)</option>
+        <option value="SOL">Solana (SOL)</option>
+        <option value="TRX">Tron (TRX / USDT-TRC20)</option>
+        <option value="BNB">BNB Chain (BNB / BSC)</option>
+        <option value="MATIC">Polygon (MATIC)</option>
+        <option value="AVAX">Avalanche (AVAX)</option>
+        <option value="ARB">Arbitrum (ARB)</option>
+        <option value="OP">Optimism (OP)</option>
+        <option value="BASE">Base (ETH on Base)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Transaction Hash / ID</label>
+      <input type="text" id="hashTxid" placeholder="Paste your transaction hash here e.g. 0x742d35Cc..."/>
+      <div class="err-msg" id="hashErr">Please enter your transaction hash</div>
+    </div>
+    <div class="form-group">
+      <label>Amount Sent (in crypto)</label>
+      <input type="text" id="hashAmount" placeholder="e.g. 0.05 ETH or 0.002 BTC"/>
+    </div>
+    <button class="btn btn-gold btn-block" id="submitHashBtn" onclick="submitHash()">Submit Payment for Verification</button>
+    <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.75rem;">🔒 Your submission is securely stored. We verify all transactions on-chain within 24 hours.</div>
+  </div>
+
+</div>
+
+<script>
+// ── WALLET ADDRESSES ───────────────────────────────────────
+var wallets = [
+  { coin:'Ethereum',        code:'ETH',   icon:'🔷', color:'#627EEA', network:'Ethereum Mainnet',  addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'Bitcoin',         code:'BTC',   icon:'🟠', color:'#F7931A', network:'Bitcoin Network',   addr:'bc1q5xemr8w6x5dhvqpcffh677ww8cjmf47et34trm' },
+  { coin:'Solana',          code:'SOL',   icon:'🟣', color:'#9945FF', network:'Solana Mainnet',    addr:'DjUY1dBxbJU6TsPkQgUo1oAYzBrTHgSoCueiCPKfPi9F' },
+  { coin:'Tron / USDT',     code:'TRX',   icon:'🔴', color:'#FF0013', network:'Tron Network',      addr:'TYPE7cyogP2fdKbUHaHwgxBDTGBdvvprCN' },
+  { coin:'BNB Chain',       code:'BNB',   icon:'🟡', color:'#F3BA2F', network:'BNB Smart Chain',   addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'Polygon',         code:'MATIC', icon:'🟪', color:'#8247E5', network:'Polygon Mainnet',   addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'Arbitrum',        code:'ARB',   icon:'🔵', color:'#28A0F0', network:'Arbitrum One',      addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'Avalanche',       code:'AVAX',  icon:'🔺', color:'#E84142', network:'Avalanche C-Chain', addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'Optimism',        code:'OP',    icon:'🔴', color:'#FF0420', network:'Optimism Mainnet',  addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'Base',            code:'BASE',  icon:'🔵', color:'#0052FF', network:'Base Mainnet',      addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'Linea',           code:'LINEA', icon:'🟦', color:'#61DFFF', network:'Linea Mainnet',     addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'ZKsync Era',      code:'ZKS',   icon:'⚡', color:'#8C8DFC', network:'ZKsync Era',        addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'Monad',           code:'MON',   icon:'🟤', color:'#836EF9', network:'Monad Mainnet',     addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+  { coin:'MegaETH',         code:'METH',  icon:'⚙️', color:'#00D4AA', network:'MegaETH Mainnet',   addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
+];
+
+// ── SHARE CHART DATA ───────────────────────────────────────
+var chartData = {
+  'NOR-A':{ label:'NOR-A — Norwegian Growth A', price:'NOK 245.00', change:'+2.4%', rising:true,
+    data:[210,212,215,213,218,220,222,219,225,228,230,227,232,235,238,236,240,242,244,241,245] },
+  'NOR-B':{ label:'NOR-B — Norwegian Growth B', price:'NOK 180.50', change:'-0.8%', rising:false,
+    data:[188,187,186,188,185,184,186,185,183,185,183,184,182,183,181,182,180,181,180,181,180] },
+  'NOR-C':{ label:'NOR-C — Norwegian Growth C', price:'NOK 310.00', change:'+1.2%', rising:true,
+    data:[290,292,291,294,293,296,295,298,297,300,299,302,301,304,303,306,305,307,306,308,310] },
+  'NOR-D':{ label:'NOR-D — Norwegian Growth D', price:'NOK 95.75', change:'+3.1%', rising:true,
+    data:[82,83,82,84,83,85,84,86,85,87,86,88,87,89,88,90,89,92,91,94,95] },
+  'HMH':  { label:'HMH — HMH Holding AS (IPO)', price:'NOK 200.00', change:'+5.2%', rising:true,
+    data:[160,162,161,165,163,168,167,170,168,175,173,178,176,180,178,185,183,190,188,195,200] },
+};
+
+var activeChart = 'NOR-A';
+var qrCode = null;
+
+// ── DRAW MAIN CHART ────────────────────────────────────────
+function drawMainChart(key) {
+  var canvas = document.getElementById('mainChart');
+  if (!canvas) return;
+  var d = chartData[key];
+  var ctx = canvas.getContext('2d');
+  var w = canvas.offsetWidth || canvas.parentElement.offsetWidth || 800;
+  var h = canvas.offsetHeight || 200;
+  canvas.width = w; canvas.height = h;
+  var data = d.data;
+  var min = Math.min.apply(null, data) - 3;
+  var max = Math.max.apply(null, data) + 3;
+  var stepX = w / (data.length - 1);
+  var color = d.rising ? '#4caf82' : '#e05555';
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for (var g = 0; g < 5; g++) {
+    var gy = (h / 4) * g;
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+  }
+
+  // Gradient fill
+  var grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, d.rising ? 'rgba(76,175,130,0.35)' : 'rgba(224,85,85,0.35)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.beginPath();
+  for (var i = 0; i < data.length; i++) {
+    var x = i * stepX;
+    var y = h - ((data[i] - min) / (max - min)) * (h - 30) - 15;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  for (var j = 0; j < data.length; j++) {
+    var x2 = j * stepX;
+    var y2 = h - ((data[j] - min) / (max - min)) * (h - 30) - 15;
+    if (j === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2);
+  }
+  ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // Dots at peaks and troughs
+  for (var k = 1; k < data.length - 1; k++) {
+    if ((data[k] > data[k-1] && data[k] > data[k+1]) || (data[k] < data[k-1] && data[k] < data[k+1])) {
+      var px = k * stepX;
+      var py = h - ((data[k] - min) / (max - min)) * (h - 30) - 15;
+      ctx.beginPath();
+      ctx.arc(px, py, 3, 0, Math.PI * 2);
+      ctx.fillStyle = color; ctx.fill();
+    }
+  }
+
+  // Last point highlight
+  var lx = (data.length - 1) * stepX;
+  var ly = h - ((data[data.length-1] - min) / (max - min)) * (h - 30) - 15;
+  ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI * 2);
+  
+  ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI * 2);
+  ctx.fillStyle = color; ctx.fill();
+  ctx.beginPath(); ctx.arc(lx, ly, 8, 0, Math.PI * 2);
+  ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Price labels
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.font = '10px DM Sans';
+  var maxPrice = Math.max.apply(null, data);
+  var minPrice = Math.min.apply(null, data);
+  ctx.fillText('NOK ' + maxPrice, 5, 25);
+  ctx.fillText('NOK ' + minPrice, 5, h - 5);
+}
+
+window.setChart = function(key, btn) {
+  activeChart = key;
+  document.querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  var d = chartData[key];
+  document.getElementById('chartLabel').textContent = d.label;
+  document.getElementById('chartPrice').textContent = d.price;
+  var chgEl = document.getElementById('chartChange');
+  chgEl.innerHTML = '<span class="badge ' + (d.rising ? 'badge-green' : 'badge-red') + '">' + (d.rising ? '▲ ' : '▼ ') + d.change + '</span>';
+  drawMainChart(key);
+};
+
+// ── RENDER CRYPTO CARDS ────────────────────────────────────
+function renderCryptoGrid() {
+  var html = '';
+  for (var i = 0; i < wallets.length; i++) {
+    var w = wallets[i];
+    var shortAddr = w.addr.substring(0, 10) + '...' + w.addr.substring(w.addr.length - 6);
+    html += '<div class="crypto-card" onclick="showWallet(' + i + ')" id="card-' + i + '">' +
+      '<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">' +
+        '<div style="width:42px;height:42px;background:' + w.color + '22;border:1px solid ' + w.color + '44;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">' + w.icon + '</div>' +
+        '<div><div style="font-weight:700;font-size:0.95rem;">' + w.coin + '</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">' + w.network + '</div></div>' +
+        '<span class="badge badge-gold" style="margin-left:auto;">' + w.code + '</span>' +
+      '</div>' +
+      '<div style="font-family:monospace;font-size:0.7rem;color:rgba(255,255,255,0.5);background:rgba(11,26,46,0.6);padding:0.5rem 0.75rem;border-radius:2px;word-break:break-all;">' + shortAddr + '</div>' +
+      '<button class="btn btn-gold btn-block" style="margin-top:1rem;font-size:0.82rem;">Pay with ' + w.code + ' →</button>' +
+    '</div>';
+  }
+  document.getElementById('cryptoGrid').innerHTML = html;
+}
+
+window.showWallet = function(idx) {
+  var w = wallets[idx];
+  document.querySelectorAll('.crypto-card').forEach(function(c) { c.classList.remove('selected'); });
+  var card = document.getElementById('card-' + idx);
+  if (card) card.classList.add('selected');
+  document.getElementById('detailCoin').textContent = w.icon + ' ' + w.coin + ' (' + w.code + ')';
+  document.getElementById('detailNetwork').textContent = 'Network: ' + w.network;
+  document.getElementById('addrText').textContent = w.addr;
+  document.getElementById('warningCoin').textContent = w.code;
+  document.getElementById('warningNetwork').textContent = w.network;
+  document.getElementById('walletDetail').style.display = 'block';
+  document.getElementById('copyConfirm').style.display = 'none';
+
+  // Generate QR Code
+  var qrBox = document.getElementById('qrCodeBox');
+  qrBox.innerHTML = '';
+  if (window.QRCode) {
+    new QRCode(qrBox, { text: w.addr, width: 140, height: 140, colorDark:'#000000', colorLight:'#ffffff' });
+  }
+
+  // Scroll to detail
+  setTimeout(function() {
+    document.getElementById('walletDetail').scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 100);
+};
+
+window.closeDetail = function() {
+  document.getElementById('walletDetail').style.display = 'none';
+  document.querySelectorAll('.crypto-card').forEach(function(c) { c.classList.remove('selected'); });
+};
+
+window.copyAddress = function() {
+  var addr = document.getElementById('addrText').textContent;
+  navigator.clipboard.writeText(addr).then(function() {
+    document.getElementById('copyConfirm').style.display = 'block';
+    setTimeout(function() { document.getElementById('copyConfirm').style.display = 'none'; }, 3000);
+  }).catch(function() {
+    // Fallback
+    var ta = document.createElement('textarea');
+    ta.value = addr; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    document.getElementById('copyConfirm').style.display = 'block';
+    setTimeout(function() { document.getElementById('copyConfirm').style.display = 'none'; }, 3000);
+  });
+};
+
+// ── SUBMIT TRANSACTION HASH ────────────────────────────────
+window.submitHash = function() {
+  var a = document.getElementById('hashAlert');
+  var name = document.getElementById('hashName').value.trim();
+  var share = document.getElementById('hashShare').value;
+  var qty = document.getElementById('hashQty').value;
+  var coin = document.getElementById('hashCoin').value;
+  var txid = document.getElementById('hashTxid').value.trim();
+  var amount = document.getElementById('hashAmount').value.trim();
+
+  if (!name || !share || !qty || !coin || !txid || !amount) {
+    a.textContent = '⚠ Please fill in all fields before submitting.';
+    a.className = 'alert show error'; return;
+  }
+  if (txid.length < 20) {
+    a.textContent = '⚠ Transaction hash looks too short. Please check and try again.';
+    a.className = 'alert show error'; return;
+  }
+
+  var btn = document.getElementById('submitHashBtn');
+  btn.textContent = 'Submitting...'; btn.disabled = true;
+
+  // Save to Firestore
+  if (window.saveHashToFirestore) {
+    window.saveHashToFirestore({ name, share, qty: parseInt(qty), coin, txid, amount })
+      .then(function() {
+        a.textContent = '✓ Payment submitted! We will verify your transaction on-chain and confirm your shares within 24 hours. Thank you!';
+        a.className = 'alert show success';
+        btn.textContent = 'Submit Payment for Verification'; btn.disabled = false;
+        document.getElementById('hashTxid').value = '';
+        document.getElementById('hashAmount').value = '';
+      }).catch(function() {
+        a.textContent = '✓ Received! We will verify your transaction and confirm your shares within 24 hours.';
+        a.className = 'alert show success';
+        btn.textContent = 'Submit Payment for Verification'; btn.disabled = false;
+      });
+  } else {
+    setTimeout(function() {
+      a.textContent = '✓ Payment submission received! We will verify and confirm within 24 hours.';
+      a.className = 'alert show success';
+      btn.textContent = 'Submit Payment for Verification'; btn.disabled = false;
+    }, 1000);
+  }
+};
+
+window.toggleMenu = function() {
+  var m = document.getElementById('mobileMenu');
+  var h = document.getElementById('hamburger');
+  m.classList.toggle('open'); if (h) h.classList.toggle('open');
+};
+
+// ── INIT ───────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  renderCryptoGrid();
+  setTimeout(function() { drawMainChart('NOR-A'); }, 100);
+
+  // Check for order from marketplace
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('share')) {
+    var box = document.getElementById('orderSummaryBox');
+    box.style.display = 'block';
+    document.getElementById('oShare').textContent = params.get('share');
+    document.getElementById('oQty').textContent = params.get('qty') + ' shares';
+    document.getElementById('oTotal').textContent = 'NOK ' + params.get('total');
+    var sel = document.getElementById('hashShare');
+    if (sel) sel.value = params.get('share');
+    var qtyInp = document.getElementById('hashQty');
+    if (qtyInp) qtyInp.value = params.get('qty');
+  }
+});
+
+window.addEventListener('resize', function() { drawMainChart(activeChart); });
+</script>
+
+<script type="module">
+import { auth, db } from './js/firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+onAuthStateChanged(auth, function(user) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  var btn = document.getElementById('navAuthBtn');
+  if (btn && user) { btn.textContent = 'My Dashboard'; btn.href = 'dashboard.html'; }
+  if (user) {
+    var inp = document.getElementById('hashName');
+    if (inp && !inp.value) inp.value = user.displayName || user.email;
+  }
+});
+
+window.saveHashToFirestore = function(data) {
+  return addDoc(collection(db, 'crypto_payments'), {
+    ...data,
+    status: 'pending_verification',
+    timestamp: serverTimestamp()
+  });
+};
+</script>
+
+</body>
+</html>
