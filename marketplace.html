@@ -12,25 +12,23 @@
     .shares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;}
     .filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.1rem;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s;}
     .filter-btn.active,.filter-btn:hover{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.4);color:var(--gold);}
-    .modal-price-box{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;}
     .fin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
-    .step-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--gold);color:var(--navy);border-radius:50%;font-weight:700;font-size:0.85rem;flex-shrink:0;}
+    .pay-method{display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;transition:border-color 0.2s;margin-bottom:0.75rem;}
+    .pay-method:hover,.pay-method.selected{border-color:rgba(201,168,76,0.5);background:rgba(201,168,76,0.06);}
     @media(max-width:700px){.fin-grid{grid-template-columns:1fr 1fr;}}
     @media(max-width:400px){.fin-grid{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
 
-<div id="loadingScreen">
-  <div class="loading-logo">Norwegian Shares</div>
-  <div class="spinner"></div>
-</div>
+<div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
 
 <nav>
   <a href="index.html" class="nav-logo">Norwegian Shares</a>
   <div class="nav-links">
     <a href="dashboard.html">Dashboard</a>
     <a href="marketplace.html" class="active">Marketplace</a>
+    <a href="payment.html">💰 Pay with Crypto</a>
     <a href="portfolio.html">Portfolio</a>
     <a href="transactions.html">Transactions</a>
   </div>
@@ -45,30 +43,35 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="dashboard.html">📊 Dashboard</a>
   <a href="marketplace.html">🛒 Marketplace</a>
+  <a href="payment.html">💰 Pay with Crypto</a>
   <a href="portfolio.html">💼 Portfolio</a>
   <a href="transactions.html">📋 Transactions</a>
   <a href="settings.html">⚙️ Settings</a>
 </div>
 
 <div class="container">
+
   <!-- HERO -->
   <div style="background:linear-gradient(135deg,var(--mid),#0f2238);border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
     <div style="position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:6rem;font-weight:900;color:rgba(201,168,76,0.04);pointer-events:none;">SHARES</div>
     <h1 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2rem);font-weight:900;">Norwegian <span class="gold">Shares</span> Marketplace</h1>
-    <p class="muted" style="margin-top:0.5rem;max-width:400px;line-height:1.6;font-size:0.875rem;">Buy verified shares in registered Norwegian companies. Transparent pricing and secure transactions.</p>
+    <p class="muted" style="margin-top:0.5rem;max-width:400px;line-height:1.6;font-size:0.875rem;">Buy verified shares. Pay with crypto, card, Vipps or bank transfer.</p>
     <div style="display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;">
       <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">6</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Listings</div></div>
       <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">1,200+</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Shareholders</div></div>
       <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">NOK 3.1M</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Market Cap</div></div>
     </div>
-  </div>
-
-  <!-- PAYMENT NOTICE BANNER -->
-  <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:1rem 1.5rem;margin-bottom:2rem;display:flex;align-items:flex-start;gap:1rem;">
-    <div style="font-size:1.25rem;flex-shrink:0;">ℹ️</div>
-    <div>
-      <div style="font-weight:600;font-size:0.875rem;color:var(--gold);margin-bottom:0.3rem;">Payment Integration Coming Soon</div>
-      <div style="font-size:0.82rem;color:rgba(255,255,255,0.55);line-height:1.6;">This platform is currently in development. Share reservations are recorded but no real money is charged. Stripe and Vipps payment integration will be added once regulatory approval is obtained. <a href="#" style="color:var(--gold);">Learn more</a></div>
+    <!-- PAYMENT METHODS ACCEPTED -->
+    <div style="margin-top:1.5rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+      <span style="font-size:0.72rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;">Accepted payments:</span>
+      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🔷 ETH</span>
+      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🟠 BTC</span>
+      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🟣 SOL</span>
+      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🟡 BNB</span>
+      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">💳 Card</span>
+      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">📱 Vipps</span>
+      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🏦 Bank</span>
+      <a href="payment.html" style="font-size:0.72rem;color:var(--gold);margin-left:0.5rem;">+10 more →</a>
     </div>
   </div>
 
@@ -93,7 +96,7 @@
       </div>
       <div>
         <canvas id="hmhChart" height="120" style="width:100%;border-radius:3px;display:block;"></canvas>
-        <button class="btn btn-gold btn-block" style="margin-top:1rem;" onclick="openModal('HMH')">Reserve HMH Shares</button>
+        <button class="btn btn-gold btn-block" style="margin-top:1rem;" onclick="openModal('HMH')">Buy HMH Shares</button>
         <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.5rem;">Lead banks: JPMorgan, Piper Sandler</div>
       </div>
     </div>
@@ -122,24 +125,28 @@
   <div class="shares-grid" id="sharesGrid"></div>
 </div>
 
-<!-- BUY MODAL — STEP 1: SELECT QUANTITY -->
+<!-- BUY MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeOutside(event)">
-  <div class="modal">
+  <div class="modal" style="max-width:480px;">
     <button class="modal-close" onclick="closeModal()">✕</button>
 
-    <!-- STEP INDICATOR -->
+    <!-- STEP INDICATORS -->
     <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;">
-      <div id="step1Indicator" style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--gold);font-weight:600;"><span class="step-badge">1</span> Select Quantity</div>
+      <div id="ind1" style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:var(--gold);">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--gold);color:var(--navy);border-radius:50%;font-weight:700;font-size:0.82rem;">1</span> Quantity
+      </div>
       <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
-      <div id="step2Indicator" style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:rgba(255,255,255,0.3);"><span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);border-radius:50%;font-weight:700;font-size:0.85rem;">2</span> Confirm & Pay</div>
+      <div id="ind2" style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.3);">
+        <span id="ind2badge" style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);border-radius:50%;font-weight:700;font-size:0.82rem;">2</span> Payment
+      </div>
     </div>
 
-    <!-- STEP 1 -->
+    <!-- STEP 1: QUANTITY -->
     <div id="step1">
-      <div style="font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;margin-bottom:0.2rem;" id="modalTitle"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:0.2rem;" id="modalTitle"></div>
       <div style="color:rgba(255,255,255,0.4);font-size:0.82rem;margin-bottom:1.25rem;" id="modalSubtitle"></div>
       <canvas id="modalChart" height="70" style="width:100%;display:block;border-radius:3px;margin-bottom:1.25rem;"></canvas>
-      <div class="modal-price-box">
+      <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.3rem;">Price per share</div>
           <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);" id="modalPrice"></div>
@@ -159,60 +166,70 @@
         <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);" id="modalTotal">NOK 0.00</div>
       </div>
       <button class="btn btn-gold btn-block" onclick="goToStep2()">Continue to Payment →</button>
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.75rem;">You must be signed in to complete a purchase</div>
     </div>
 
-    <!-- STEP 2 -->
+    <!-- STEP 2: PAYMENT -->
     <div id="step2" style="display:none;">
-      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;">Confirm Your Order</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;">Choose Payment Method</div>
 
       <!-- ORDER SUMMARY -->
-      <div style="background:rgba(11,26,46,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1.25rem;margin-bottom:1.25rem;">
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.75rem;">Order Summary</div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.875rem;"><span class="muted">Share</span><span id="summaryShare" style="font-weight:600;"></span></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.875rem;"><span class="muted">Quantity</span><span id="summaryQty" style="font-weight:600;"></span></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.875rem;"><span class="muted">Price per share</span><span id="summaryPrice" style="font-weight:600;"></span></div>
-        <div style="border-top:1px solid rgba(255,255,255,0.08);margin:0.75rem 0;"></div>
-        <div style="display:flex;justify-content:space-between;font-size:1rem;"><span style="font-weight:600;">Total</span><span id="summaryTotal" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);font-weight:700;"></span></div>
+      <div style="background:rgba(11,26,46,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.25rem;">
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.6rem;">Order Summary</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Share</span><span id="sumShare" style="font-weight:600;"></span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Quantity</span><span id="sumQty" style="font-weight:600;"></span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Price per share</span><span id="sumPrice" style="font-weight:600;"></span></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.08);margin:0.6rem 0;"></div>
+        <div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Total</span><span id="sumTotal" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);font-weight:700;"></span></div>
       </div>
 
-      <!-- PAYMENT METHODS -->
-      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.75rem;">Select Payment Method</div>
-      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.25rem;">
-        <label style="display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;transition:border-color 0.2s;" id="payCard">
-          <input type="radio" name="payMethod" value="card" onchange="selectPayment('card')" style="accent-color:var(--gold);width:16px;height:16px;"/>
-          <div style="font-size:1.25rem;">💳</div>
-          <div><div style="font-size:0.875rem;font-weight:600;">Credit / Debit Card</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">Visa, Mastercard — via Stripe</div></div>
-        </label>
-        <label style="display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;transition:border-color 0.2s;" id="payVipps">
-          <input type="radio" name="payMethod" value="vipps" onchange="selectPayment('vipps')" style="accent-color:var(--gold);width:16px;height:16px;"/>
-          <div style="font-size:1.25rem;">📱</div>
-          <div><div style="font-size:0.875rem;font-weight:600;">Vipps</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">Norway's most popular mobile payment</div></div>
-        </label>
-        <label style="display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;transition:border-color 0.2s;" id="payPaypal">
-          <input type="radio" name="payMethod" value="paypal" onchange="selectPayment('paypal')" style="accent-color:var(--gold);width:16px;height:16px;"/>
-          <div style="font-size:1.25rem;">🅿️</div>
-          <div><div style="font-size:0.875rem;font-weight:600;">PayPal</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">International payments via PayPal</div></div>
-        </label>
-        <label style="display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;transition:border-color 0.2s;" id="payBank">
-          <input type="radio" name="payMethod" value="bank" onchange="selectPayment('bank')" style="accent-color:var(--gold);width:16px;height:16px;"/>
-          <div style="font-size:1.25rem;">🏦</div>
-          <div><div style="font-size:0.875rem;font-weight:600;">Bank Transfer</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">Direct bank transfer (2–3 business days)</div></div>
-        </label>
+      <!-- PAYMENT OPTIONS -->
+      <div class="pay-method" id="pm-crypto" onclick="selectPayMethod('crypto')">
+        <input type="radio" name="pm" value="crypto" style="accent-color:var(--gold);"/>
+        <div style="font-size:1.4rem;">💰</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:0.9rem;">Cryptocurrency</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">ETH, BTC, SOL, USDT, BNB + 10 more chains</div>
+        </div>
+        <span class="badge badge-green" style="font-size:0.65rem;">LIVE ✓</span>
       </div>
 
-      <!-- COMING SOON NOTICE -->
-      <div id="paymentNotice" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:0.85rem 1rem;margin-bottom:1.25rem;font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:1.6;">
-        ⚠️ <strong style="color:var(--gold);">Payment integration coming soon.</strong> Your order will be recorded as a reservation. No money will be charged until payment is fully activated.
+      <div class="pay-method" id="pm-card" onclick="selectPayMethod('card')">
+        <input type="radio" name="pm" value="card" style="accent-color:var(--gold);"/>
+        <div style="font-size:1.4rem;">💳</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:0.9rem;">Credit / Debit Card</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Visa, Mastercard — via Stripe</div>
+        </div>
+        <span class="badge" style="font-size:0.65rem;background:rgba(255,165,0,0.15);color:orange;">Soon</span>
       </div>
 
-      <div class="alert" id="modalAlert"></div>
+      <div class="pay-method" id="pm-vipps" onclick="selectPayMethod('vipps')">
+        <input type="radio" name="pm" value="vipps" style="accent-color:var(--gold);"/>
+        <div style="font-size:1.4rem;">📱</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:0.9rem;">Vipps</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Norway's most popular mobile payment</div>
+        </div>
+        <span class="badge" style="font-size:0.65rem;background:rgba(255,165,0,0.15);color:orange;">Soon</span>
+      </div>
 
-      <div style="display:flex;gap:0.75rem;">
+      <div class="pay-method" id="pm-bank" onclick="selectPayMethod('bank')">
+        <input type="radio" name="pm" value="bank" style="accent-color:var(--gold);"/>
+        <div style="font-size:1.4rem;">🏦</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:0.9rem;">Bank Transfer</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Direct bank transfer — 2-3 business days</div>
+        </div>
+        <span class="badge" style="font-size:0.65rem;background:rgba(255,165,0,0.15);color:orange;">Soon</span>
+      </div>
+
+      <div class="alert" id="modalAlert" style="margin-top:1rem;"></div>
+
+      <div style="display:flex;gap:0.75rem;margin-top:1.25rem;">
         <button class="btn btn-outline" style="flex:1;" onclick="backToStep1()">← Back</button>
-        <button class="btn btn-gold" style="flex:2;" id="confirmBtn" onclick="confirmBuy()">Reserve Shares</button>
+        <button class="btn btn-gold" style="flex:2;" id="confirmBtn" onclick="confirmBuy()">Proceed to Pay</button>
       </div>
-      <div style="font-size:0.72rem;color:rgba(255,255,255,0.25);text-align:center;margin-top:0.75rem;">🔒 Your data is encrypted and securely stored</div>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.25);text-align:center;margin-top:0.75rem;">🔒 Encrypted and securely stored</div>
     </div>
   </div>
 </div>
@@ -221,255 +238,8 @@
 var _user = null;
 var selectedShare = null;
 var currentFilter = 'all';
-var selectedPayment = 'card';
+var selectedPayMethod = 'crypto';
 
 var shares = [
-  {code:'HMH',   name:'HMH Holding AS',      sector:'Energy / Oil Equipment', desc:"Norway's leading oil drilling equipment company. Co-owned by Baker Hughes and Akastor. IPO price NOK 190–210. 2025 revenue: NOK 821.8M.",               price:200.00, change:5.2,  rising:true,  tag:'ipo', volume:'10,500,000', cap:'NOK 948.1M', history:[160,165,170,168,175,180,178,185,190,188,195,200]},
-  {code:'NOR-A', name:'Norwegian Growth A',   sector:'Diversified Growth',    desc:'Flagship share class for long-term investors. Offers core company ownership at a solid mid-range price point.',                                              price:245.00, change:2.4,  rising:true,  tag:'',    volume:'12,430',      cap:'NOK 980K',   history:[210,215,218,222,220,225,228,230,235,238,242,245]},
-  {code:'NOR-B', name:'Norwegian Growth B',   sector:'Diversified Growth',    desc:'Mid-tier share class at a lower entry price. Great for diversifying across multiple classes.',                                                               price:180.50, change:0.8,  rising:false, tag:'',    volume:'8,210',       cap:'NOK 722K',   history:[188,186,185,187,184,183,185,183,182,181,182,180]},
-  {code:'NOR-C', name:'Norwegian Growth C',   sector:'Diversified Growth',    desc:'Premium share class with higher per-unit value. Suited for investors making larger single investments.',                                                      price:310.00, change:1.2,  rising:true,  tag:'',    volume:'5,100',       cap:'NOK 310K',   history:[290,292,295,293,298,300,302,304,306,307,309,310]},
-  {code:'NOR-D', name:'Norwegian Growth D',   sector:'Entry Level',           desc:'Entry-level share class making investing accessible to everyone. Start with as little as 1 share.',                                                           price:95.75,  change:3.1,  rising:true,  tag:'',    volume:'22,800',      cap:'NOK 218K',   history:[82,83,84,85,86,87,88,89,90,92,94,95]},
-  {code:'NOR-E', name:'Norwegian Growth E',   sector:'Premium Class',         desc:'Exclusive high-value share class for major investors. Limited availability at the highest per-share price.',                                                  price:420.00, change:0.3,  rising:false, tag:'',    volume:'1,800',       cap:'NOK 168K',   history:[425,424,423,422,421,422,421,420,421,420,421,420]}
-];
-
-function drawChart(canvas, data, rising) {
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var w = canvas.offsetWidth || canvas.parentElement.offsetWidth || 300;
-  canvas.width = w;
-  var h = canvas.height;
-  var min = Math.min.apply(null, data) - 2;
-  var max = Math.max.apply(null, data) + 2;
-  var stepX = w / (data.length - 1);
-  var color = rising ? '#4caf82' : '#e05555';
-  ctx.clearRect(0, 0, w, h);
-  var grad = ctx.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0, rising ? 'rgba(76,175,130,0.3)' : 'rgba(224,85,85,0.3)');
-  grad.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.beginPath();
-  for (var i = 0; i < data.length; i++) {
-    var x = i * stepX;
-    var y = h - ((data[i] - min) / (max - min)) * h;
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-  ctx.fillStyle = grad; ctx.fill();
-  ctx.beginPath();
-  for (var j = 0; j < data.length; j++) {
-    var x2 = j * stepX;
-    var y2 = h - ((data[j] - min) / (max - min)) * h;
-    if (j === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2);
-  }
-  ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
-}
-
-function renderGrid() {
-  var q = document.getElementById('searchInput').value.toLowerCase();
-  var list = shares.filter(function(s) {
-    if (currentFilter === 'ipo') return s.tag === 'ipo';
-    if (currentFilter === 'rising') return s.rising;
-    if (currentFilter === 'falling') return !s.rising;
-    return true;
-  });
-  if (q) list = list.filter(function(s) {
-    return s.name.toLowerCase().indexOf(q) > -1 || s.code.toLowerCase().indexOf(q) > -1;
-  });
-  var grid = document.getElementById('sharesGrid');
-  if (!list.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.4);">No shares match your search.</div>'; return; }
-  var html = '';
-  for (var i = 0; i < list.length; i++) {
-    var s = list[i];
-    html += '<div class="share-card">' +
-      '<div style="display:flex;justify-content:space-between;margin-bottom:0.85rem;">' +
-        '<span class="badge badge-gold">' + s.code + (s.tag === 'ipo' ? ' 🔥' : '') + '</span>' +
-        '<span class="badge ' + (s.rising ? 'badge-green' : 'badge-red') + '">' + (s.rising ? '▲ +' : '▼ ') + Math.abs(s.change) + '%</span>' +
-      '</div>' +
-      '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.3rem;">' + s.sector + '</div>' +
-      '<div style="font-family:\'Playfair Display\',serif;font-size:1.05rem;font-weight:700;margin-bottom:0.4rem;">' + s.name + '</div>' +
-      '<div style="font-size:0.8rem;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:1rem;">' + s.desc + '</div>' +
-      '<canvas id="chart-' + s.code + '" height="55" style="width:100%;display:block;margin-bottom:1rem;"></canvas>' +
-      '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Price per share</div>' +
-      '<div style="font-family:\'Playfair Display\',serif;font-size:1.5rem;color:var(--gold);margin-bottom:0.85rem;">NOK ' + s.price.toFixed(2) + '</div>' +
-      '<div style="display:flex;gap:1.5rem;margin-bottom:1rem;">' +
-        '<div><div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Volume</div><div style="font-size:0.82rem;font-weight:500;">' + s.volume + '</div></div>' +
-        '<div><div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Market Cap</div><div style="font-size:0.82rem;font-weight:500;">' + s.cap + '</div></div>' +
-      '</div>' +
-      '<button class="btn btn-gold btn-block" onclick="openModal(\'' + s.code + '\')">Buy ' + s.code + ' Shares</button>' +
-    '</div>';
-  }
-  grid.innerHTML = html;
-  setTimeout(function() {
-    for (var k = 0; k < list.length; k++) {
-      var c = document.getElementById('chart-' + list[k].code);
-      if (c) drawChart(c, list[k].history, list[k].rising);
-    }
-    var hmh = document.getElementById('hmhChart');
-    if (hmh) drawChart(hmh, shares[0].history, shares[0].rising);
-  }, 80);
-}
-
-window.openModal = function(code) {
-  // SECURITY: Block if not logged in
-  if (!_user) {
-    window.location.href = 'login.html?redirect=marketplace';
-    return;
-  }
-  selectedShare = null;
-  for (var i = 0; i < shares.length; i++) { if (shares[i].code === code) { selectedShare = shares[i]; break; } }
-  if (!selectedShare) return;
-  // Reset to step 1
-  showStep(1);
-  document.getElementById('modalTitle').textContent = 'Buy ' + selectedShare.code + ' Shares';
-  document.getElementById('modalSubtitle').textContent = selectedShare.name + ' · ' + selectedShare.sector;
-  document.getElementById('modalPrice').textContent = 'NOK ' + selectedShare.price.toFixed(2);
-  var chg = document.getElementById('modalChange');
-  chg.textContent = (selectedShare.rising ? '▲ +' : '▼ ') + Math.abs(selectedShare.change) + '%';
-  chg.style.color = selectedShare.rising ? '#4caf82' : '#e05555';
-  document.getElementById('qtyInput').value = 1;
-  document.getElementById('modalAlert').className = 'alert';
-  updateTotal();
-  document.getElementById('modalOverlay').classList.add('show');
-  setTimeout(function() {
-    var mc = document.getElementById('modalChart');
-    if (mc) drawChart(mc, selectedShare.history, selectedShare.rising);
-  }, 60);
-};
-
-function showStep(n) {
-  document.getElementById('step1').style.display = n === 1 ? 'block' : 'none';
-  document.getElementById('step2').style.display = n === 2 ? 'block' : 'none';
-  // Update step indicator colors
-  var s2 = document.getElementById('step2Indicator');
-  if (n === 2) {
-    s2.style.color = 'var(--gold)';
-    s2.querySelector('span').style.background = 'var(--gold)';
-    s2.querySelector('span').style.color = 'var(--navy)';
-  } else {
-    s2.style.color = 'rgba(255,255,255,0.3)';
-    s2.querySelector('span').style.background = 'rgba(255,255,255,0.1)';
-    s2.querySelector('span').style.color = 'rgba(255,255,255,0.3)';
-  }
-}
-
-window.goToStep2 = function() {
-  if (!_user) { window.location.href = 'login.html?redirect=marketplace'; return; }
-  var q = parseInt(document.getElementById('qtyInput').value) || 1;
-  if (q < 1) { alert('Please enter at least 1 share.'); return; }
-  var total = (selectedShare.price * q).toFixed(2);
-  document.getElementById('summaryShare').textContent = selectedShare.code + ' — ' + selectedShare.name;
-  document.getElementById('summaryQty').textContent = q + ' shares';
-  document.getElementById('summaryPrice').textContent = 'NOK ' + selectedShare.price.toFixed(2);
-  document.getElementById('summaryTotal').textContent = 'NOK ' + total;
-  showStep(2);
-};
-
-window.backToStep1 = function() { showStep(1); };
-
-window.selectPayment = function(method) {
-  selectedPayment = method;
-  var ids = ['payCard','payVipps','payPaypal','payBank'];
-  var vals = ['card','vipps','paypal','bank'];
-  for (var i = 0; i < ids.length; i++) {
-    var el = document.getElementById(ids[i]);
-    if (el) el.style.borderColor = vals[i] === method ? 'rgba(201,168,76,0.5)' : 'rgba(255,255,255,0.1)';
-  }
-};
-
-window.updateTotal = function() {
-  if (!selectedShare) return;
-  var q = Math.max(1, parseInt(document.getElementById('qtyInput').value) || 1);
-  document.getElementById('qtyInput').value = q;
-  document.getElementById('modalTotal').textContent = 'NOK ' + (selectedShare.price * q).toFixed(2);
-};
-
-window.changeQty = function(d) {
-  var i = document.getElementById('qtyInput');
-  i.value = Math.max(1, (parseInt(i.value) || 1) + d);
-  updateTotal();
-};
-
-window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('show'); };
-window.closeOutside = function(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); };
-
-window.confirmBuy = function() {
-  // SECURITY: Re-verify user is still logged in before confirming
-  if (!_user) { window.location.href = 'login.html?redirect=marketplace'; return; }
-  var a = document.getElementById('modalAlert');
-  var q = parseInt(document.getElementById('qtyInput').value) || 1;
-  var total = (selectedShare.price * q).toFixed(2);
-  var btn = document.getElementById('confirmBtn');
-  btn.textContent = 'Processing...'; btn.disabled = true;
-
-  var paymentLabel = {card:'Credit/Debit Card', vipps:'Vipps', paypal:'PayPal', bank:'Bank Transfer'}[selectedPayment] || selectedPayment;
-
-  // Save reservation to Firestore
-  if (window.savePurchase) {
-    window.savePurchase(_user.uid, _user.email, selectedShare, q, parseFloat(total), selectedPayment)
-      .then(function() {
-        a.textContent = '✓ ' + q + ' × ' + selectedShare.code + ' reserved for NOK ' + total + ' via ' + paymentLabel + '. No payment charged yet — you will be contacted when payment goes live.';
-        a.className = 'alert show success';
-        btn.textContent = 'Reserve Shares'; btn.disabled = false;
-        setTimeout(closeModal, 5000);
-      }).catch(function(err) {
-        console.error(err);
-        a.textContent = '⚠ Something went wrong. Please try again.';
-        a.className = 'alert show error';
-        btn.textContent = 'Reserve Shares'; btn.disabled = false;
-      });
-  } else {
-    // Fallback if Firestore not ready
-    a.textContent = '✓ Reservation recorded for ' + q + ' × ' + selectedShare.code + ' — NOK ' + total;
-    a.className = 'alert show success';
-    btn.textContent = 'Reserve Shares'; btn.disabled = false;
-    setTimeout(closeModal, 5000);
-  }
-};
-
-window.setFilter = function(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  renderGrid();
-};
-
-window.toggleMenu = function() {
-  var m = document.getElementById('mobileMenu');
-  var h = document.getElementById('hamburger');
-  m.classList.toggle('open');
-  if (h) h.classList.toggle('open');
-};
-
-window.addEventListener('load', function() { renderGrid(); });
-</script>
-
-<script type="module">
-import { auth, db } from './js/firebase.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-onAuthStateChanged(auth, function(user) {
-  document.getElementById('loadingScreen').style.display = 'none';
-  window._user = user;
-  var btn = document.getElementById('navAuthBtn');
-  if (btn && user) { btn.textContent = 'My Dashboard'; btn.href = 'dashboard.html'; }
-});
-
-window.savePurchase = function(uid, email, share, qty, total, payMethod) {
-  return addDoc(collection(db, 'transactions'), {
-    userId: uid,
-    userEmail: email,
-    shareCode: share.code,
-    shareName: share.name,
-    quantity: qty,
-    pricePerShare: share.price,
-    totalAmount: total,
-    paymentMethod: payMethod,
-    status: 'reserved',
-    type: 'buy',
-    timestamp: serverTimestamp()
-  });
-};
-</script>
-
-</body>
-</html>
+  {code:'HMH',   name:'HMH Holding AS',      sector:'Energy / Oil Equipment', desc:"Norway's leading oil drilling equipment company. Co-owned by Baker Hughes and Akastor. IPO price NOK 190–210. 2025 revenue: NOK 821.8M.", price:200.00, change:5.2,  rising:true,  tag:'ipo', volume:'10,500,000', cap:'NOK 948.1M', history:[160,165,170,168,175,180,178,185,190,188,195,200]},
+  {code:'NOR-A', name:'Norwegian Growth A',   sector:'Diversified Growth',    desc:'Flagship share class for long-term investors. Core company ownership at a solid mid-range price.',                                         price:245.00, change:2.4,  rising:true,  tag:'',    volume:'12,430',      cap:'NOK 98
