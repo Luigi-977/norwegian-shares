@@ -13,14 +13,24 @@
     .filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.1rem;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s;}
     .filter-btn.active,.filter-btn:hover{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.4);color:var(--gold);}
     .fin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
-    .pay-method{display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;transition:border-color 0.2s;margin-bottom:0.75rem;}
-    .pay-method:hover,.pay-method.selected{border-color:rgba(201,168,76,0.5);background:rgba(201,168,76,0.06);}
+    .pay-option{display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.08);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;transition:all 0.2s;margin-bottom:0.65rem;}
+    .pay-option.active{border-color:var(--gold);background:rgba(201,168,76,0.06);}
+    .step-bar{display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;}
+    .sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;flex-shrink:0;transition:all 0.3s;}
+    .sdot.on{background:var(--gold);color:var(--navy);}
+    .sdot.off{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);}
+    .sline{flex:1;height:1px;background:rgba(255,255,255,0.1);}
+    .slabel{font-size:0.72rem;transition:color 0.3s;}
+    .slabel.on{color:var(--gold);font-weight:600;}
+    .slabel.off{color:rgba(255,255,255,0.3);}
+    .crypto-rate-box{background:rgba(11,26,46,0.9);border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.25rem;}
+    .min-notice{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:3px;padding:0.65rem 1rem;font-size:0.78rem;color:rgba(255,255,255,0.6);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
     @media(max-width:700px){.fin-grid{grid-template-columns:1fr 1fr;}}
-    @media(max-width:400px){.fin-grid{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
 
+<!-- LOADING — hidden after 2s max regardless of Firebase -->
 <div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
 
 <nav>
@@ -28,24 +38,20 @@
   <div class="nav-links">
     <a href="dashboard.html">Dashboard</a>
     <a href="marketplace.html" class="active">Marketplace</a>
-    <a href="payment.html">💰 Pay with Crypto</a>
     <a href="portfolio.html">Portfolio</a>
-    <a href="transactions.html">Transactions</a>
+    <a href="payment.html">💰 Crypto Pay</a>
   </div>
   <div class="nav-right">
     <a href="login.html" class="btn btn-gold btn-sm" id="navAuthBtn">Sign In</a>
-    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="dashboard.html">📊 Dashboard</a>
   <a href="marketplace.html">🛒 Marketplace</a>
-  <a href="payment.html">💰 Pay with Crypto</a>
   <a href="portfolio.html">💼 Portfolio</a>
-  <a href="transactions.html">📋 Transactions</a>
+  <a href="payment.html">💰 Crypto Pay</a>
   <a href="settings.html">⚙️ Settings</a>
 </div>
 
@@ -55,24 +61,24 @@
   <div style="background:linear-gradient(135deg,var(--mid),#0f2238);border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
     <div style="position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:6rem;font-weight:900;color:rgba(201,168,76,0.04);pointer-events:none;">SHARES</div>
     <h1 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2rem);font-weight:900;">Norwegian <span class="gold">Shares</span> Marketplace</h1>
-    <p class="muted" style="margin-top:0.5rem;max-width:400px;line-height:1.6;font-size:0.875rem;">Buy verified shares. Pay with crypto, card, Vipps or bank transfer.</p>
+    <p class="muted" style="margin-top:0.5rem;max-width:400px;line-height:1.6;font-size:0.875rem;">Buy verified shares. Minimum purchase: <strong style="color:var(--gold);">100 shares</strong>. Pay with crypto directly to our wallet.</p>
     <div style="display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;">
       <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">6</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Listings</div></div>
       <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">1,200+</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Shareholders</div></div>
       <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">NOK 3.1M</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Market Cap</div></div>
     </div>
-    <!-- PAYMENT METHODS ACCEPTED -->
-    <div style="margin-top:1.5rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-      <span style="font-size:0.72rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;">Accepted payments:</span>
-      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🔷 ETH</span>
-      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🟠 BTC</span>
-      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🟣 SOL</span>
-      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🟡 BNB</span>
-      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">💳 Card</span>
-      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">📱 Vipps</span>
-      <span style="background:rgba(255,255,255,0.08);padding:0.25rem 0.6rem;border-radius:2px;font-size:0.78rem;">🏦 Bank</span>
-      <a href="payment.html" style="font-size:0.72rem;color:var(--gold);margin-left:0.5rem;">+10 more →</a>
+  </div>
+
+  <!-- LIVE PAYMENT BADGE -->
+  <div style="background:rgba(76,175,130,0.08);border:1px solid rgba(76,175,130,0.25);border-radius:4px;padding:1rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <div style="width:10px;height:10px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;"></div>
+      <div>
+        <div style="font-weight:700;font-size:0.875rem;">✅ Live Crypto Payments Active</div>
+        <div class="muted" style="font-size:0.78rem;">ETH · BTC · SOL · USDT · BNB · MATIC · ARB · AVAX · OP + more</div>
+      </div>
     </div>
+    <a href="payment.html" class="btn btn-gold btn-sm">💰 Pay with Crypto</a>
   </div>
 
   <!-- HMH IPO -->
@@ -90,14 +96,13 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
           <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">IPO Price</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);">NOK 190–210</div></div>
           <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Valuation</div><div style="font-family:'Playfair Display',serif;font-size:1rem;">NOK 948.1M</div></div>
-          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Net Income 2025</div><div style="font-family:'Playfair Display',serif;font-size:1rem;" class="pos">NOK 46.1M</div></div>
-          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Shares Offered</div><div style="font-family:'Playfair Display',serif;font-size:1rem;">~10.5M</div></div>
+          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Min. Purchase</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);">100 shares</div></div>
+          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Min. Total</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);">NOK 20,000</div></div>
         </div>
       </div>
       <div>
         <canvas id="hmhChart" height="120" style="width:100%;border-radius:3px;display:block;"></canvas>
         <button class="btn btn-gold btn-block" style="margin-top:1rem;" onclick="openModal('HMH')">Buy HMH Shares</button>
-        <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.5rem;">Lead banks: JPMorgan, Piper Sandler</div>
       </div>
     </div>
   </div>
@@ -111,7 +116,7 @@
     <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Market Cap</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 948.1M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">At NOK 210/share</div></div>
   </div>
 
-  <!-- SEARCH -->
+  <!-- SEARCH + FILTERS -->
   <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
     <input type="text" id="searchInput" placeholder="🔍  Search shares..." oninput="renderGrid()"
       style="flex:1;min-width:160px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.65rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;"/>
@@ -120,126 +125,131 @@
     <button class="filter-btn" onclick="setFilter('rising',this)">📈 Rising</button>
     <button class="filter-btn" onclick="setFilter('falling',this)">📉 Falling</button>
   </div>
-
   <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;">All Available Shares</div>
   <div class="shares-grid" id="sharesGrid"></div>
 </div>
 
 <!-- BUY MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeOutside(event)">
-  <div class="modal" style="max-width:480px;">
+  <div class="modal" style="max-width:500px;">
     <button class="modal-close" onclick="closeModal()">✕</button>
 
-    <!-- STEP INDICATORS -->
-    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;">
-      <div id="ind1" style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:var(--gold);">
-        <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--gold);color:var(--navy);border-radius:50%;font-weight:700;font-size:0.82rem;">1</span> Quantity
-      </div>
-      <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
-      <div id="ind2" style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.3);">
-        <span id="ind2badge" style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);border-radius:50%;font-weight:700;font-size:0.82rem;">2</span> Payment
-      </div>
+    <!-- STEP BAR -->
+    <div class="step-bar">
+      <div class="sdot on" id="d1">1</div><div class="slabel on" id="l1">Quantity</div>
+      <div class="sline"></div>
+      <div class="sdot off" id="d2">2</div><div class="slabel off" id="l2">Payment</div>
+      <div class="sline"></div>
+      <div class="sdot off" id="d3">3</div><div class="slabel off" id="l3">Pay Now</div>
     </div>
 
     <!-- STEP 1: QUANTITY -->
-    <div id="step1">
-      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:0.2rem;" id="modalTitle"></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.82rem;margin-bottom:1.25rem;" id="modalSubtitle"></div>
-      <canvas id="modalChart" height="70" style="width:100%;display:block;border-radius:3px;margin-bottom:1.25rem;"></canvas>
-      <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.3rem;">Price per share</div>
-          <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);" id="modalPrice"></div>
-        </div>
-        <div id="modalChange" style="font-size:0.875rem;font-weight:600;"></div>
+    <div id="s1">
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:0.2rem;" id="mTitle"></div>
+      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-bottom:1rem;" id="mSub"></div>
+      <canvas id="mChart" height="65" style="width:100%;display:block;border-radius:3px;margin-bottom:1rem;"></canvas>
+
+      <!-- PRICE BOX -->
+      <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Price per share</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);" id="mPrice"></div></div>
+        <div id="mChange" style="font-size:0.875rem;font-weight:600;"></div>
       </div>
+
+      <!-- MIN NOTICE -->
+      <div class="min-notice">⚠️ <strong style="color:var(--gold);">Minimum purchase: 100 shares.</strong> &nbsp;Smaller quantities are not accepted.</div>
+
+      <!-- QTY -->
       <div class="form-group">
-        <label>How many shares do you want to buy?</label>
+        <label>Number of shares (minimum 100)</label>
         <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty(-1)">−</button>
-          <input type="number" class="qty-input" id="qtyInput" value="1" min="1" oninput="updateTotal()"/>
-          <button class="qty-btn" onclick="changeQty(1)">+</button>
+          <button class="qty-btn" onclick="changeQty(-100)">−100</button>
+          <input type="number" class="qty-input" id="qtyInput" value="100" min="100" step="100" oninput="updateTotal()"/>
+          <button class="qty-btn" onclick="changeQty(100)">+100</button>
+        </div>
+        <div class="err-msg" id="qtyErr">Minimum purchase is 100 shares.</div>
+      </div>
+
+      <!-- TOTAL -->
+      <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem;margin-bottom:1.25rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.45);">Total Cost (NOK)</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);" id="mTotal">NOK 0.00</div>
         </div>
       </div>
-      <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;">
-        <div style="font-size:0.85rem;color:rgba(255,255,255,0.45);">Total Cost</div>
-        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);" id="modalTotal">NOK 0.00</div>
-      </div>
-      <button class="btn btn-gold btn-block" onclick="goToStep2()">Continue to Payment →</button>
+      <button class="btn btn-gold btn-block" onclick="toStep2()">Continue to Payment →</button>
     </div>
 
-    <!-- STEP 2: PAYMENT -->
-    <div id="step2" style="display:none;">
-      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;">Choose Payment Method</div>
+    <!-- STEP 2: CHOOSE PAYMENT METHOD -->
+    <div id="s2" style="display:none;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:0.3rem;">Choose Payment Method</div>
+      <div class="muted" style="font-size:0.8rem;margin-bottom:1.25rem;">Select how you want to pay for your shares.</div>
 
-      <!-- ORDER SUMMARY -->
-      <div style="background:rgba(11,26,46,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.25rem;">
-        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.6rem;">Order Summary</div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Share</span><span id="sumShare" style="font-weight:600;"></span></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Quantity</span><span id="sumQty" style="font-weight:600;"></span></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Price per share</span><span id="sumPrice" style="font-weight:600;"></span></div>
-        <div style="border-top:1px solid rgba(255,255,255,0.08);margin:0.6rem 0;"></div>
-        <div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">Total</span><span id="sumTotal" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);font-weight:700;"></span></div>
+      <!-- ORDER RECAP -->
+      <div style="background:rgba(11,26,46,0.8);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:1rem;margin-bottom:1.25rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Share</span><span id="r1" style="font-weight:600;"></span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Quantity</span><span id="r2" style="font-weight:600;"></span></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.08);margin:0.5rem 0;"></div>
+        <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">Total (NOK)</span><span id="r3" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);font-weight:700;"></span></div>
       </div>
 
-      <!-- PAYMENT OPTIONS -->
-      <div class="pay-method" id="pm-crypto" onclick="selectPayMethod('crypto')">
-        <input type="radio" name="pm" value="crypto" style="accent-color:var(--gold);"/>
-        <div style="font-size:1.4rem;">💰</div>
-        <div style="flex:1;">
-          <div style="font-weight:700;font-size:0.9rem;">Cryptocurrency</div>
-          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">ETH, BTC, SOL, USDT, BNB + 10 more chains</div>
-        </div>
-        <span class="badge badge-green" style="font-size:0.65rem;">LIVE ✓</span>
+      <div class="pay-option active" id="po1" onclick="pickPay('crypto',this)">
+        <input type="radio" name="pm" checked style="accent-color:var(--gold);"/>
+        <div style="font-size:1.3rem;">💰</div>
+        <div><div style="font-weight:700;font-size:0.9rem;">Cryptocurrency</div><div class="muted" style="font-size:0.75rem;">ETH, BTC, SOL, USDT, BNB + 10 chains</div></div>
+        <span class="badge badge-green" style="margin-left:auto;">Live ✓</span>
       </div>
-
-      <div class="pay-method" id="pm-card" onclick="selectPayMethod('card')">
-        <input type="radio" name="pm" value="card" style="accent-color:var(--gold);"/>
-        <div style="font-size:1.4rem;">💳</div>
-        <div style="flex:1;">
-          <div style="font-weight:700;font-size:0.9rem;">Credit / Debit Card</div>
-          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Visa, Mastercard — via Stripe</div>
-        </div>
-        <span class="badge" style="font-size:0.65rem;background:rgba(255,165,0,0.15);color:orange;">Soon</span>
+      <div class="pay-option" id="po2" onclick="pickPay('bank',this)">
+        <input type="radio" name="pm" style="accent-color:var(--gold);"/>
+        <div style="font-size:1.3rem;">🏦</div>
+        <div><div style="font-weight:700;font-size:0.9rem;">Bank Transfer</div><div class="muted" style="font-size:0.75rem;">2–3 business days · manual confirmation</div></div>
+        <span class="badge badge-gold" style="margin-left:auto;">Manual</span>
       </div>
-
-      <div class="pay-method" id="pm-vipps" onclick="selectPayMethod('vipps')">
-        <input type="radio" name="pm" value="vipps" style="accent-color:var(--gold);"/>
-        <div style="font-size:1.4rem;">📱</div>
-        <div style="flex:1;">
-          <div style="font-weight:700;font-size:0.9rem;">Vipps</div>
-          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Norway's most popular mobile payment</div>
-        </div>
-        <span class="badge" style="font-size:0.65rem;background:rgba(255,165,0,0.15);color:orange;">Soon</span>
-      </div>
-
-      <div class="pay-method" id="pm-bank" onclick="selectPayMethod('bank')">
-        <input type="radio" name="pm" value="bank" style="accent-color:var(--gold);"/>
-        <div style="font-size:1.4rem;">🏦</div>
-        <div style="flex:1;">
-          <div style="font-weight:700;font-size:0.9rem;">Bank Transfer</div>
-          <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">Direct bank transfer — 2-3 business days</div>
-        </div>
-        <span class="badge" style="font-size:0.65rem;background:rgba(255,165,0,0.15);color:orange;">Soon</span>
-      </div>
-
-      <div class="alert" id="modalAlert" style="margin-top:1rem;"></div>
 
       <div style="display:flex;gap:0.75rem;margin-top:1.25rem;">
-        <button class="btn btn-outline" style="flex:1;" onclick="backToStep1()">← Back</button>
-        <button class="btn btn-gold" style="flex:2;" id="confirmBtn" onclick="confirmBuy()">Proceed to Pay</button>
+        <button class="btn btn-outline" style="flex:1;" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-gold" style="flex:2;" onclick="toStep3()">Continue →</button>
       </div>
-      <div style="font-size:0.72rem;color:rgba(255,255,255,0.25);text-align:center;margin-top:0.75rem;">🔒 Encrypted and securely stored</div>
     </div>
-  </div>
-</div>
 
-<script>
-var _user = null;
-var selectedShare = null;
-var currentFilter = 'all';
-var selectedPayMethod = 'crypto';
+    <!-- STEP 3: CRYPTO CONVERSION + PAY -->
+    <div id="s3" style="display:none;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;" id="s3Title">Complete Payment</div>
 
-var shares = [
-  {code:'HMH',   name:'HMH Holding AS',      sector:'Energy / Oil Equipment', desc:"Norway's leading oil drilling equipment company. Co-owned by Baker Hughes and Akastor. IPO price NOK 190–210. 2025 revenue: NOK 821.8M.", price:200.00, change:5.2,  rising:true,  tag:'ipo', volume:'10,500,000', cap:'NOK 948.1M', history:[160,165,170,168,175,180,178,185,190,188,195,200]},
-  {code:'NOR-A', name:'Norwegian Growth A',   sector:'Diversified Growth',    desc:'Flagship share class for long-term investors. Core company ownership at a solid mid-range price.',                                         price:245.00, change:2.4,  rising:true,  tag:'',    volume:'12,430',      cap:'NOK 98
+      <!-- CRYPTO CONVERSION BOX -->
+      <div id="cryptoBox">
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:0.75rem;">Choose Cryptocurrency to Pay With</div>
+
+        <!-- COIN SELECTOR -->
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.4rem;margin-bottom:1.25rem;" id="coinSelector"></div>
+
+        <!-- CONVERSION RESULT -->
+        <div class="crypto-rate-box" id="conversionBox">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.75rem;">Amount to Send</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+            <div>
+              <div id="cryptoAmount" style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--gold);">—</div>
+              <div id="cryptoCoin" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.2rem;">Select a coin above</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="muted" style="font-size:0.72rem;">NOK Total</div>
+              <div id="nokTotal" style="font-weight:600;font-size:0.95rem;"></div>
+              <div id="rateNote" class="muted" style="font-size:0.7rem;margin-top:0.2rem;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:rgba(224,85,85,0.07);border:1px solid rgba(224,85,85,0.2);border-radius:3px;padding:0.75rem 1rem;font-size:0.78rem;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:1.25rem;">
+          ⚠️ Send the <strong style="color:var(--gold);">exact amount shown</strong> above. Then go to the payment page to submit your transaction hash so we can verify your payment.
+        </div>
+
+        <div style="display:flex;gap:0.75rem;margin-bottom:0.75rem;">
+          <button class="btn btn-outline" style="flex:1;" onclick="goStep(2)">← Back</button>
+          <button class="btn btn-gold" style="flex:2;" id="confirmBtn" onclick="confirmAndPay()">Confirm & Pay with Crypto</button>
+        </div>
+        <div class="alert" id="s3Alert"></div>
+      </div>
+
+      <!-- BANK BOX -->
+      <div id="bankBox" style="display:none;">
+        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1.25rem;margin-bottom:1.25rem;
