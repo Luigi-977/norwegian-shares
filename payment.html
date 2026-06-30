@@ -4,10 +4,50 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Norwegian Shares — Crypto Payment</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <!-- QR Code library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
+    :root{--navy:#0b1a2e;--gold:#c9a84c;--gold-light:#e8c97e;--white:#fff;--mid:#1e3352;--card:#12243d;--error:#e05555;--success:#4caf82;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+    a{text-decoration:none;color:inherit;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;border-bottom:1px solid rgba(201,168,76,0.15);position:sticky;top:0;background:rgba(11,26,46,0.95);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--gold);}
+    .nav-links{display:flex;gap:2rem;}
+    .nav-links a{color:rgba(255,255,255,0.6);font-size:0.875rem;}
+    .nav-links a.active,.nav-links a:hover{color:var(--gold);}
+    .btn{display:inline-block;padding:0.6rem 1.25rem;border-radius:2px;font-weight:700;font-size:0.85rem;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;}
+    .btn-gold{background:var(--gold);color:var(--navy);}
+    .btn-block{width:100%;display:block;text-align:center;}
+    .hamburger{display:none;background:transparent;border:none;cursor:pointer;flex-direction:column;gap:5px;}
+    .hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,0.7);border-radius:2px;}
+    .mobile-menu{display:none;position:fixed;top:73px;left:0;right:0;background:rgba(11,26,46,0.98);border-bottom:1px solid rgba(201,168,76,0.15);padding:1.5rem 2rem;flex-direction:column;z-index:99;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{color:rgba(255,255,255,0.7);font-size:0.95rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .container{max-width:1200px;margin:0 auto;padding:2rem;}
+    .badge{display:inline-block;font-size:0.7rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:2px;}
+    .badge-gold{background:rgba(201,168,76,0.12);color:var(--gold);}
+    .badge-green{background:rgba(76,175,130,0.15);color:var(--success);}
+    .gold{color:var(--gold);}
+    .muted{color:rgba(255,255,255,0.5);}
+    .form-group{margin-bottom:1.1rem;}
+    .form-group label{display:block;font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.4rem;}
+    .form-group input,.form-group select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.8rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;}
+    .err-msg{font-size:0.75rem;color:var(--error);margin-top:0.3rem;display:none;}
+    .err-msg.show{display:block;}
+    .alert{display:none;border-radius:3px;padding:0.9rem;font-size:0.875rem;margin-bottom:1rem;}
+    .alert.show{display:block;}
+    .alert.success{background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.3);color:var(--success);}
+    .alert.error{background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.3);color:var(--error);}
+    #loadingScreen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+    .loading-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--gold);margin-bottom:1rem;}
+    .spinner{width:32px;height:32px;border:3px solid rgba(201,168,76,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:768px){nav{padding:1rem 1.5rem;}.nav-links{display:none;}.hamburger{display:flex;}}
     .crypto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;}
     .crypto-card{background:var(--card);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:1.5rem;position:relative;overflow:hidden;transition:border-color 0.3s;}
     .crypto-card:hover{border-color:rgba(201,168,76,0.35);}
@@ -40,7 +80,7 @@
 <div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
 
 <nav>
-  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <a href="index.html" class="nav-logo"><img src="logo.png" alt="Norwegian Shares" style="height:34px;vertical-align:middle;margin-right:0.5rem;"/>Norwegian Shares</a>
   <div class="nav-links">
     <a href="dashboard.html">Dashboard</a>
     <a href="marketplace.html">Marketplace</a>
@@ -236,317 +276,4 @@ var wallets = [
   { coin:'Bitcoin',         code:'BTC',   icon:'🟠', color:'#F7931A', network:'Bitcoin Network',   addr:'bc1q5xemr8w6x5dhvqpcffh677ww8cjmf47et34trm' },
   { coin:'Solana',          code:'SOL',   icon:'🟣', color:'#9945FF', network:'Solana Mainnet',    addr:'DjUY1dBxbJU6TsPkQgUo1oAYzBrTHgSoCueiCPKfPi9F' },
   { coin:'Tron / USDT',     code:'TRX',   icon:'🔴', color:'#FF0013', network:'Tron Network',      addr:'TYPE7cyogP2fdKbUHaHwgxBDTGBdvvprCN' },
-  { coin:'BNB Chain',       code:'BNB',   icon:'🟡', color:'#F3BA2F', network:'BNB Smart Chain',   addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'Polygon',         code:'MATIC', icon:'🟪', color:'#8247E5', network:'Polygon Mainnet',   addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'Arbitrum',        code:'ARB',   icon:'🔵', color:'#28A0F0', network:'Arbitrum One',      addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'Avalanche',       code:'AVAX',  icon:'🔺', color:'#E84142', network:'Avalanche C-Chain', addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'Optimism',        code:'OP',    icon:'🔴', color:'#FF0420', network:'Optimism Mainnet',  addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'Base',            code:'BASE',  icon:'🔵', color:'#0052FF', network:'Base Mainnet',      addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'Linea',           code:'LINEA', icon:'🟦', color:'#61DFFF', network:'Linea Mainnet',     addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'ZKsync Era',      code:'ZKS',   icon:'⚡', color:'#8C8DFC', network:'ZKsync Era',        addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'Monad',           code:'MON',   icon:'🟤', color:'#836EF9', network:'Monad Mainnet',     addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-  { coin:'MegaETH',         code:'METH',  icon:'⚙️', color:'#00D4AA', network:'MegaETH Mainnet',   addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee' },
-];
-
-// ── SHARE CHART DATA ───────────────────────────────────────
-var chartData = {
-  'NOR-A':{ label:'NOR-A — Norwegian Growth A', price:'NOK 245.00', change:'+2.4%', rising:true,
-    data:[210,212,215,213,218,220,222,219,225,228,230,227,232,235,238,236,240,242,244,241,245] },
-  'NOR-B':{ label:'NOR-B — Norwegian Growth B', price:'NOK 180.50', change:'-0.8%', rising:false,
-    data:[188,187,186,188,185,184,186,185,183,185,183,184,182,183,181,182,180,181,180,181,180] },
-  'NOR-C':{ label:'NOR-C — Norwegian Growth C', price:'NOK 310.00', change:'+1.2%', rising:true,
-    data:[290,292,291,294,293,296,295,298,297,300,299,302,301,304,303,306,305,307,306,308,310] },
-  'NOR-D':{ label:'NOR-D — Norwegian Growth D', price:'NOK 95.75', change:'+3.1%', rising:true,
-    data:[82,83,82,84,83,85,84,86,85,87,86,88,87,89,88,90,89,92,91,94,95] },
-  'HMH':  { label:'HMH — HMH Holding AS (IPO)', price:'NOK 200.00', change:'+5.2%', rising:true,
-    data:[160,162,161,165,163,168,167,170,168,175,173,178,176,180,178,185,183,190,188,195,200] },
-};
-
-var activeChart = 'NOR-A';
-var qrCode = null;
-
-// ── DRAW MAIN CHART ────────────────────────────────────────
-function drawMainChart(key) {
-  var canvas = document.getElementById('mainChart');
-  if (!canvas) return;
-  var d = chartData[key];
-  var ctx = canvas.getContext('2d');
-  var w = canvas.offsetWidth || canvas.parentElement.offsetWidth || 800;
-  var h = canvas.offsetHeight || 200;
-  canvas.width = w; canvas.height = h;
-  var data = d.data;
-  var min = Math.min.apply(null, data) - 3;
-  var max = Math.max.apply(null, data) + 3;
-  var stepX = w / (data.length - 1);
-  var color = d.rising ? '#4caf82' : '#e05555';
-  ctx.clearRect(0, 0, w, h);
-
-  // Grid lines
-  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-  ctx.lineWidth = 1;
-  for (var g = 0; g < 5; g++) {
-    var gy = (h / 4) * g;
-    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
-  }
-
-  // Gradient fill
-  var grad = ctx.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0, d.rising ? 'rgba(76,175,130,0.35)' : 'rgba(224,85,85,0.35)');
-  grad.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.beginPath();
-  for (var i = 0; i < data.length; i++) {
-    var x = i * stepX;
-    var y = h - ((data[i] - min) / (max - min)) * (h - 30) - 15;
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-  ctx.fillStyle = grad; ctx.fill();
-
-  // Line
-  ctx.beginPath();
-  for (var j = 0; j < data.length; j++) {
-    var x2 = j * stepX;
-    var y2 = h - ((data[j] - min) / (max - min)) * (h - 30) - 15;
-    if (j === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2);
-  }
-  ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.stroke();
-
-  // Dots at peaks and troughs
-  for (var k = 1; k < data.length - 1; k++) {
-    if ((data[k] > data[k-1] && data[k] > data[k+1]) || (data[k] < data[k-1] && data[k] < data[k+1])) {
-      var px = k * stepX;
-      var py = h - ((data[k] - min) / (max - min)) * (h - 30) - 15;
-      ctx.beginPath();
-      ctx.arc(px, py, 3, 0, Math.PI * 2);
-      ctx.fillStyle = color; ctx.fill();
-    }
-  }
-
-  // Last point highlight
-  var lx = (data.length - 1) * stepX;
-  var ly = h - ((data[data.length-1] - min) / (max - min)) * (h - 30) - 15;
-  ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI * 2);
-  
-  ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI * 2);
-  ctx.fillStyle = color; ctx.fill();
-  ctx.beginPath(); ctx.arc(lx, ly, 8, 0, Math.PI * 2);
-  ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
-
-  // Price labels
-  ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.font = '10px DM Sans';
-  var maxPrice = Math.max.apply(null, data);
-  var minPrice = Math.min.apply(null, data);
-  ctx.fillText('NOK ' + maxPrice, 5, 25);
-  ctx.fillText('NOK ' + minPrice, 5, h - 5);
-}
-
-window.setChart = function(key, btn) {
-  activeChart = key;
-  document.querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  var d = chartData[key];
-  document.getElementById('chartLabel').textContent = d.label;
-  document.getElementById('chartPrice').textContent = d.price;
-  var chgEl = document.getElementById('chartChange');
-  chgEl.innerHTML = '<span class="badge ' + (d.rising ? 'badge-green' : 'badge-red') + '">' + (d.rising ? '▲ ' : '▼ ') + d.change + '</span>';
-  drawMainChart(key);
-};
-
-// ── RENDER CRYPTO CARDS ────────────────────────────────────
-function renderCryptoGrid() {
-  var html = '';
-  for (var i = 0; i < wallets.length; i++) {
-    var w = wallets[i];
-    var shortAddr = w.addr.substring(0, 10) + '...' + w.addr.substring(w.addr.length - 6);
-    html += '<div class="crypto-card" onclick="showWallet(' + i + ')" id="card-' + i + '">' +
-      '<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">' +
-        '<div style="width:42px;height:42px;background:' + w.color + '22;border:1px solid ' + w.color + '44;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">' + w.icon + '</div>' +
-        '<div><div style="font-weight:700;font-size:0.95rem;">' + w.coin + '</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">' + w.network + '</div></div>' +
-        '<span class="badge badge-gold" style="margin-left:auto;">' + w.code + '</span>' +
-      '</div>' +
-      '<div style="font-family:monospace;font-size:0.7rem;color:rgba(255,255,255,0.5);background:rgba(11,26,46,0.6);padding:0.5rem 0.75rem;border-radius:2px;word-break:break-all;">' + shortAddr + '</div>' +
-      '<button class="btn btn-gold btn-block" style="margin-top:1rem;font-size:0.82rem;">Pay with ' + w.code + ' →</button>' +
-    '</div>';
-  }
-  document.getElementById('cryptoGrid').innerHTML = html;
-}
-
-window.showWallet = function(idx) {
-  var w = wallets[idx];
-  document.querySelectorAll('.crypto-card').forEach(function(c) { c.classList.remove('selected'); });
-  var card = document.getElementById('card-' + idx);
-  if (card) card.classList.add('selected');
-  document.getElementById('detailCoin').textContent = w.icon + ' ' + w.coin + ' (' + w.code + ')';
-  document.getElementById('detailNetwork').textContent = 'Network: ' + w.network;
-  document.getElementById('addrText').textContent = w.addr;
-  document.getElementById('warningCoin').textContent = w.code;
-  document.getElementById('warningNetwork').textContent = w.network;
-  document.getElementById('walletDetail').style.display = 'block';
-  document.getElementById('copyConfirm').style.display = 'none';
-
-  // Generate QR Code
-  var qrBox = document.getElementById('qrCodeBox');
-  qrBox.innerHTML = '';
-  if (window.QRCode) {
-    new QRCode(qrBox, { text: w.addr, width: 140, height: 140, colorDark:'#000000', colorLight:'#ffffff' });
-  }
-
-  // Scroll to detail
-  setTimeout(function() {
-    document.getElementById('walletDetail').scrollIntoView({ behavior:'smooth', block:'start' });
-  }, 100);
-};
-
-window.closeDetail = function() {
-  document.getElementById('walletDetail').style.display = 'none';
-  document.querySelectorAll('.crypto-card').forEach(function(c) { c.classList.remove('selected'); });
-};
-
-window.copyAddress = function() {
-  var addr = document.getElementById('addrText').textContent;
-  navigator.clipboard.writeText(addr).then(function() {
-    document.getElementById('copyConfirm').style.display = 'block';
-    setTimeout(function() { document.getElementById('copyConfirm').style.display = 'none'; }, 3000);
-  }).catch(function() {
-    // Fallback
-    var ta = document.createElement('textarea');
-    ta.value = addr; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    document.getElementById('copyConfirm').style.display = 'block';
-    setTimeout(function() { document.getElementById('copyConfirm').style.display = 'none'; }, 3000);
-  });
-};
-
-// ── SUBMIT TRANSACTION HASH ────────────────────────────────
-window.submitHash = function() {
-  var a = document.getElementById('hashAlert');
-  var name = document.getElementById('hashName').value.trim();
-  var share = document.getElementById('hashShare').value;
-  var qty = document.getElementById('hashQty').value;
-  var coin = document.getElementById('hashCoin').value;
-  var txid = document.getElementById('hashTxid').value.trim();
-  var amount = document.getElementById('hashAmount').value.trim();
-
-  if (!name || !share || !qty || !coin || !txid || !amount) {
-    a.textContent = '⚠ Please fill in all fields before submitting.';
-    a.className = 'alert show error'; return;
-  }
-  if (txid.length < 20) {
-    a.textContent = '⚠ Transaction hash looks too short. Please check and try again.';
-    a.className = 'alert show error'; return;
-  }
-
-  var btn = document.getElementById('submitHashBtn');
-  btn.textContent = 'Submitting...'; btn.disabled = true;
-
-  // Save to Firestore
-  if (window.saveHashToFirestore) {
-    window.saveHashToFirestore({ name, share, qty: parseInt(qty), coin, txid, amount })
-      .then(function() {
-        a.textContent = '✓ Payment submitted! We will verify your transaction on-chain and confirm your shares within 24 hours. Thank you!';
-        a.className = 'alert show success';
-        btn.textContent = 'Submit Payment for Verification'; btn.disabled = false;
-        document.getElementById('hashTxid').value = '';
-        document.getElementById('hashAmount').value = '';
-      }).catch(function() {
-        a.textContent = '✓ Received! We will verify your transaction and confirm your shares within 24 hours.';
-        a.className = 'alert show success';
-        btn.textContent = 'Submit Payment for Verification'; btn.disabled = false;
-      });
-  } else {
-    setTimeout(function() {
-      a.textContent = '✓ Payment submission received! We will verify and confirm within 24 hours.';
-      a.className = 'alert show success';
-      btn.textContent = 'Submit Payment for Verification'; btn.disabled = false;
-    }, 1000);
-  }
-};
-
-window.toggleMenu = function() {
-  var m = document.getElementById('mobileMenu');
-  var h = document.getElementById('hamburger');
-  m.classList.toggle('open'); if (h) h.classList.toggle('open');
-};
-
-// ── INIT ───────────────────────────────────────────────────
-window.addEventListener('load', function() {
-  // Read order from marketplace URL params
-  var params = new URLSearchParams(window.location.search);
-  if(params.get('share')) {
-    var box = document.getElementById('orderSummaryBox');
-    if(box) box.style.display = 'block';
-    var oShare = document.getElementById('oShare');
-    var oQty = document.getElementById('oQty');
-    var oTotal = document.getElementById('oTotal');
-    if(oShare) oShare.textContent = params.get('share');
-    if(oQty) oQty.textContent = params.get('qty') + ' shares';
-    if(oTotal) oTotal.textContent = 'NOK ' + params.get('total');
-    // Pre-select coin if passed
-    if(params.get('coin')) {
-      var coinCode = params.get('coin');
-      var amt = params.get('amount');
-      // Show exact amount notification
-      var notice = document.createElement('div');
-      notice.style.cssText = 'background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.3);border-radius:4px;padding:1.25rem;margin-bottom:1.5rem;';
-      notice.innerHTML = '<div style="font-weight:700;color:#4caf82;margin-bottom:0.4rem;">✓ Your Order — Exact Amount to Send</div>'+
-        '<div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--gold);font-weight:700;margin:0.5rem 0;">'+amt+' '+coinCode+'</div>'+
-        '<div style="font-size:0.82rem;color:rgba(255,255,255,0.6);">For: '+params.get('qty')+' × '+params.get('share')+' shares — NOK '+params.get('total')+'</div>';
-      var container = document.querySelector('.container');
-      if(container) container.insertBefore(notice, container.firstChild.nextSibling.nextSibling);
-      // Pre-fill hash form
-      var hashShare = document.getElementById('hashShare');
-      var hashQty = document.getElementById('hashQty');
-      var hashCoin = document.getElementById('hashCoin');
-      if(hashShare) hashShare.value = params.get('share');
-      if(hashQty) hashQty.value = params.get('qty');
-      if(hashCoin) hashCoin.value = coinCode;
-    }
-  }
-  renderCryptoGrid();
-  setTimeout(function() { drawMainChart('NOR-A'); }, 100);
-
-  // Check for order from marketplace
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('share')) {
-    var box = document.getElementById('orderSummaryBox');
-    box.style.display = 'block';
-    document.getElementById('oShare').textContent = params.get('share');
-    document.getElementById('oQty').textContent = params.get('qty') + ' shares';
-    document.getElementById('oTotal').textContent = 'NOK ' + params.get('total');
-    var sel = document.getElementById('hashShare');
-    if (sel) sel.value = params.get('share');
-    var qtyInp = document.getElementById('hashQty');
-    if (qtyInp) qtyInp.value = params.get('qty');
-  }
-});
-
-window.addEventListener('resize', function() { drawMainChart(activeChart); });
-</script>
-
-<script type="module">
-import { auth, db } from './js/firebase.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-onAuthStateChanged(auth, function(user) {
-  document.getElementById('loadingScreen').style.display = 'none';
-  var btn = document.getElementById('navAuthBtn');
-  if (btn && user) { btn.textContent = 'My Dashboard'; btn.href = 'dashboard.html'; }
-  if (user) {
-    var inp = document.getElementById('hashName');
-    if (inp && !inp.value) inp.value = user.displayName || user.email;
-  }
-});
-
-window.saveHashToFirestore = function(data) {
-  return addDoc(collection(db, 'crypto_payments'), {
-    ...data,
-    status: 'pending_verification',
-    timestamp: serverTimestamp()
-  });
-};
-</script>
-
-</body>
-</html>
+  { coin:'BNB Chain',       code:'BNB',   icon:'🟡', 
