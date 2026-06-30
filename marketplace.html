@@ -4,122 +4,184 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Norwegian Shares — Marketplace</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
+    :root{--navy:#0b1a2e;--gold:#c9a84c;--gold-light:#e8c97e;--white:#fff;--mid:#1e3352;--card:#12243d;--error:#e05555;--success:#4caf82;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+    a{text-decoration:none;color:inherit;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;border-bottom:1px solid rgba(201,168,76,0.15);position:sticky;top:0;background:rgba(11,26,46,0.95);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--gold);}
+    .nav-links{display:flex;gap:2rem;}
+    .nav-links a{color:rgba(255,255,255,0.6);font-size:0.875rem;}
+    .nav-links a.active,.nav-links a:hover{color:var(--gold);}
+    .btn{display:inline-block;padding:0.6rem 1.25rem;border-radius:2px;font-weight:700;font-size:0.85rem;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all 0.2s;text-align:center;}
+    .btn-gold{background:var(--gold);color:var(--navy);}
+    .btn-gold:hover{background:var(--gold-light);}
+    .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.2);color:var(--white);}
+    .btn-block{width:100%;display:block;}
+    .hamburger{display:none;background:transparent;border:none;cursor:pointer;flex-direction:column;gap:5px;}
+    .hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,0.7);border-radius:2px;}
+    .mobile-menu{display:none;position:fixed;top:73px;left:0;right:0;background:rgba(11,26,46,0.98);border-bottom:1px solid rgba(201,168,76,0.15);padding:1.5rem 2rem;flex-direction:column;z-index:99;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{color:rgba(255,255,255,0.7);font-size:0.95rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .container{max-width:1200px;margin:0 auto;padding:2rem;}
+    .badge{display:inline-block;font-size:0.7rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:2px;}
+    .badge-gold{background:rgba(201,168,76,0.12);color:var(--gold);}
+    .badge-green{background:rgba(76,175,130,0.15);color:var(--success);}
+    .badge-red{background:rgba(224,85,85,0.15);color:var(--error);}
+    .badge-ipo{background:var(--gold);color:var(--navy);}
+    .muted{color:rgba(255,255,255,0.5);}
+    .gold{color:var(--gold);}
     .share-card{background:var(--card);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:1.5rem;position:relative;overflow:hidden;transition:border-color 0.3s,transform 0.2s;}
     .share-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold);}
     .share-card:hover{border-color:rgba(201,168,76,0.4);transform:translateY(-2px);}
     .shares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;}
-    .filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.1rem;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s;}
+    .filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:0.6rem 1.1rem;border-radius:2px;font-size:0.82rem;cursor:pointer;}
     .filter-btn.active,.filter-btn:hover{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.4);color:var(--gold);}
     .fin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
-    .pay-option{display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.08);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;transition:all 0.2s;margin-bottom:0.65rem;}
+    .pay-option{display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.08);border-radius:3px;padding:0.85rem 1rem;cursor:pointer;margin-bottom:0.65rem;transition:all 0.2s;}
     .pay-option.active{border-color:var(--gold);background:rgba(201,168,76,0.06);}
     .step-bar{display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;}
-    .sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;flex-shrink:0;transition:all 0.3s;}
+    .sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;flex-shrink:0;}
     .sdot.on{background:var(--gold);color:var(--navy);}
     .sdot.off{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);}
     .sline{flex:1;height:1px;background:rgba(255,255,255,0.1);}
-    .slabel{font-size:0.72rem;transition:color 0.3s;}
+    .slabel{font-size:0.72rem;}
     .slabel.on{color:var(--gold);font-weight:600;}
     .slabel.off{color:rgba(255,255,255,0.3);}
+    .form-group{margin-bottom:1.1rem;}
+    .form-group label{display:block;font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.4rem;}
+    .form-group input,.form-group select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.8rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;}
+    .qty-control{display:flex;}
+    .qty-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--white);font-size:0.95rem;cursor:pointer;padding:0 0.85rem;font-family:'DM Sans',sans-serif;}
+    .qty-btn:first-child{border-radius:3px 0 0 3px;}
+    .qty-btn:last-child{border-radius:0 3px 3px 0;}
+    .qty-input{flex:1;height:42px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-left:none;border-right:none;color:var(--white);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;text-align:center;outline:none;}
+    .err-msg{font-size:0.75rem;color:var(--error);margin-top:0.3rem;display:none;}
+    .err-msg.show{display:block;}
+    .alert{display:none;border-radius:3px;padding:0.85rem;font-size:0.85rem;margin-bottom:1rem;}
+    .alert.show{display:block;}
+    .alert.success{background:rgba(76,175,130,0.1);border:1px solid rgba(76,175,130,0.3);color:var(--success);}
+    .alert.error{background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.3);color:var(--error);}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;align-items:center;justify-content:center;overflow-y:auto;padding:1rem;}
+    .modal-overlay.show{display:flex;}
+    .modal{background:var(--card);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:1.75rem;max-width:500px;width:100%;position:relative;margin:auto;}
+    .modal-close{position:absolute;top:1rem;right:1rem;background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:1.2rem;cursor:pointer;}
+    .min-notice{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:3px;padding:0.65rem 1rem;font-size:0.78rem;color:rgba(255,255,255,0.6);margin-bottom:1rem;}
     .crypto-rate-box{background:rgba(11,26,46,0.9);border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.25rem;}
-    .min-notice{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:3px;padding:0.65rem 1rem;font-size:0.78rem;color:rgba(255,255,255,0.6);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
+    .currency-select{background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.3);border-radius:3px;padding:0.4rem 0.6rem;color:var(--gold);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+    @media(max-width:768px){nav{padding:1rem 1.5rem;}.nav-links{display:none;}.hamburger{display:flex;}}
     @media(max-width:700px){.fin-grid{grid-template-columns:1fr 1fr;}}
   </style>
 </head>
 <body>
 
-<!-- LOADING — hidden after 2s max regardless of Firebase -->
-<div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
-
 <nav>
-  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <a href="index.html" class="nav-logo"><img src="logo.png" alt="Norwegian Shares" style="height:34px;vertical-align:middle;margin-right:0.5rem;"/>Norwegian Shares</a>
   <div class="nav-links">
     <a href="dashboard.html">Dashboard</a>
     <a href="marketplace.html" class="active">Marketplace</a>
-    <a href="portfolio.html">Portfolio</a>
     <a href="payment.html">💰 Crypto Pay</a>
   </div>
-  <div class="nav-right">
-    <a href="login.html" class="btn btn-gold btn-sm" id="navAuthBtn">Sign In</a>
-    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <div style="display:flex;gap:0.75rem;align-items:center;">
+    <select id="currencySelect" class="currency-select" onchange="changeCurrency(this.value)">
+      <option value="NOK">🇳🇴 NOK</option>
+      <option value="USD">🇺🇸 USD</option>
+      <option value="GBP">🇬🇧 GBP</option>
+      <option value="KES">🇰🇪 KES (Kenya)</option>
+      <option value="TZS">🇹🇿 TZS (Tanzania)</option>
+      <option value="EUR">🇪🇺 EUR</option>
+    </select>
+    <a href="login.html" class="btn btn-gold" id="navAuthBtn">Sign In</a>
+    <button class="hamburger" onclick="toggleMenu()" id="hamburger"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="dashboard.html">📊 Dashboard</a>
   <a href="marketplace.html">🛒 Marketplace</a>
-  <a href="portfolio.html">💼 Portfolio</a>
   <a href="payment.html">💰 Crypto Pay</a>
   <a href="settings.html">⚙️ Settings</a>
 </div>
 
 <div class="container">
 
-  <!-- HERO -->
   <div style="background:linear-gradient(135deg,var(--mid),#0f2238);border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
-    <div style="position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:6rem;font-weight:900;color:rgba(201,168,76,0.04);pointer-events:none;">SHARES</div>
+    <div style="position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-size:6rem;font-weight:900;color:rgba(201,168,76,0.04);">SHARES</div>
     <h1 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2rem);font-weight:900;">Norwegian <span class="gold">Shares</span> Marketplace</h1>
-    <p class="muted" style="margin-top:0.5rem;max-width:400px;line-height:1.6;font-size:0.875rem;">Buy verified shares. Minimum purchase: <strong style="color:var(--gold);">100 shares</strong>. Pay with crypto directly to our wallet.</p>
+    <p class="muted" style="margin-top:0.5rem;max-width:420px;line-height:1.6;font-size:0.875rem;">Buy verified shares. Minimum 100 shares. Prices shown in your local currency. Pay with crypto.</p>
     <div style="display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;">
-      <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">6</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Listings</div></div>
-      <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">1,200+</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Shareholders</div></div>
-      <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">NOK 3.1M</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Market Cap</div></div>
+      <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">6</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Listings</div></div>
+      <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;">1,200+</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Shareholders</div></div>
+      <div><div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;" id="marketCapDisplay">NOK 3.1M</div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">Market Cap</div></div>
     </div>
   </div>
 
-  <!-- LIVE PAYMENT BADGE -->
   <div style="background:rgba(76,175,130,0.08);border:1px solid rgba(76,175,130,0.25);border-radius:4px;padding:1rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
     <div style="display:flex;align-items:center;gap:0.75rem;">
       <div style="width:10px;height:10px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;"></div>
-      <div>
-        <div style="font-weight:700;font-size:0.875rem;">✅ Live Crypto Payments Active</div>
-        <div class="muted" style="font-size:0.78rem;">ETH · BTC · SOL · USDT · BNB · MATIC · ARB · AVAX · OP + more</div>
-      </div>
+      <div><div style="font-weight:700;font-size:0.875rem;">✅ Live Crypto Payments Active</div><div class="muted" style="font-size:0.78rem;">ETH · BTC · SOL · USDT · BNB + more</div></div>
     </div>
-    <a href="payment.html" class="btn btn-gold btn-sm">💰 Pay with Crypto</a>
+    <a href="payment.html" class="btn btn-gold">💰 Pay with Crypto</a>
   </div>
 
-  <!-- HMH IPO -->
   <div style="background:linear-gradient(135deg,#0f2238,var(--mid));border:2px solid rgba(201,168,76,0.35);border-radius:6px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden;">
     <div style="position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--gold),var(--gold-light));"></div>
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
       <span class="badge badge-ipo">⭐ Featured IPO</span>
       <span style="font-size:0.82rem;color:rgba(255,255,255,0.5);">HMH Holding — Going public on Nasdaq</span>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;" id="hmhFeatureGrid">
       <div>
         <span class="badge badge-gold" style="margin-bottom:0.75rem;display:inline-block;">HMH · Nasdaq</span>
         <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:0.5rem;">HMH Holding AS</div>
-        <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;line-height:1.6;margin-bottom:1rem;">Norway's leading oil drilling equipment company. Co-owned by Baker Hughes and Akastor. 2025 revenue: NOK 821.8M. Net income: NOK 46.1M.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">IPO Price</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);">NOK 190–210</div></div>
-          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Valuation</div><div style="font-family:'Playfair Display',serif;font-size:1rem;">NOK 948.1M</div></div>
-          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Min. Purchase</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);">100 shares</div></div>
-          <div style="background:rgba(11,26,46,0.5);padding:0.75rem;border-radius:3px;"><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Min. Total</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);">NOK 20,000</div></div>
-        </div>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;line-height:1.6;margin-bottom:1rem;">Norway's leading oil drilling equipment company. Co-owned by Baker Hughes and Akastor. 2025 revenue: NOK 821.8M.</p>
       </div>
       <div>
-        <canvas id="hmhChart" height="120" style="width:100%;border-radius:3px;display:block;"></canvas>
+        <canvas id="hmhChart" height="120" style="width:100%;display:block;"></canvas>
         <button class="btn btn-gold btn-block" style="margin-top:1rem;" onclick="openModal('HMH')">Buy HMH Shares</button>
       </div>
     </div>
   </div>
 
-  <!-- FINANCIALS -->
-  <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem;">HMH Holding — Key Financials</div>
-  <div class="fin-grid">
-    <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">2025 Revenue</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 821.8M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">1.2× price-to-sales</div></div>
-    <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Net Income 2025</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 46.1M</div><div style="font-size:0.75rem;color:var(--error);margin-top:0.25rem;">↓ 11% from 2024</div></div>
-    <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Shares Offered</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">10.5M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">Raises NOK 231.4M</div></div>
-    <div style="background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1.25rem;"><div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.5rem;">Market Cap</div><div style="font-family:'Playfair Display',serif;font-size:1.2rem;">NOK 948.1M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.25rem;">At NOK 210/share</div></div>
+  <!-- MASTER LIVE MARKET CHART -->
+  <div style="background:var(--card);border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:1.75rem;margin-bottom:2rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;">📈 Live Market — All Shares vs Time</div>
+        <div class="muted" style="font-size:0.78rem;margin-top:0.2rem;">Click a share below to view it on the graph</div>
+      </div>
+    </div>
+    <div id="masterLegend" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;"></div>
+    <canvas id="masterChart" height="220" style="width:100%;display:block;"></canvas>
   </div>
 
-  <!-- SEARCH + FILTERS -->
+  <!-- SELL LOCK POLICY -->
+  <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1rem 1.5rem;margin-bottom:2rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.2rem;">🔒</div>
+    <div>
+      <div style="font-weight:700;font-size:0.875rem;color:var(--gold);margin-bottom:0.3rem;">Share Lock Policy</div>
+      <div class="muted" style="font-size:0.8rem;line-height:1.6;">Shares are locked for <strong style="color:var(--gold);">2 months</strong> after purchase. After the lock period, shares can only be sold during designated selling windows (1st–5th of each month). This protects share value stability for all investors.</div>
+    </div>
+  </div>
+
+  <!-- REFERRAL BANNER -->
+  <div style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.3);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <div style="font-weight:700;font-size:0.9rem;color:var(--gold);">🎁 Refer & Earn 10 Free Shares</div>
+      <div class="muted" style="font-size:0.8rem;margin-top:0.2rem;">Invite a friend — when they make their first purchase, you both get 10 bonus shares.</div>
+    </div>
+    <button class="btn btn-gold" onclick="showReferral()">Get My Referral Link</button>
+  </div>
+
   <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
-    <input type="text" id="searchInput" placeholder="🔍  Search shares..." oninput="renderGrid()"
-      style="flex:1;min-width:160px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.65rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;"/>
+    <input type="text" id="searchInput" placeholder="🔍 Search shares..." oninput="renderGrid()"
+      style="flex:1;min-width:160px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.65rem 1rem;color:var(--white);font-size:0.875rem;outline:none;"/>
     <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
     <button class="filter-btn" onclick="setFilter('ipo',this)">🔥 IPO</button>
     <button class="filter-btn" onclick="setFilter('rising',this)">📈 Rising</button>
@@ -131,10 +193,8 @@
 
 <!-- BUY MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeOutside(event)">
-  <div class="modal" style="max-width:500px;">
+  <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
-
-    <!-- STEP BAR -->
     <div class="step-bar">
       <div class="sdot on" id="d1">1</div><div class="slabel on" id="l1">Quantity</div>
       <div class="sline"></div>
@@ -143,23 +203,16 @@
       <div class="sdot off" id="d3">3</div><div class="slabel off" id="l3">Pay Now</div>
     </div>
 
-    <!-- STEP 1: QUANTITY -->
-    <div id="s1">
-      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:0.2rem;" id="mTitle"></div>
-      <div style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-bottom:1rem;" id="mSub"></div>
-      <canvas id="mChart" height="65" style="width:100%;display:block;border-radius:3px;margin-bottom:1rem;"></canvas>
-
-      <!-- PRICE BOX -->
+    <div id="s1step">
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;" id="mTitle"></div>
+      <div class="muted" style="font-size:0.8rem;margin-bottom:1rem;" id="mSub"></div>
+      <canvas id="mChart" height="65" style="width:100%;display:block;margin-bottom:1rem;"></canvas>
       <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;">
-        <div><div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Price per share</div>
+        <div><div style="font-size:0.65rem;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">Price per share</div>
         <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);" id="mPrice"></div></div>
         <div id="mChange" style="font-size:0.875rem;font-weight:600;"></div>
       </div>
-
-      <!-- MIN NOTICE -->
-      <div class="min-notice">⚠️ <strong style="color:var(--gold);">Minimum purchase: 100 shares.</strong> &nbsp;Smaller quantities are not accepted.</div>
-
-      <!-- QTY -->
+      <div class="min-notice">⚠️ <strong style="color:var(--gold);">Minimum purchase: 100 shares.</strong></div>
       <div class="form-group">
         <label>Number of shares (minimum 100)</label>
         <div class="qty-control">
@@ -169,476 +222,27 @@
         </div>
         <div class="err-msg" id="qtyErr">Minimum purchase is 100 shares.</div>
       </div>
-
-      <!-- TOTAL -->
-      <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem;margin-bottom:1.25rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.45);">Total Cost (NOK)</div>
-          <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);" id="mTotal">NOK 0.00</div>
-        </div>
+      <div style="background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:1rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:0.85rem;color:rgba(255,255,255,0.45);">Total Cost</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);" id="mTotal"></div>
       </div>
       <button class="btn btn-gold btn-block" onclick="toStep2()">Continue to Payment →</button>
     </div>
 
-    <!-- STEP 2: CHOOSE PAYMENT METHOD -->
-    <div id="s2" style="display:none;">
+    <div id="s2step" style="display:none;">
       <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:0.3rem;">Choose Payment Method</div>
-      <div class="muted" style="font-size:0.8rem;margin-bottom:1.25rem;">Select how you want to pay for your shares.</div>
-
-      <!-- ORDER RECAP -->
+      <div class="muted" style="font-size:0.8rem;margin-bottom:1.25rem;">Select how you want to pay.</div>
       <div style="background:rgba(11,26,46,0.8);border:1px solid rgba(201,168,76,0.15);border-radius:4px;padding:1rem;margin-bottom:1.25rem;">
         <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Share</span><span id="r1" style="font-weight:600;"></span></div>
         <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.875rem;"><span class="muted">Quantity</span><span id="r2" style="font-weight:600;"></span></div>
         <div style="border-top:1px solid rgba(255,255,255,0.08);margin:0.5rem 0;"></div>
-        <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">Total (NOK)</span><span id="r3" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);font-weight:700;"></span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">Total</span><span id="r3" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);font-weight:700;"></span></div>
       </div>
-
       <div class="pay-option active" id="po1" onclick="pickPay('crypto',this)">
-        <input type="radio" name="pm" checked style="accent-color:var(--gold);"/>
+        <input type="radio" name="pm" checked/>
         <div style="font-size:1.3rem;">💰</div>
-        <div><div style="font-weight:700;font-size:0.9rem;">Cryptocurrency</div><div class="muted" style="font-size:0.75rem;">ETH, BTC, SOL, USDT, BNB + 10 chains</div></div>
+        <div><div style="font-weight:700;font-size:0.9rem;">Cryptocurrency</div><div class="muted" style="font-size:0.75rem;">ETH, BTC, SOL, USDT, BNB + more</div></div>
         <span class="badge badge-green" style="margin-left:auto;">Live ✓</span>
       </div>
       <div class="pay-option" id="po2" onclick="pickPay('bank',this)">
-        <input type="radio" name="pm" style="accent-color:var(--gold);"/>
-        <div style="font-size:1.3rem;">🏦</div>
-        <div><div style="font-weight:700;font-size:0.9rem;">Bank Transfer</div><div class="muted" style="font-size:0.75rem;">2–3 business days · manual confirmation</div></div>
-        <span class="badge badge-gold" style="margin-left:auto;">Manual</span>
-      </div>
-
-      <div style="display:flex;gap:0.75rem;margin-top:1.25rem;">
-        <button class="btn btn-outline" style="flex:1;" onclick="goStep(1)">← Back</button>
-        <button class="btn btn-gold" style="flex:2;" onclick="toStep3()">Continue →</button>
-      </div>
-    </div>
-
-    <!-- STEP 3: CRYPTO CONVERSION + PAY -->
-    <div id="s3" style="display:none;">
-      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;" id="s3Title">Complete Payment</div>
-
-      <!-- CRYPTO CONVERSION BOX -->
-      <div id="cryptoBox">
-        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);margin-bottom:0.75rem;">Choose Cryptocurrency to Pay With</div>
-
-        <!-- COIN SELECTOR -->
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.4rem;margin-bottom:1.25rem;" id="coinSelector"></div>
-
-        <!-- CONVERSION RESULT -->
-        <div class="crypto-rate-box" id="conversionBox">
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.75rem;">Amount to Send</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
-            <div>
-              <div id="cryptoAmount" style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--gold);">—</div>
-              <div id="cryptoCoin" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:0.2rem;">Select a coin above</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="muted" style="font-size:0.72rem;">NOK Total</div>
-              <div id="nokTotal" style="font-weight:600;font-size:0.95rem;"></div>
-              <div id="rateNote" class="muted" style="font-size:0.7rem;margin-top:0.2rem;"></div>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:rgba(224,85,85,0.07);border:1px solid rgba(224,85,85,0.2);border-radius:3px;padding:0.75rem 1rem;font-size:0.78rem;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:1.25rem;">
-          ⚠️ Send the <strong style="color:var(--gold);">exact amount shown</strong> above. Then go to the payment page to submit your transaction hash so we can verify your payment.
-        </div>
-
-        <div style="display:flex;gap:0.75rem;margin-bottom:0.75rem;">
-          <button class="btn btn-outline" style="flex:1;" onclick="goStep(2)">← Back</button>
-          <button class="btn btn-gold" style="flex:2;" id="confirmBtn" onclick="confirmAndPay()">Confirm & Pay with Crypto</button>
-        </div>
-        <div class="alert" id="s3Alert"></div>
-      </div>
-
-      <!-- BANK BOX -->
-      <div id="bankBox" style="display:none;">
-        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:1.25rem;margin-bottom:1.25rem;font-size:0.875rem;line-height:1.8;color:rgba(255,255,255,0.7);">
-          <div style="font-weight:700;color:var(--gold);margin-bottom:0.5rem;">🏦 Bank Transfer Instructions</div>
-          After confirming, we will send bank details to your registered email within a few hours. Allow 2–3 business days for the payment to clear and your shares to be allocated.
-        </div>
-        <div class="alert" id="bankAlert"></div>
-        <div style="display:flex;gap:0.75rem;">
-          <button class="btn btn-outline" style="flex:1;" onclick="goStep(2)">← Back</button>
-          <button class="btn btn-gold" style="flex:2;" id="bankConfirmBtn" onclick="confirmBank()">Confirm Bank Order</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- SUCCESS NOTIFICATION POPUP -->
-<div id="successPopup" style="display:none;position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid rgba(76,175,130,0.4);border-radius:6px;padding:1.25rem 1.5rem;max-width:340px;z-index:999;animation:fadeUp 0.4s ease both;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
-  <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
-    <div style="width:36px;height:36px;background:rgba(76,175,130,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✓</div>
-    <div style="font-weight:700;font-size:0.95rem;color:var(--success);" id="popupTitle">Order Confirmed!</div>
-  </div>
-  <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:1.6;" id="popupMsg"></div>
-  <button onclick="document.getElementById('successPopup').style.display='none'" style="margin-top:0.75rem;background:transparent;border:none;color:rgba(255,255,255,0.3);font-size:0.75rem;cursor:pointer;">Dismiss</button>
-</div>
-
-<style>
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-</style>
-
-<script>
-// ── HIDE LOADING SCREEN ALWAYS WITHIN 2s ──────────────────
-(function() {
-  var maxWait = setTimeout(function() {
-    var ls = document.getElementById('loadingScreen');
-    if (ls) ls.style.display = 'none';
-  }, 2000);
-  window._clearLoadingTimeout = function() { clearTimeout(maxWait); };
-})();
-
-var _user = null;
-var selectedShare = null;
-var currentFilter = 'all';
-var selectedPay = 'crypto';
-var selectedCoin = null;
-var cryptoRates = {};
-
-// ── SHARES DATA ────────────────────────────────────────────
-var shares = [
-  {code:'HMH',   name:'HMH Holding AS',    sector:'Energy / Oil Equipment', desc:"Norway's leading oil drilling equipment company. Co-owned by Baker Hughes and Akastor. IPO price NOK 190–210. 2025 revenue: NOK 821.8M.",  price:200.00, change:5.2,  rising:true,  tag:'ipo', volume:'10,500,000', cap:'NOK 948.1M', history:[160,165,170,168,175,180,178,185,190,188,195,200]},
-  {code:'NOR-A', name:'Norwegian Growth A', sector:'Diversified Growth',   desc:'Flagship share class for long-term investors seeking steady growth.',                                                                           price:245.00, change:2.4,  rising:true,  tag:'',    volume:'12,430',      cap:'NOK 980K',   history:[210,215,218,222,220,225,228,230,235,238,242,245]},
-  {code:'NOR-B', name:'Norwegian Growth B', sector:'Diversified Growth',   desc:'Mid-tier share class at a lower entry price. Great for diversifying.',                                                                          price:180.50, change:0.8,  rising:false, tag:'',    volume:'8,210',       cap:'NOK 722K',   history:[188,186,185,187,184,183,185,183,182,181,182,180]},
-  {code:'NOR-C', name:'Norwegian Growth C', sector:'Diversified Growth',   desc:'Premium share class suited for larger single investments.',                                                                                     price:310.00, change:1.2,  rising:true,  tag:'',    volume:'5,100',       cap:'NOK 310K',   history:[290,292,295,293,298,300,302,304,306,307,309,310]},
-  {code:'NOR-D', name:'Norwegian Growth D', sector:'Entry Level',          desc:'Entry-level share class. Minimum 100 shares per purchase.',                                                                                    price:95.75,  change:3.1,  rising:true,  tag:'',    volume:'22,800',      cap:'NOK 218K',   history:[82,83,84,85,86,87,88,89,90,92,94,95]},
-  {code:'NOR-E', name:'Norwegian Growth E', sector:'Premium Class',        desc:'Exclusive high-value share class. Limited availability.',                                                                                      price:420.00, change:0.3,  rising:false, tag:'',    volume:'1,800',       cap:'NOK 168K',   history:[425,424,423,422,421,422,421,420,421,420,421,420]}
-];
-
-// ── CRYPTO COINS & WALLETS ─────────────────────────────────
-var coins = [
-  {code:'ETH',   name:'Ethereum',  icon:'🔷', cgId:'ethereum',        addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
-  {code:'BTC',   name:'Bitcoin',   icon:'🟠', cgId:'bitcoin',         addr:'bc1q5xemr8w6x5dhvqpcffh677ww8cjmf47et34trm'},
-  {code:'SOL',   name:'Solana',    icon:'🟣', cgId:'solana',          addr:'DjUY1dBxbJU6TsPkQgUo1oAYzBrTHgSoCueiCPKfPi9F'},
-  {code:'USDT',  name:'USDT',      icon:'💚', cgId:'tether',          addr:'TYPE7cyogP2fdKbUHaHwgxBDTGBdvvprCN'},
-  {code:'BNB',   name:'BNB',       icon:'🟡', cgId:'binancecoin',     addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
-  {code:'MATIC', name:'Polygon',   icon:'🟪', cgId:'matic-network',   addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
-  {code:'ARB',   name:'Arbitrum',  icon:'🔵', cgId:'arbitrum',        addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
-  {code:'AVAX',  name:'Avalanche', icon:'🔺', cgId:'avalanche-2',     addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
-  {code:'OP',    name:'Optimism',  icon:'🔴', cgId:'optimism',        addr:'0xCe050bA8d1246a02d74D920B31E69aa00b8f9Bee'},
-  {code:'TRX',   name:'Tron',      icon:'🔴', cgId:'tron',            addr:'TYPE7cyogP2fdKbUHaHwgxBDTGBdvvprCN'}
-];
-
-// ── FETCH LIVE CRYPTO RATES ────────────────────────────────
-function fetchRates() {
-  var ids = coins.map(function(c){return c.cgId;}).join(',');
-  fetch('https://api.coingecko.com/api/v3/simple/price?ids='+ids+'&vs_currencies=nok')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      coins.forEach(function(c){
-        if(data[c.cgId] && data[c.cgId].nok) cryptoRates[c.code] = data[c.cgId].nok;
-      });
-      // Fallback rates if API fails
-      if(!cryptoRates.ETH) setFallbackRates();
-      updateConversion();
-    }).catch(function(){ setFallbackRates(); updateConversion(); });
-}
-
-function setFallbackRates() {
-  // Approximate NOK rates (fallback only)
-  cryptoRates = {ETH:35000,BTC:1000000,SOL:2000,USDT:11,BNB:7000,MATIC:12,ARB:18,AVAX:400,OP:25,TRX:2.5};
-}
-
-// ── DRAW MINI CHART ────────────────────────────────────────
-function drawChart(canvas, data, rising) {
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var w = canvas.offsetWidth || 300; canvas.width = w;
-  var h = canvas.height;
-  var min = Math.min.apply(null,data)-2, max = Math.max.apply(null,data)+2;
-  var sx = w/(data.length-1);
-  var color = rising ? '#4caf82' : '#e05555';
-  ctx.clearRect(0,0,w,h);
-  var g = ctx.createLinearGradient(0,0,0,h);
-  g.addColorStop(0, rising?'rgba(76,175,130,0.3)':'rgba(224,85,85,0.3)');
-  g.addColorStop(1,'rgba(0,0,0,0)');
-  ctx.beginPath();
-  for(var i=0;i<data.length;i++){var x=i*sx,y=h-((data[i]-min)/(max-min))*h;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
-  ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fillStyle=g;ctx.fill();
-  ctx.beginPath();
-  for(var j=0;j<data.length;j++){var x2=j*sx,y2=h-((data[j]-min)/(max-min))*h;j?ctx.lineTo(x2,y2):ctx.moveTo(x2,y2);}
-  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
-}
-
-// ── RENDER SHARE CARDS ─────────────────────────────────────
-function renderGrid() {
-  var q = document.getElementById('searchInput').value.toLowerCase();
-  var list = shares.filter(function(s){
-    if(currentFilter==='ipo') return s.tag==='ipo';
-    if(currentFilter==='rising') return s.rising;
-    if(currentFilter==='falling') return !s.rising;
-    return true;
-  });
-  if(q) list=list.filter(function(s){return s.name.toLowerCase().indexOf(q)>-1||s.code.toLowerCase().indexOf(q)>-1;});
-  var grid = document.getElementById('sharesGrid');
-  if(!list.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(255,255,255,0.4);">No shares found.</div>';return;}
-  var html='';
-  for(var i=0;i<list.length;i++){
-    var s=list[i];
-    var minTotal=(s.price*100).toFixed(2);
-    html+='<div class="share-card">'+
-      '<div style="display:flex;justify-content:space-between;margin-bottom:0.75rem;">'+
-        '<span class="badge badge-gold">'+s.code+(s.tag==='ipo'?' 🔥':'')+'</span>'+
-        '<span class="badge '+(s.rising?'badge-green':'badge-red')+'">'+(s.rising?'▲ +':'▼ ')+Math.abs(s.change)+'%</span>'+
-      '</div>'+
-      '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.25rem;">'+s.sector+'</div>'+
-      '<div style="font-family:\'Playfair Display\',serif;font-size:1rem;font-weight:700;margin-bottom:0.35rem;">'+s.name+'</div>'+
-      '<div style="font-size:0.78rem;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:0.85rem;">'+s.desc+'</div>'+
-      '<canvas id="c-'+s.code+'" height="50" style="width:100%;display:block;margin-bottom:0.85rem;"></canvas>'+
-      '<div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:0.2rem;">Price per share</div>'+
-      '<div style="font-family:\'Playfair Display\',serif;font-size:1.4rem;color:var(--gold);margin-bottom:0.4rem;">NOK '+s.price.toFixed(2)+'</div>'+
-      '<div style="font-size:0.72rem;color:rgba(201,168,76,0.7);margin-bottom:0.75rem;">Min. 100 shares = NOK '+minTotal+'</div>'+
-      '<div style="display:flex;gap:0.5rem;margin-bottom:0;flex-wrap:wrap;">'+
-        '<div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Vol: '+s.volume+'</div>'+
-        '<div style="font-size:0.68rem;color:rgba(255,255,255,0.35);">Cap: '+s.cap+'</div>'+
-      '</div>'+
-      '<button class="btn btn-gold btn-block" style="margin-top:0.85rem;" onclick="openModal(\''+s.code+'\')">Buy '+s.code+' — Min 100 Shares</button>'+
-    '</div>';
-  }
-  grid.innerHTML=html;
-  setTimeout(function(){
-    for(var k=0;k<list.length;k++){var c=document.getElementById('c-'+list[k].code);if(c)drawChart(c,list[k].history,list[k].rising);}
-    var hc=document.getElementById('hmhChart');if(hc)drawChart(hc,shares[0].history,true);
-  },80);
-}
-
-// ── MODAL OPEN ─────────────────────────────────────────────
-window.openModal = function(code) {
-  if(!_user){window.location.href='login.html';return;}
-  selectedShare=null;
-  for(var i=0;i<shares.length;i++){if(shares[i].code===code){selectedShare=shares[i];break;}}
-  if(!selectedShare)return;
-  goStep(1);
-  document.getElementById('mTitle').textContent='Buy '+selectedShare.code+' Shares';
-  document.getElementById('mSub').textContent=selectedShare.name+' · '+selectedShare.sector;
-  document.getElementById('mPrice').textContent='NOK '+selectedShare.price.toFixed(2);
-  var chg=document.getElementById('mChange');
-  chg.textContent=(selectedShare.rising?'▲ +':'▼ ')+Math.abs(selectedShare.change)+'%';
-  chg.style.color=selectedShare.rising?'#4caf82':'#e05555';
-  document.getElementById('qtyInput').value=100;
-  document.getElementById('qtyErr').classList.remove('show');
-  updateTotal();
-  document.getElementById('modalOverlay').classList.add('show');
-  setTimeout(function(){var mc=document.getElementById('mChart');if(mc)drawChart(mc,selectedShare.history,selectedShare.rising);},60);
-};
-
-// ── QUANTITY UPDATE ────────────────────────────────────────
-window.updateTotal = function() {
-  if(!selectedShare)return;
-  var q=Math.max(100,parseInt(document.getElementById('qtyInput').value)||100);
-  document.getElementById('qtyInput').value=q;
-  document.getElementById('mTotal').textContent='NOK '+(selectedShare.price*q).toFixed(2);
-};
-
-window.changeQty = function(d) {
-  var i=document.getElementById('qtyInput');
-  i.value=Math.max(100,(parseInt(i.value)||100)+d);
-  updateTotal();
-};
-
-// ── STEP NAVIGATION ────────────────────────────────────────
-function goStep(n) {
-  for(var i=1;i<=3;i++){
-    document.getElementById('s'+i).style.display=i===n?'block':'none';
-    document.getElementById('d'+i).className='sdot '+(i<=n?'on':'off');
-    document.getElementById('l'+i).className='slabel '+(i<=n?'on':'off');
-  }
-}
-window.goStep=goStep;
-
-window.toStep2 = function() {
-  if(!_user){window.location.href='login.html';return;}
-  var q=parseInt(document.getElementById('qtyInput').value)||0;
-  if(q<100){document.getElementById('qtyErr').classList.add('show');return;}
-  document.getElementById('qtyErr').classList.remove('show');
-  var total=(selectedShare.price*q).toFixed(2);
-  document.getElementById('r1').textContent=selectedShare.code+' — '+selectedShare.name;
-  document.getElementById('r2').textContent=q+' shares';
-  document.getElementById('r3').textContent='NOK '+total;
-  goStep(2);
-};
-
-window.toStep3 = function() {
-  var q=parseInt(document.getElementById('qtyInput').value)||100;
-  var total=(selectedShare.price*q).toFixed(2);
-  document.getElementById('s3Title').textContent=selectedPay==='crypto'?'Crypto Payment':'Bank Transfer';
-  document.getElementById('cryptoBox').style.display=selectedPay==='crypto'?'block':'none';
-  document.getElementById('bankBox').style.display=selectedPay==='bank'?'block':'none';
-  document.getElementById('nokTotal').textContent='NOK '+total;
-  document.getElementById('s3Alert').className='alert';
-  document.getElementById('bankAlert').className='alert';
-
-  if(selectedPay==='crypto'){
-    buildCoinSelector(parseFloat(total));
-    fetchRates();
-  }
-  goStep(3);
-};
-
-// ── BUILD COIN SELECTOR BUTTONS ────────────────────────────
-function buildCoinSelector(nokTotal) {
-  var html='';
-  for(var i=0;i<coins.length;i++){
-    var c=coins[i];
-    html+='<button onclick="selectCoin(\''+c.code+'\')" id="cb-'+c.code+'" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:0.4rem;cursor:pointer;font-size:1.1rem;text-align:center;transition:all 0.2s;" title="'+c.name+'">'+c.icon+'<div style="font-size:0.6rem;color:rgba(255,255,255,0.5);margin-top:0.2rem;">'+c.code+'</div></button>';
-  }
-  document.getElementById('coinSelector').innerHTML=html;
-  selectedCoin=null;
-}
-
-window.selectCoin = function(code) {
-  selectedCoin=null;
-  for(var i=0;i<coins.length;i++){if(coins[i].code===code){selectedCoin=coins[i];break;}}
-  // Highlight selected
-  coins.forEach(function(c){
-    var btn=document.getElementById('cb-'+c.code);
-    if(btn)btn.style.borderColor=c.code===code?'var(--gold)':'rgba(255,255,255,0.1)';
-  });
-  updateConversion();
-};
-
-function updateConversion() {
-  if(!selectedCoin||!selectedShare)return;
-  var q=parseInt(document.getElementById('qtyInput').value)||100;
-  var nokAmount=selectedShare.price*q;
-  var rate=cryptoRates[selectedCoin.code];
-  if(!rate){document.getElementById('cryptoAmount').textContent='Loading...';return;}
-  var cryptoAmt=(nokAmount/rate).toFixed(selectedCoin.code==='BTC'?8:selectedCoin.code==='ETH'?6:2);
-  document.getElementById('cryptoAmount').textContent=cryptoAmt+' '+selectedCoin.code;
-  document.getElementById('cryptoCoin').textContent='Send '+selectedCoin.name+' ('+selectedCoin.code+') to our wallet';
-  document.getElementById('rateNote').textContent='Rate: 1 '+selectedCoin.code+' ≈ NOK '+rate.toLocaleString()+' (live)';
-  document.getElementById('nokTotal').textContent='NOK '+nokAmount.toFixed(2);
-}
-
-// ── PAY SELECTION ──────────────────────────────────────────
-window.pickPay = function(method, el) {
-  selectedPay=method;
-  document.querySelectorAll('.pay-option').forEach(function(e){e.classList.remove('active');});
-  el.classList.add('active');
-  el.querySelector('input').checked=true;
-};
-
-// ── CONFIRM & PAY (CRYPTO) ─────────────────────────────────
-window.confirmAndPay = function() {
-  if(!_user){window.location.href='login.html';return;}
-  if(!selectedCoin){
-    document.getElementById('s3Alert').textContent='⚠ Please select a cryptocurrency first.';
-    document.getElementById('s3Alert').className='alert show error';return;
-  }
-  var q=parseInt(document.getElementById('qtyInput').value)||100;
-  var nokTotal=selectedShare.price*q;
-  var rate=cryptoRates[selectedCoin.code]||1;
-  var cryptoAmt=(nokTotal/rate).toFixed(selectedCoin.code==='BTC'?8:selectedCoin.code==='ETH'?6:2);
-  var btn=document.getElementById('confirmBtn');
-  btn.textContent='Saving...';btn.disabled=true;
-
-  if(window.saveOrder){
-    window.saveOrder(_user.uid,_user.email,selectedShare,q,nokTotal,selectedCoin.code,cryptoAmt,selectedCoin.addr)
-    .then(function(){
-      btn.textContent='Confirm & Pay with Crypto';btn.disabled=false;
-      closeModal();
-      showPopup(
-        '🎉 Order Confirmed!',
-        q+' × '+selectedShare.code+' for NOK '+nokTotal.toFixed(2)+'\n\nSend exactly '+cryptoAmt+' '+selectedCoin.code+' to:\n'+selectedCoin.addr.substring(0,20)+'...\n\nThen go to the Payment page to submit your transaction hash.'
-      );
-      // Redirect to payment page with full details
-      setTimeout(function(){
-        window.location.href='payment.html?share='+selectedShare.code+'&qty='+q+'&total='+nokTotal.toFixed(2)+'&coin='+selectedCoin.code+'&amount='+cryptoAmt;
-      },3000);
-    }).catch(function(){
-      btn.textContent='Confirm & Pay with Crypto';btn.disabled=false;
-      document.getElementById('s3Alert').textContent='⚠ Error saving order. Please try again.';
-      document.getElementById('s3Alert').className='alert show error';
-    });
-  } else {
-    btn.textContent='Confirm & Pay with Crypto';btn.disabled=false;
-    closeModal();
-    showPopup('🎉 Order Saved!', q+' × '+selectedShare.code+' — Send '+cryptoAmt+' '+selectedCoin.code);
-    setTimeout(function(){
-      window.location.href='payment.html?share='+selectedShare.code+'&qty='+q+'&total='+nokTotal.toFixed(2)+'&coin='+selectedCoin.code+'&amount='+cryptoAmt;
-    },2000);
-  }
-};
-
-// ── CONFIRM BANK ───────────────────────────────────────────
-window.confirmBank = function() {
-  if(!_user){window.location.href='login.html';return;}
-  var q=parseInt(document.getElementById('qtyInput').value)||100;
-  var total=selectedShare.price*q;
-  var btn=document.getElementById('bankConfirmBtn');
-  btn.textContent='Saving...';btn.disabled=true;
-  if(window.saveOrder){
-    window.saveOrder(_user.uid,_user.email,selectedShare,q,total,'bank','','')
-    .then(function(){
-      btn.textContent='Confirm Bank Order';btn.disabled=false;
-      closeModal();
-      showPopup('✓ Bank Order Confirmed!','Your order for '+q+' × '+selectedShare.code+' (NOK '+total.toFixed(2)+') has been saved. Bank transfer details will be sent to your email.');
-    }).catch(function(){
-      btn.textContent='Confirm Bank Order';btn.disabled=false;
-      document.getElementById('bankAlert').textContent='⚠ Error. Please try again.';
-      document.getElementById('bankAlert').className='alert show error';
-    });
-  }
-};
-
-// ── POPUP NOTIFICATION ─────────────────────────────────────
-function showPopup(title, msg) {
-  document.getElementById('popupTitle').textContent=title;
-  document.getElementById('popupMsg').textContent=msg;
-  var p=document.getElementById('successPopup');
-  p.style.display='block';
-  setTimeout(function(){p.style.display='none';},8000);
-}
-
-// ── UTILS ──────────────────────────────────────────────────
-window.closeModal = function(){document.getElementById('modalOverlay').classList.remove('show');};
-window.closeOutside = function(e){if(e.target===document.getElementById('modalOverlay'))closeModal();};
-window.setFilter = function(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderGrid();};
-window.toggleMenu = function(){var m=document.getElementById('mobileMenu');var h=document.getElementById('hamburger');m.classList.toggle('open');if(h)h.classList.toggle('open');};
-
-// ── INIT — runs immediately, no waiting for Firebase ───────
-renderGrid();
-setFallbackRates();
-fetchRates();
-</script>
-
-<!-- FIREBASE — loads async, does NOT block page render -->
-<script type="module">
-import { auth, db } from './js/firebase.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// Hide loading screen as soon as Firebase responds
-onAuthStateChanged(auth, function(user) {
-  var ls = document.getElementById('loadingScreen');
-  if(ls) ls.style.display='none';
-  if(window._clearLoadingTimeout) window._clearLoadingTimeout();
-  window._user = user;
-  var btn = document.getElementById('navAuthBtn');
-  if(btn && user){ btn.textContent='My Dashboard'; btn.href='dashboard.html'; }
-});
-
-window.saveOrder = function(uid, email, share, qty, total, payMethod, cryptoAmt, cryptoAddr) {
-  return addDoc(collection(db,'transactions'), {
-    userId: uid,
-    userEmail: email,
-    shareCode: share.code,
-    shareName: share.name,
-    quantity: qty,
-    pricePerShare: share.price,
-    totalAmountNOK: total,
-    paymentMethod: payMethod,
-    cryptoAmount: cryptoAmt||'',
-    cryptoAddress: cryptoAddr||'',
-    status: payMethod==='bank'?'awaiting_bank_transfer':'awaiting_crypto_payment',
-    type: 'buy',
-    timestamp: serverTimestamp()
-  });
-};
-</script>
-
-</body>
-</html>
+        <in
