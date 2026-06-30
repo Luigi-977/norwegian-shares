@@ -1,145 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Norwegian Shares — Invest in Norway's Future</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--navy:#0b1a2e;--gold:#c9a84c;--gold-light:#e8c97e;--white:#fff;--mid:#1e3352;--card:#12243d;--error:#e05555;--success:#4caf82;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+    a{text-decoration:none;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;border-bottom:1px solid rgba(201,168,76,0.15);position:sticky;top:0;background:rgba(11,26,46,0.95);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--gold);}
+    .nav-links{display:flex;gap:2rem;}
+    .nav-links a{color:rgba(255,255,255,0.6);font-size:0.875rem;transition:color 0.2s;}
+    .nav-links a:hover{color:var(--gold);}
+    .btn-gold{background:var(--gold);color:var(--navy);padding:0.5rem 1.25rem;border-radius:2px;font-weight:700;font-size:0.875rem;display:inline-block;transition:background 0.2s;}
+    .btn-gold:hover{background:var(--gold-light);}
+    .btn-outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.2);padding:0.5rem 1.25rem;border-radius:2px;font-size:0.875rem;display:inline-block;transition:all 0.2s;}
+    .btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+    .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8rem 2rem 4rem;position:relative;overflow:hidden;}
+    .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(201,168,76,0.08) 0%,transparent 70%),linear-gradient(160deg,#0b1a2e 0%,#132540 50%,#0b1a2e 100%);}
+    .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);background-size:50px 50px;}
+    .hero-content{position:relative;z-index:2;max-width:860px;}
+    .eyebrow{display:inline-block;font-size:0.72rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.4);padding:0.3rem 1rem;border-radius:2px;margin-bottom:2rem;}
+    h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,6rem);font-weight:900;line-height:1.05;}
+    .gold{color:var(--gold);}
+    .muted{color:rgba(255,255,255,0.5);}
+    .ticker-wrap{background:var(--gold);padding:0.65rem 0;overflow:hidden;white-space:nowrap;}
+    .ticker-track{display:inline-block;animation:ticker 30s linear infinite;}
+    .ticker-track span{color:var(--navy);font-weight:600;font-size:0.82rem;margin-right:3rem;}
+    .section{padding:8rem 2rem;}
+    .container{max-width:1100px;margin:0 auto;}
+    .panel{background:var(--card);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:1.5rem;}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+    .stat-card{background:var(--card);border:1px solid rgba(201,168,76,0.12);border-radius:4px;padding:1.5rem;position:relative;overflow:hidden;}
+    .stat-card::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold);}
+    .hamburger{display:none;background:transparent;border:none;cursor:pointer;flex-direction:column;gap:5px;}
+    .hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,0.7);border-radius:2px;}
+    .mobile-menu{display:none;position:fixed;top:73px;left:0;right:0;background:rgba(11,26,46,0.98);border-bottom:1px solid rgba(201,168,76,0.15);padding:1.5rem 2rem;flex-direction:column;gap:0;z-index:99;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{color:rgba(255,255,255,0.7);font-size:0.95rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:768px){nav{padding:1rem 1.5rem;}.nav-links{display:none;}.hamburger{display:flex;}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}.section{padding:5rem 1.5rem;}}
+  </style>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <a href="index.html" class="nav-logo"><img src="logo.png" alt="Norwegian Shares" style="height:34px;vertical-align:middle;margin-right:0.5rem;"/>Norwegian Shares</a>
   <div class="nav-links">
     <a href="#shares">Shares</a>
     <a href="#how">How It Works</a>
-    <a href="#company">Company</a>
     <a href="marketplace.html">Marketplace</a>
+    <a href="payment.html">💰 Crypto Pay</a>
   </div>
-  <div class="nav-right">
-    <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
-    <a href="register.html" class="btn btn-gold btn-sm">Get Started</a>
+  <div style="display:flex;gap:0.75rem;align-items:center;">
+    <a href="login.html" class="btn-outline">Sign In</a>
+    <a href="register.html" class="btn-gold">Get Started</a>
+    <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')"><span></span><span></span><span></span></button>
   </div>
 </nav>
+<div class="mobile-menu" id="mob">
+  <a href="marketplace.html">🛒 Marketplace</a>
+  <a href="payment.html">💰 Crypto Pay</a>
+  <a href="login.html">🔑 Sign In</a>
+  <a href="register.html">✨ Get Started</a>
+</div>
 
-<!-- HERO -->
-<section style="min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8rem 2rem 4rem;position:relative;overflow:hidden;">
+<section class="hero">
+  <div class="hero-bg"></div>
   <div class="grid-bg"></div>
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(201,168,76,0.08) 0%,transparent 70%),linear-gradient(160deg,#0b1a2e 0%,#132540 50%,#0b1a2e 100%);"></div>
-  <div style="position:relative;z-index:2;max-width:860px;" class="fade-up">
-    <div style="display:inline-block;font-size:0.72rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.4);padding:0.3rem 1rem;border-radius:2px;margin-bottom:2rem;">Norwegian Shares Platform</div>
-    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,6rem);font-weight:900;line-height:1.05;">Own a Piece of <span class="gold">Norway's</span> Growth</h1>
-    <p style="margin-top:1.5rem;font-size:1.1rem;color:rgba(255,255,255,0.6);line-height:1.7;max-width:580px;margin-left:auto;margin-right:auto;">Buy and manage shares in a registered Norwegian company. Transparent pricing, secure transactions, and real-time portfolio tracking from any device.</p>
+  <div class="hero-content" style="animation:fadeUp 0.8s ease both;">
+    <div class="eyebrow">Norwegian Shares Platform</div>
+    <h1>Own a Piece of <span class="gold">Norway's</span> Growth</h1>
+    <p style="margin-top:1.5rem;font-size:1.1rem;color:rgba(255,255,255,0.6);line-height:1.7;max-width:580px;margin-left:auto;margin-right:auto;">Buy and manage shares in a registered Norwegian company. Pay with crypto. Track your portfolio in real time.</p>
     <div style="margin-top:2.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-      <a href="marketplace.html" class="btn btn-gold">View Shares</a>
-      <a href="#how" class="btn btn-outline">How It Works</a>
+      <a href="marketplace.html" class="btn-gold" style="padding:0.85rem 2rem;font-size:1rem;">View Shares</a>
+      <a href="register.html" class="btn-outline" style="padding:0.85rem 2rem;font-size:1rem;">Create Account</a>
     </div>
     <div style="margin-top:5rem;display:flex;gap:4rem;justify-content:center;flex-wrap:wrap;">
       <div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold);font-weight:700;">NOK 2.4M</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Total Share Value</div></div>
       <div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold);font-weight:700;">1,200+</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Shareholders</div></div>
-      <div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold);font-weight:700;">100%</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Verified & Registered</div></div>
+      <div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold);font-weight:700;">14</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;">Crypto Accepted</div></div>
     </div>
   </div>
 </section>
 
-<!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-track">
-    <span>NOR-A &nbsp; NOK 245.00 &nbsp; ▲ +2.4%</span><span>NOR-B &nbsp; NOK 180.50 &nbsp; ▼ -0.8%</span><span>NOR-C &nbsp; NOK 310.00 &nbsp; ▲ +1.2%</span><span>NOR-D &nbsp; NOK 95.75 &nbsp; ▲ +3.1%</span><span>NOR-E &nbsp; NOK 420.00 &nbsp; ▼ -0.3%</span><span>HMH &nbsp; NOK 200.00 &nbsp; ▲ +5.2% 🔥 IPO</span>
-    <span>NOR-A &nbsp; NOK 245.00 &nbsp; ▲ +2.4%</span><span>NOR-B &nbsp; NOK 180.50 &nbsp; ▼ -0.8%</span><span>NOR-C &nbsp; NOK 310.00 &nbsp; ▲ +1.2%</span><span>NOR-D &nbsp; NOK 95.75 &nbsp; ▲ +3.1%</span><span>NOR-E &nbsp; NOK 420.00 &nbsp; ▼ -0.3%</span><span>HMH &nbsp; NOK 200.00 &nbsp; ▲ +5.2% 🔥 IPO</span>
+    <span>NOR-A &nbsp; NOK 245.00 &nbsp; ▲ +2.4%</span><span>NOR-B &nbsp; NOK 180.50 &nbsp; ▼ -0.8%</span><span>NOR-C &nbsp; NOK 310.00 &nbsp; ▲ +1.2%</span><span>NOR-D &nbsp; NOK 95.75 &nbsp; ▲ +3.1%</span><span>NOR-E &nbsp; NOK 420.00 &nbsp; ▼ -0.3%</span><span>HMH 🔥 &nbsp; NOK 200.00 &nbsp; ▲ +5.2%</span>
+    <span>NOR-A &nbsp; NOK 245.00 &nbsp; ▲ +2.4%</span><span>NOR-B &nbsp; NOK 180.50 &nbsp; ▼ -0.8%</span><span>NOR-C &nbsp; NOK 310.00 &nbsp; ▲ +1.2%</span><span>NOR-D &nbsp; NOK 95.75 &nbsp; ▲ +3.1%</span><span>NOR-E &nbsp; NOK 420.00 &nbsp; ▼ -0.3%</span><span>HMH 🔥 &nbsp; NOK 200.00 &nbsp; ▲ +5.2%</span>
   </div>
 </div>
 
-<!-- SHARES SECTION -->
-<section id="shares" style="padding:8rem 2rem;background:#f5f0e8;color:var(--navy);">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;">
+<section class="section" id="shares" style="background:#f5f0e8;color:var(--navy);">
+  <div class="container">
+    <div class="grid-2">
       <div>
         <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">What Are Shares?</div>
         <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.15;color:var(--navy);">Norwegian Shares — Your stake in the company</h2>
-        <p style="margin-top:1.5rem;font-size:1rem;line-height:1.8;color:#3a4f66;">A share represents partial ownership of our company. When you buy a share, you become a co-owner. As the company grows, so does the value of your share. All shares are fully registered under Norwegian law.</p>
-        <p style="margin-top:1rem;font-size:1rem;line-height:1.8;color:#3a4f66;">We offer multiple share classes, each with clear pricing and real-time market data so you always know exactly what your investment is worth.</p>
-        <a href="marketplace.html" class="btn btn-gold" style="margin-top:2rem;display:inline-block;">Browse All Shares</a>
+        <p style="margin-top:1.5rem;font-size:1rem;line-height:1.8;color:#3a4f66;">A share represents partial ownership of our company. As the company grows, so does the value of your share. All shares are fully registered under Norwegian law. Minimum purchase is 100 shares.</p>
+        <a href="marketplace.html" class="btn-gold" style="margin-top:2rem;display:inline-block;">Browse All Shares</a>
       </div>
       <div class="panel" style="background:var(--navy);">
         <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Live Share Prices</div>
-        <div style="display:flex;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.07);"><div><div style="font-weight:600;">Norwegian Growth A</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">NOR-A</div></div><div style="text-align:right;"><div style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 245.00</div><div class="pos" style="font-size:0.78rem;">▲ +2.4%</div></div></div>
-        <div style="display:flex;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.07);"><div><div style="font-weight:600;">Norwegian Growth B</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">NOR-B</div></div><div style="text-align:right;"><div style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 180.50</div><div class="neg" style="font-size:0.78rem;">▼ -0.8%</div></div></div>
-        <div style="display:flex;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.07);"><div><div style="font-weight:600;">Norwegian Growth C</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">NOR-C</div></div><div style="text-align:right;"><div style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 310.00</div><div class="pos" style="font-size:0.78rem;">▲ +1.2%</div></div></div>
-        <div style="display:flex;justify-content:space-between;padding:1rem 0;"><div><div style="font-weight:600;">HMH Holding <span class="badge badge-ipo">IPO</span></div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">HMH</div></div><div style="text-align:right;"><div style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 200.00</div><div class="pos" style="font-size:0.78rem;">▲ +5.2%</div></div></div>
+        <div style="display:flex;justify-content:space-between;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.07);"><div><div style="font-weight:600;font-size:0.9rem;">HMH Holding <span style="background:var(--gold);color:var(--navy);font-size:0.65rem;padding:0.1rem 0.4rem;border-radius:2px;font-weight:700;">IPO</span></div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">HMH</div></div><div style="text-align:right;"><div style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 200.00</div><div style="color:#4caf82;font-size:0.75rem;">▲ +5.2%</div></div></div>
+        <div style="display:flex;justify-content:space-between;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.07);"><div><div style="font-weight:600;font-size:0.9rem;">Norwegian Growth A</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">NOR-A</div></div><div style="text-align:right;"><div style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 245.00</div><div style="color:#4caf82;font-size:0.75rem;">▲ +2.4%</div></div></div>
+        <div style="display:flex;justify-content:space-between;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.07);"><div><div style="font-weight:600;font-size:0.9rem;">Norwegian Growth B</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">NOR-B</div></div><div style="text-align:right;"><div style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 180.50</div><div style="color:#e05555;font-size:0.75rem;">▼ -0.8%</div></div></div>
+        <div style="display:flex;justify-content:space-between;padding:0.85rem 0;"><div><div style="font-weight:600;font-size:0.9rem;">Norwegian Growth D</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">NOR-D</div></div><div style="text-align:right;"><div style="font-family:'Playfair Display',serif;color:var(--gold);">NOK 95.75</div><div style="color:#4caf82;font-size:0.75rem;">▲ +3.1%</div></div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section id="how" style="padding:8rem 2rem;background:var(--mid);">
-  <div style="max-width:1100px;margin:0 auto;text-align:center;">
+<section class="section" id="how" style="background:var(--mid);">
+  <div class="container" style="text-align:center;">
     <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">How It Works</div>
     <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;">Three steps to own shares</h2>
     <div class="grid-3" style="margin-top:4rem;text-align:left;">
       <div class="panel" style="background:rgba(255,255,255,0.04);border-color:rgba(201,168,76,0.15);">
-        <div style="font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:rgba(201,168,76,0.15);line-height:1;margin-bottom:1rem;">01</div>
-        <div style="font-size:1.05rem;font-weight:600;margin-bottom:0.75rem;">Create Your Account</div>
-        <p style="font-size:0.875rem;color:rgba(255,255,255,0.5);line-height:1.7;">Sign up in minutes. Verify your identity and you're ready to invest with secure authentication protecting your account.</p>
+        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:rgba(201,168,76,0.15);margin-bottom:1rem;">01</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:0.5rem;">Create Your Account</div>
+        <p style="font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.7;">Sign up free. Verify your identity and start investing in minutes.</p>
       </div>
       <div class="panel" style="background:rgba(255,255,255,0.04);border-color:rgba(201,168,76,0.15);">
-        <div style="font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:rgba(201,168,76,0.15);line-height:1;margin-bottom:1rem;">02</div>
-        <div style="font-size:1.05rem;font-weight:600;margin-bottom:0.75rem;">Choose Your Shares</div>
-        <p style="font-size:0.875rem;color:rgba(255,255,255,0.5);line-height:1.7;">Browse available shares, see live prices, and pick the share class that fits your investment goals. No hidden fees.</p>
+        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:rgba(201,168,76,0.15);margin-bottom:1rem;">02</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:0.5rem;">Buy Minimum 100 Shares</div>
+        <p style="font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.7;">Browse shares, select your quantity (min 100), and choose your crypto to pay with.</p>
       </div>
       <div class="panel" style="background:rgba(255,255,255,0.04);border-color:rgba(201,168,76,0.15);">
-        <div style="font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:rgba(201,168,76,0.15);line-height:1;margin-bottom:1rem;">03</div>
-        <div style="font-size:1.05rem;font-weight:600;margin-bottom:0.75rem;">Track Your Portfolio</div>
-        <p style="font-size:0.875rem;color:rgba(255,255,255,0.5);line-height:1.7;">Monitor your holdings in real time from your personal dashboard on any device — mobile, tablet, or desktop.</p>
+        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:rgba(201,168,76,0.15);margin-bottom:1rem;">03</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:0.5rem;">Track Your Portfolio</div>
+        <p style="font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.7;">Monitor your holdings in real time from your dashboard on any device.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- COMPANY -->
-<section id="company" style="padding:8rem 2rem;background:var(--navy);">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">About The Company</div>
-    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;max-width:600px;">A registered Norwegian company — transparent by design</h2>
-    <div style="display:grid;grid-template-columns:3fr 2fr;gap:5rem;margin-top:3rem;align-items:center;">
-      <div>
-        <p style="font-size:1rem;line-height:1.8;color:rgba(255,255,255,0.6);">Our company is fully registered under Norwegian law. Every share issued on this platform is backed by legal documentation, giving investors confidence and protection.</p>
-        <ul style="list-style:none;margin-top:2rem;">
-          <li style="display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);font-size:0.95rem;"><span style="color:var(--gold);">◆</span>Fully registered and legally compliant under Norwegian law</li>
-          <li style="display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);font-size:0.95rem;"><span style="color:var(--gold);">◆</span>Real-time share prices updated throughout the day</li>
-          <li style="display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);font-size:0.95rem;"><span style="color:var(--gold);">◆</span>Secure, verified transactions — your investment is protected</li>
-          <li style="display:flex;gap:1rem;padding:1rem 0;color:rgba(255,255,255,0.7);font-size:0.95rem;"><span style="color:var(--gold);">◆</span>Portfolio dashboard accessible from any device</li>
-        </ul>
-      </div>
-      <div class="panel" style="text-align:center;">
-        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--gold);">NOK 2.4M</div>
-        <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:0.5rem;">Total market capitalisation</p>
-        <hr style="border:none;border-top:1px solid rgba(201,168,76,0.2);margin:1.5rem 0;"/>
-        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--gold);">6</div>
-        <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:0.5rem;">Share classes available</p>
-        <hr style="border:none;border-top:1px solid rgba(201,168,76,0.2);margin:1.5rem 0;"/>
-        <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--gold);">1,200+</div>
-        <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:0.5rem;">Active shareholders</p>
-      </div>
-    </div>
-  </div>
+<section class="section" style="background:var(--gold);text-align:center;">
+  <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:var(--navy);">Ready to buy your first shares?</h2>
+  <p style="color:rgba(11,26,46,0.65);margin-top:1rem;font-size:1.05rem;">Join over 1,200 shareholders. Minimum 100 shares per purchase.</p>
+  <a href="register.html" style="display:inline-block;margin-top:2.5rem;background:var(--navy);color:var(--gold);padding:1rem 2.8rem;border-radius:2px;font-weight:700;font-size:1rem;transition:background 0.2s;">Get Started Free</a>
 </section>
 
-<!-- CTA -->
-<section style="padding:8rem 2rem;background:var(--gold);text-align:center;">
-  <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:var(--navy);">Ready to buy your first share?</h2>
-  <p style="color:rgba(11,26,46,0.65);margin-top:1rem;font-size:1.05rem;">Join over 1,200 shareholders investing in Norway's future.</p>
-  <a href="register.html" class="btn btn-dark" style="margin-top:2.5rem;display:inline-block;padding:1rem 2.8rem;font-size:1rem;font-weight:700;">Get Started — It's Free</a>
-</section>
-
-<!-- FOOTER -->
 <footer style="background:#060f1c;padding:2.5rem 4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-top:1px solid rgba(201,168,76,0.1);">
   <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);">Norwegian Shares</div>
   <div style="display:flex;gap:2rem;">
     <a href="marketplace.html" style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Marketplace</a>
+    <a href="payment.html" style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Crypto Pay</a>
     <a href="login.html" style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Sign In</a>
-    <a href="register.html" style="color:rgba(255,255,255,0.4);font-size:0.8rem;">Register</a>
   </div>
   <div style="color:rgba(255,255,255,0.25);font-size:0.78rem;">© 2026 Norwegian Shares. All rights reserved.</div>
 </footer>
+
+<a href="https://wa.me/+447853193392" target="_blank" style="position:fixed;bottom:1.5rem;left:1.5rem;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:998;text-decoration:none;">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91s-4.45-9.92-9.91-9.92zm0 18.16c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.26 8.26 0 0 1-1.27-4.4c0-4.54 3.7-8.24 8.26-8.24 4.54 0 8.24 3.7 8.24 8.24 0 4.55-3.7 8.26-8.24 8.26zm4.52-6.19c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.25 3.74.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.23-.16-.48-.28z"/></svg>
+</a>
 </body>
 </html>
