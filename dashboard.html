@@ -3,77 +3,110 @@
 <head>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Norwegian Shares — Dashboard</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
-    .hamburger{display:none;background:transparent;border:none;cursor:pointer;padding:0.25rem;flex-direction:column;gap:5px;}
-    .hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,0.7);border-radius:2px;transition:all 0.3s;}
-    .mobile-menu{display:none;position:fixed;top:73px;left:0;right:0;background:rgba(11,26,46,0.98);border-bottom:1px solid rgba(201,168,76,0.15);padding:1.5rem 2rem;flex-direction:column;gap:1rem;z-index:99;}
+    :root{--navy:#0b1a2e;--gold:#c9a84c;--gold-light:#e8c97e;--white:#fff;--mid:#1e3352;--card:#12243d;--error:#e05555;--success:#4caf82;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
+    a{text-decoration:none;color:inherit;}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;border-bottom:1px solid rgba(201,168,76,0.15);position:sticky;top:0;background:rgba(11,26,46,0.95);backdrop-filter:blur(12px);z-index:100;}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--gold);}
+    .nav-links{display:flex;gap:2rem;}
+    .nav-links a{color:rgba(255,255,255,0.6);font-size:0.875rem;}
+    .nav-links a.active,.nav-links a:hover{color:var(--gold);}
+    .btn{display:inline-block;padding:0.5rem 1.1rem;border-radius:2px;font-weight:700;font-size:0.82rem;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;}
+    .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.2);color:var(--white);}
+    .btn-gold{background:var(--gold);color:var(--navy);}
+    .nav-avatar{width:34px;height:34px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);font-size:0.8rem;}
+    .container{max-width:1200px;margin:0 auto;padding:2rem;}
+    .gold{color:var(--gold);}
+    .muted{color:rgba(255,255,255,0.5);}
+    .pos{color:var(--success);}
+    .neg{color:var(--error);}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+    .gap-col{display:flex;flex-direction:column;gap:1.5rem;}
+    .stat-card{background:var(--card);border:1px solid rgba(201,168,76,0.12);border-radius:4px;padding:1.5rem;position:relative;overflow:hidden;}
+    .stat-card::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--gold);}
+    .stat-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-bottom:0.6rem;}
+    .stat-value{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;}
+    .stat-sub{font-size:0.78rem;margin-top:0.3rem;}
+    .panel{background:var(--card);border:1px solid rgba(201,168,76,0.1);border-radius:4px;padding:1.5rem;}
+    .panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;}
+    .panel-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;}
+    .panel-link{font-size:0.8rem;color:var(--gold);}
+    .data-table{width:100%;border-collapse:collapse;}
+    .data-table th{font-size:0.7rem;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:0.6rem 0.6rem;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .data-table td{padding:0.8rem 0.6rem;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.85rem;}
+    .badge{display:inline-block;font-size:0.7rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:2px;}
+    .badge-gold{background:rgba(201,168,76,0.12);color:var(--gold);}
+    .badge-green{background:rgba(76,175,130,0.15);color:var(--success);}
+    .badge-red{background:rgba(224,85,85,0.15);color:var(--error);}
+    .badge-ipo{background:var(--gold);color:var(--navy);}
+    .hamburger{display:none;background:transparent;border:none;cursor:pointer;flex-direction:column;gap:5px;}
+    .hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,0.7);border-radius:2px;}
+    .mobile-menu{display:none;position:fixed;top:73px;left:0;right:0;background:rgba(11,26,46,0.98);border-bottom:1px solid rgba(201,168,76,0.15);padding:1.5rem 2rem;flex-direction:column;z-index:99;}
     .mobile-menu.open{display:flex;}
-    .mobile-menu a{color:rgba(255,255,255,0.7);font-size:1rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.06);}
-    .mobile-menu a:last-child{border-bottom:none;}
-    @media(max-width:768px){.hamburger{display:flex;}.nav-links{display:none;}}
+    .mobile-menu a{color:rgba(255,255,255,0.7);font-size:0.95rem;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    #loadingScreen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+    .loading-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--gold);margin-bottom:1rem;}
+    .spinner{width:32px;height:32px;border:3px solid rgba(201,168,76,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .empty-state{text-align:center;padding:2.5rem 1rem;}
+    .empty-icon{font-size:2.5rem;margin-bottom:0.75rem;opacity:0.4;}
+    .empty-text{color:rgba(255,255,255,0.4);font-size:0.875rem;margin-bottom:1.25rem;line-height:1.6;}
+    @media(max-width:768px){nav{padding:1rem 1.5rem;}.nav-links{display:none;}.hamburger{display:flex;}.grid-4{grid-template-columns:1fr 1fr;}.grid-2{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
 <div id="loadingScreen"><div class="loading-logo">Norwegian Shares</div><div class="spinner"></div></div>
+
 <nav>
-  <a href="index.html" class="nav-logo">Norwegian Shares</a>
+  <a href="index.html" class="nav-logo"><img src="logo.png" alt="Norwegian Shares" style="height:34px;vertical-align:middle;margin-right:0.5rem;"/>Norwegian Shares</a>
   <div class="nav-links">
     <a href="dashboard.html" class="active">Dashboard</a>
     <a href="marketplace.html">Marketplace</a>
-    <a href="portfolio.html">Portfolio</a>
-    <a href="transactions.html">Transactions</a>
+    <a href="payment.html">💰 Crypto Pay</a>
     <a href="settings.html">Settings</a>
   </div>
-  <div class="nav-right">
+  <div style="display:flex;align-items:center;gap:0.75rem;">
     <div class="nav-avatar" id="navAvatar">?</div>
-    <span style="font-size:0.875rem;color:rgba(255,255,255,0.6);" id="navName"></span>
-    <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign Out</button>
-    <button class="hamburger" onclick="toggleMenu()" id="hamburger">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="btn btn-outline" onclick="doLogout()">Sign Out</button>
+    <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')"><span></span><span></span><span></span></button>
   </div>
 </nav>
-
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="dashboard.html">📊 Dashboard</a>
+<div class="mobile-menu" id="mob">
   <a href="marketplace.html">🛒 Marketplace</a>
-  <a href="portfolio.html">💼 Portfolio</a>
-  <a href="transactions.html">📋 Transactions</a>
+  <a href="payment.html">💰 Crypto Pay</a>
   <a href="settings.html">⚙️ Settings</a>
-  <a href="#" onclick="handleLogout()" style="color:var(--error);">🚪 Sign Out</a>
 </div>
 
 <div class="container">
-  <!-- HEADER -->
-  <div style="margin-bottom:2.5rem;">
+  <div style="margin-bottom:2rem;">
     <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;">Welcome back, <span class="gold" id="firstName">Investor</span> 👋</h1>
-    <p class="muted" style="margin-top:0.4rem;">Here's a live overview of your share portfolio</p>
+    <p class="muted" style="margin-top:0.4rem;">Live overview of your share portfolio</p>
   </div>
 
-  <!-- STATS -->
-  <div class="grid-4" style="margin-bottom:2.5rem;">
+  <div class="grid-4" style="margin-bottom:2rem;">
     <div class="stat-card" id="statValue"><div class="stat-label">Portfolio Value</div><div class="stat-value">NOK 0.00</div><div class="stat-sub muted">Loading...</div></div>
     <div class="stat-card" id="statInvested"><div class="stat-label">Total Invested</div><div class="stat-value">NOK 0.00</div><div class="stat-sub muted">Loading...</div></div>
     <div class="stat-card" id="statShares"><div class="stat-label">Shares Owned</div><div class="stat-value">0</div><div class="stat-sub muted">Loading...</div></div>
     <div class="stat-card" id="statReturn"><div class="stat-label">Total Return</div><div class="stat-value">0.00%</div><div class="stat-sub muted">Loading...</div></div>
   </div>
 
-  <!-- IPO ALERT -->
   <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.35);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
     <div style="display:flex;align-items:center;gap:1rem;">
       <span class="badge badge-ipo">🔥 IPO</span>
-      <div style="font-size:0.875rem;"><strong class="gold">HMH Holding</strong> is going public — NOK 190–210/share. Norway's leading oil drilling equipment company. 2025 revenue: NOK 821.8M.</div>
+      <div style="font-size:0.875rem;"><strong class="gold">HMH Holding</strong> is going public — NOK 190–210/share.</div>
     </div>
-    <a href="marketplace.html" class="btn btn-gold btn-sm">Buy HMH Shares →</a>
+    <a href="marketplace.html" class="btn btn-gold">Buy HMH Shares →</a>
   </div>
 
-  <!-- MAIN GRID -->
   <div class="grid-2" style="align-items:start;">
-    <!-- LEFT -->
     <div class="gap-col">
-      <!-- PORTFOLIO TABLE -->
       <div class="panel">
         <div class="panel-header"><div class="panel-title">My Portfolio</div><a href="marketplace.html" class="panel-link">Buy more →</a></div>
         <div style="overflow-x:auto;">
@@ -83,32 +116,26 @@
           </table>
         </div>
       </div>
-      <!-- RECENT TRANSACTIONS -->
       <div class="panel">
-        <div class="panel-header"><div class="panel-title">Recent Transactions</div><a href="transactions.html" class="panel-link">View all →</a></div>
+        <div class="panel-header"><div class="panel-title">Recent Transactions</div></div>
         <div style="overflow-x:auto;">
           <table class="data-table">
-            <thead><tr><th>Date</th><th>Action</th><th>Quantity</th><th>Amount</th></tr></thead>
-            <tbody id="transactionBody"><tr><td colspan="4" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4);">Loading...</td></tr></tbody>
+            <thead><tr><th>Date</th><th>Action</th><th>Qty</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="transactionBody"><tr><td colspan="5" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4);">Loading...</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
-
-    <!-- RIGHT -->
     <div class="gap-col">
-      <!-- QUICK ACTIONS -->
       <div class="panel">
         <div class="panel-header"><div class="panel-title">Quick Actions</div></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-          <a href="marketplace.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;display:block;transition:border-color 0.2s;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">📈</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Buy Shares</div></a>
-          <a href="portfolio.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;display:block;transition:border-color 0.2s;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">💼</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">My Portfolio</div></a>
-          <a href="transactions.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;display:block;transition:border-color 0.2s;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">📋</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Transactions</div></a>
-          <a href="settings.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;display:block;transition:border-color 0.2s;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">⚙️</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Settings</div></a>
+          <a href="marketplace.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">📈</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Buy Shares</div></a>
+          <a href="payment.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">💰</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Crypto Pay</div></a>
+          <a href="settings.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">⚙️</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Settings</div></a>
+          <a href="index.html" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;padding:1rem;text-align:center;"><div style="font-size:1.5rem;margin-bottom:0.4rem;">🏠</div><div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Home</div></a>
         </div>
       </div>
-
-      <!-- LIVE MARKET -->
       <div class="panel">
         <div class="panel-header"><div class="panel-title">Live Market</div><a href="marketplace.html" class="panel-link">View all →</a></div>
         <table class="data-table">
@@ -117,22 +144,124 @@
             <tr><td><span class="badge badge-gold">HMH 🔥</span></td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 200.00</td><td class="pos">▲ +5.2%</td></tr>
             <tr><td><span class="badge badge-gold">NOR-A</span></td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 245.00</td><td class="pos">▲ +2.4%</td></tr>
             <tr><td><span class="badge badge-gold">NOR-B</span></td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 180.50</td><td class="neg">▼ -0.8%</td></tr>
-            <tr><td><span class="badge badge-gold">NOR-C</span></td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 310.00</td><td class="pos">▲ +1.2%</td></tr>
             <tr><td><span class="badge badge-gold">NOR-D</span></td><td class="gold" style="font-family:'Playfair Display',serif;">NOK 95.75</td><td class="pos">▲ +3.1%</td></tr>
           </tbody>
         </table>
-        <a href="marketplace.html" class="btn btn-gold btn-block" style="margin-top:1.25rem;">Buy Shares Now</a>
+        <a href="marketplace.html" class="btn btn-gold" style="display:block;text-align:center;margin-top:1.25rem;">Buy Shares Now</a>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  window.toggleMenu = function() {
-    const menu = document.getElementById('mobileMenu');
-    menu.classList.toggle('open');
-  };
+firebase.initializeApp({
+  apiKey:"AIzaSyAdweu2Y8ZSfilJsh5g0PKPwwiE7GXxoSk",
+  authDomain:"norwegian-shares.firebaseapp.com",
+  projectId:"norwegian-shares",
+  storageBucket:"norwegian-shares.firebasestorage.app",
+  messagingSenderId:"43355796470",
+  appId:"1:43355796470:web:afa61eb967b0beecc68dd7"
+});
+var auth=firebase.auth();
+var db=firebase.firestore();
+
+var sharePrices={'HMH':200.00,'NOR-A':245.00,'NOR-B':180.50,'NOR-C':310.00,'NOR-D':95.75,'NOR-E':420.00};
+
+auth.onAuthStateChanged(function(user){
+  document.getElementById('loadingScreen').style.display='none';
+  if(!user){window.location.href='login.html';return;}
+  var name=user.displayName||user.email;
+  var first=name.split(' ')[0];
+  document.getElementById('firstName').textContent=first;
+  document.getElementById('navAvatar').textContent=first.charAt(0).toUpperCase();
+  loadPortfolio(user);
+});
+
+function loadPortfolio(user){
+  db.collection('transactions').where('userId','==',user.uid).orderBy('timestamp','desc').get()
+    .then(function(snap){
+      var txns=[];
+      snap.forEach(function(doc){txns.push(Object.assign({id:doc.id},doc.data()));});
+
+      var portfolio={};
+      var totalInvested=0;
+      txns.forEach(function(t){
+        var amount = t.totalAmountNOK || t.totalAmount || 0;
+        if(!portfolio[t.shareCode]) portfolio[t.shareCode]={code:t.shareCode,name:t.shareName,qty:0,cost:0};
+        if(t.type==='buy'){ portfolio[t.shareCode].qty+=t.quantity; portfolio[t.shareCode].cost+=amount; totalInvested+=amount; }
+      });
+
+      var totalValue=0;
+      Object.values(portfolio).forEach(function(h){ if(h.qty>0) totalValue+=h.qty*(sharePrices[h.code]||0); });
+      var totalReturn=totalValue-totalInvested;
+      var returnPct=totalInvested>0?((totalReturn/totalInvested)*100).toFixed(2):'0.00';
+      var shareClasses=Object.values(portfolio).filter(function(h){return h.qty>0;}).length;
+      var totalShares=Object.values(portfolio).reduce(function(s,h){return s+(h.qty>0?h.qty:0);},0);
+
+      setStat('statValue','NOK '+totalValue.toFixed(2),totalReturn>=0?'pos':'neg',shareClasses>0?(totalReturn>=0?'▲':'▼')+' NOK '+Math.abs(totalReturn).toFixed(2):'No shares yet');
+      setStat('statInvested','NOK '+totalInvested.toFixed(2),'muted',totalInvested>0?'Total spent':'Start investing today');
+      setStat('statShares',String(totalShares),'muted','Across '+shareClasses+' classes');
+      setStat('statReturn',returnPct+'%',totalReturn>=0?'pos':'neg','NOK '+totalReturn.toFixed(2));
+
+      renderPortfolio(portfolio);
+      renderTransactions(txns.slice(0,8));
+    })
+    .catch(function(e){
+      console.warn('Firestore error:',e.message);
+      setStat('statValue','NOK 0.00','muted','No shares yet');
+      setStat('statInvested','NOK 0.00','muted','Start investing today');
+      setStat('statShares','0','muted','Across 0 classes');
+      setStat('statReturn','0.00%','muted','NOK 0.00');
+      renderPortfolio({});
+      renderTransactions([]);
+    });
+}
+
+function setStat(id,value,subClass,sub){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.querySelector('.stat-value').textContent=value;
+  var s=el.querySelector('.stat-sub');
+  s.textContent=sub;s.className='stat-sub '+subClass;
+}
+
+function renderPortfolio(portfolio){
+  var el=document.getElementById('portfolioBody');
+  var holdings=Object.values(portfolio).filter(function(h){return h.qty>0;});
+  if(!holdings.length){el.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4);">No holdings yet. <a href="marketplace.html" style="color:var(--gold);">Buy your first share →</a></td></tr>';return;}
+  el.innerHTML=holdings.map(function(h){
+    var price=sharePrices[h.code]||0;
+    var value=h.qty*price;
+    var pnl=value-h.cost;
+    var pnlPct=h.cost>0?((pnl/h.cost)*100).toFixed(2):'0.00';
+    return '<tr><td><span class="badge badge-gold">'+h.code+'</span></td><td>'+h.qty+'</td>'+
+      '<td style="font-family:\'Playfair Display\',serif;color:var(--gold);">NOK '+price.toFixed(2)+'</td>'+
+      '<td style="font-family:\'Playfair Display\',serif;color:var(--gold);">NOK '+value.toFixed(2)+'</td>'+
+      '<td class="'+(pnl>=0?'pos':'neg')+'">'+(pnl>=0?'▲':'▼')+' '+Math.abs(pnlPct)+'%</td></tr>';
+  }).join('');
+}
+
+function renderTransactions(txns){
+  var el=document.getElementById('transactionBody');
+  if(!txns.length){el.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4);">No transactions yet.</td></tr>';return;}
+  el.innerHTML=txns.map(function(t){
+    var date=t.timestamp?new Date(t.timestamp.seconds*1000).toLocaleDateString():'Just now';
+    var amount=t.totalAmountNOK||t.totalAmount||0;
+    var statusLabel = t.status==='awaiting_crypto_payment'?'⏳ Awaiting Crypto':t.status==='awaiting_bank_transfer'?'⏳ Awaiting Bank':t.status==='reserved'?'⏳ Reserved':'✓ '+(t.status||'Pending');
+    var statusColor = t.status && t.status.indexOf('awaiting')>-1 ? 'badge-gold' : 'badge-green';
+    return '<tr><td style="font-size:0.8rem;">'+date+'</td>'+
+      '<td><span class="badge '+(t.type==='buy'?'badge-green':'badge-red')+'">'+(t.type||'buy').toUpperCase()+'</span> <span class="badge badge-gold">'+t.shareCode+'</span></td>'+
+      '<td>'+t.quantity+'</td>'+
+      '<td style="font-family:\'Playfair Display\',serif;color:var(--gold);">NOK '+amount.toFixed(2)+'</td>'+
+      '<td><span class="badge '+statusColor+'" style="font-size:0.65rem;">'+statusLabel+'</span></td></tr>';
+  }).join('');
+}
+
+window.doLogout=function(){ auth.signOut().then(function(){window.location.href='index.html';}); };
 </script>
-<script type="module" src="js/dashboard.js"></script>
+
+<a href="https://wa.me/+447853193392" target="_blank" style="position:fixed;bottom:1.5rem;left:1.5rem;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:998;text-decoration:none;">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91s-4.45-9.92-9.91-9.92zm0 18.16c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.26 8.26 0 0 1-1.27-4.4c0-4.54 3.7-8.24 8.26-8.24 4.54 0 8.24 3.7 8.24 8.24 0 4.55-3.7 8.26-8.24 8.26zm4.52-6.19c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.25 3.74.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.23-.16-.48-.28z"/></svg>
+</a>
 </body>
 </html>
